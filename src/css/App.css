@@ -1,0 +1,150 @@
+.App {
+  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-logo {
+  pointer-events: none;
+}
+
+.App-link {
+  color: white;
+}
+
+.App-link:hover {
+  color: grey;
+}
+
+
+.container-custom {
+  max-width: 65%;
+  margin-top: 8rem;
+  width: 100%;
+}
+
+.App-pdf-table {
+  background-color: #b7cce4;
+}
+
+.App-header {
+  background-color: #dfe5f0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: rgb(0, 0, 0) !important;
+}
+
+
+/*tabla report card*/
+.custom-table {
+  border: 1px solid black;
+}
+
+.header-cell {
+  background-color: #4f80bd !important;
+  color: white !important;
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+}
+
+/*Login */
+
+.login-form {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+  width: 300px;
+}
+
+.login-form h1 {
+  text-align: center;
+  color: #333;
+}
+
+.login-form .form-group {
+  margin-bottom: 15px;
+}
+
+.login-form .form-group label {
+  display: block;
+  color: #666;
+  font-weight: bold;
+}
+
+.login-form .form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.login-form .form-group input[type="submit"] {
+  background-color: #4CAF50;
+  color: white;
+  cursor: pointer;
+}
+
+.login-form .form-group input[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+/*Termina Login*/
+
+/* Formulario Personal data*/
+
+.pers-container {
+  background-image: url('../components/img/fondo_personal2.png');
+  /* Para cubrir el contenedor */
+  background-size: cover;
+
+  /* La imagen se posicionará en el centro */
+  background-position: center;
+
+  /* Se repetirá a lo largo y ancho del contenedor */
+  background-repeat: no-repeat;
+
+  /* El color de fondo con opacidad. El último valor (0.5 en este caso) es la opacidad */
+  background-color: rgba(255, 255, 255, 0.81);
+
+  /* La imagen de fondo y el color se mezclan */
+  background-blend-mode: overlay;
+
+}
+
+.pers-container .form-control {
+  transition: border 0.3s ease-out, box-shadow 0.3s ease-out;
+}
+
+.pers-container .form-control:focus {
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Termina Formulario Personal data*/
