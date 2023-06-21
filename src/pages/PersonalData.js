@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   Container,
@@ -13,29 +13,43 @@ import {
 } from 'react-bootstrap';
 import Percentage from '../charts/Percentage';
 import volaris from '../components/img/airlines/volaris.png';
-import aeromexico from '../components/img/airlines/aeromexico.png'
+import aeromexico from '../components/img/airlines/aeromexico.png';
 
 const PersonalData = () => {
   const [personalData, setPersonalData] = useState([]);
   const [email, setEmail] = useState('');
 
   const [personalForm, setPersonalForm] = useState({
-    email: '',
-    name: '',
-    last_name1: '',
-    last_name2: '',
-    phone: '',
-    cell: '',
-    other_email: '',
-    time_zone: '',
-    gender: '',
-    birth: '',
-    nationality: '',
+    full_name: '',
+    personal_email: '',
+    cellphone: '',
+    age: '',
     country: '',
-    address: '',
-    postal_code: '',
+    course: '',
+    flight_hours: '',
+    flight_status: '',
+    experience: '',
+    type_airc: '',
     company: '',
+    company_email: '',
+    rtari_level: '',
+    rtari_expires: '',
+    english_status: '',
+    hours_english: '',
+    level_english: '',
+    other_career: '',
+    contact: '',
+    option_pay: '',
+    date_form: '',
   });
+
+  //submit con fecha
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const currentDate = new Date();
+    setPersonalForm({ ...personalForm, date_form: currentDate.toISOString() });
+    // Aquí puedes realizar otras acciones, como enviar los datos a la API
+  };
 
   const handleInputChange = (event) => {
     setPersonalForm({
@@ -47,10 +61,15 @@ const PersonalData = () => {
   const fetchPerData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:5015/postPersonalData`,
+        `http://localhost:5015/getPersonalData`,
         { params: { email } }
       );
-      setPersonalData(response.data);
+      if (Array.isArray(response.data)) {
+        setPersonalData(response.data);
+      } else {
+        setPersonalData([]);
+        alert('There is no information for this email');
+      }
       console.log(personalData);
     } catch (error) {
       console.log(error);
@@ -58,18 +77,20 @@ const PersonalData = () => {
   };
 
   const handleSearch = () => {
-    fetchPerData();
+    if (email === '') {
+      alert('El campo de correo electrónico no puede estar vacío');
+    } else {
+      fetchPerData();
+    }
   };
 
-  //imagenes aerolineas 
-
   function renderImage(empresa) {
-    if (empresa.toLowerCase() === "volaris") {
-      return <img src={volaris} width='50%'alt="Volaris" />;
-    } else if (empresa.toLowerCase() === "aeromexico") {
-      return <img src={aeromexico} alt="aeromexico" width='70%' />;
-    } else if (empresa === "empresa2") {
-      return <img src="/path/to/empresa2-image.jpg" alt="Empresa 2" />;
+    if (empresa.toLowerCase() === 'volaris') {
+      return <img src={volaris} width='50%' alt='Volaris' />;
+    } else if (empresa.toLowerCase() === 'aeromexico') {
+      return <img src={aeromexico} alt='aeromexico' width='70%' />;
+    } else if (empresa === 'empresa2') {
+      return <img src='/path/to/empresa2-image.jpg' alt='Empresa 2' />;
     }
     // Agrega más condiciones aquí para las demás empresas
     // En caso de no encontrar ninguna coincidencia, la función retorna null
@@ -87,33 +108,32 @@ const PersonalData = () => {
                 <Row className='mb-2'>
                   <Col className='mt-2' xs={12} md={4}>
                     <Form.Group controlId='formEmail'>
-                      <Form.Label>Email</Form.Label>
+                      <Form.Label>Personal Email</Form.Label>
                       <Form.Control
                         type='email'
-                        name='email'
-                        value={personalForm.email}
+                        required
+                        name='personal_email'
                         onChange={handleInputChange}
                       />
                     </Form.Group>
                   </Col>
                   <Col xs={12} className='mt-2' md={4}>
                     <Form.Group controlId='formName'>
-                      <Form.Label>Name</Form.Label>
+                      <Form.Label>Full Name</Form.Label>
                       <Form.Control
                         type='text'
-                        name='name'
-                        value={personalForm.name}
+                        required
+                        name='full_name'
                         onChange={handleInputChange}
                       />
                     </Form.Group>
                   </Col>
                   <Col xs={12} className='mt-2' md={4}>
                     <Form.Group controlId='formLastName1'>
-                      <Form.Label>Last Name 1</Form.Label>
+                      <Form.Label>Course</Form.Label>
                       <Form.Control
                         type='text'
-                        name='last_name1'
-                        value={personalForm.last_name1}
+                        name='course'
                         onChange={handleInputChange}
                       />
                     </Form.Group>
@@ -122,33 +142,31 @@ const PersonalData = () => {
                 <Row className='mb-2'>
                   <Col xs={12} md={4}>
                     <Form.Group controlId='formLastName2'>
-                      <Form.Label>Last Name 2</Form.Label>
+                      <Form.Label>Age</Form.Label>
                       <Form.Control
                         type='text'
-                        name='last_name2'
-                        value={personalForm.last_name2}
+                        name='age'
                         onChange={handleInputChange}
                       />
                     </Form.Group>
                   </Col>
                   <Col xs={12} md={4}>
                     <Form.Group controlId='formPhone'>
-                      <Form.Label>Phone</Form.Label>
+                      <Form.Label>Country</Form.Label>
                       <Form.Control
-                        type='tel'
-                        name='phone'
-                        value={personalForm.phone}
+                        type='country'
+                        name='cellphone'
                         onChange={handleInputChange}
                       />
                     </Form.Group>
                   </Col>
                   <Col xs={12} md={4}>
                     <Form.Group controlId='formCell'>
-                      <Form.Label>Cell</Form.Label>
+                      <Form.Label>Cellphone</Form.Label>
                       <Form.Control
                         type='tel'
+                        required
                         name='cell'
-                        value={personalForm.cell}
                         onChange={handleInputChange}
                       />
                     </Form.Group>
@@ -157,22 +175,20 @@ const PersonalData = () => {
                 <Row className='mb-2'>
                   <Col xs={12} md={4}>
                     <Form.Group controlId='formOtherEmail'>
-                      <Form.Label>Other Email</Form.Label>
+                      <Form.Label>Company Email</Form.Label>
                       <Form.Control
                         type='email'
-                        name='other_email'
-                        value={personalForm.other_email}
+                        name='company_email'
                         onChange={handleInputChange}
                       />
                     </Form.Group>
                   </Col>
                   <Col xs={12} md={4}>
                     <Form.Group controlId='formTimeZone'>
-                      <Form.Label>Time Zone</Form.Label>
+                      <Form.Label>Flight Hours</Form.Label>
                       <Form.Control
                         as='select'
-                        name='time_zone'
-                        value={personalForm.time_zone}
+                        name='flight_hours'
                         onChange={handleInputChange}
                       >
                         {/* Insert Time Zone options here */}
@@ -181,11 +197,10 @@ const PersonalData = () => {
                   </Col>
                   <Col xs={12} md={4}>
                     <Form.Group controlId='formGender'>
-                      <Form.Label>Gender</Form.Label>
+                      <Form.Label>Flight Status</Form.Label>
                       <Form.Control
                         as='select'
-                        name='gender'
-                        value={personalForm.gender}
+                        name='flight_status'
                         onChange={handleInputChange}
                       >
                         {/* Insert Gender options here */}
@@ -196,72 +211,130 @@ const PersonalData = () => {
                 <Row className='mt-2 mb-2'>
                   <Col xs={12} md={4}>
                     <Form.Group controlId='formBirth'>
-                      <Form.Label>Birth</Form.Label>
+                      <Form.Label>Experience</Form.Label>
                       <Form.Control
-                        type='date'
-                        name='birth'
-                        value={personalForm.birth}
+                        type='text'
+                        name='experience'
                         onChange={handleInputChange}
                       />
                     </Form.Group>
                   </Col>
                   <Col xs={12} md={4}>
                     <Form.Group controlId='formNationality'>
-                      <Form.Label>Nationality</Form.Label>
+                      <Form.Label>Type Aircaft (separate by comma)</Form.Label>
                       <Form.Control
-                        as='select'
-                        name='nationality'
-                        value={personalForm.nationality}
+                        type='text'
+                        name='type_airc'
                         onChange={handleInputChange}
-                      >
-                        {/* Insert Nationality options here */}
-                      </Form.Control>
+                      ></Form.Control>
                     </Form.Group>
                   </Col>
                   <Col xs={12} md={4}>
                     <Form.Group controlId='formCountry'>
-                      <Form.Label>Country</Form.Label>
+                      <Form.Label>Company</Form.Label>
                       <Form.Control
-                        as='select'
-                        name='country'
-                        value={personalForm.country}
+                        type='text'
+                        name='company'
                         onChange={handleInputChange}
-                      >
-                        {/* Insert Country options here */}
-                      </Form.Control>
+                      ></Form.Control>
                     </Form.Group>
                   </Col>
                 </Row>
                 <Row className='mb-2'>
                   <Col xs={12} md={4}>
                     <Form.Group controlId='formAddress'>
-                      <Form.Label>Address</Form.Label>
+                      <Form.Label>Company Email</Form.Label>
                       <Form.Control
                         type='text'
-                        name='address'
-                        value={personalForm.address}
+                        name='company_email'
                         onChange={handleInputChange}
                       />
                     </Form.Group>
                   </Col>
                   <Col xs={12} md={4}>
                     <Form.Group controlId='formPostalCode'>
-                      <Form.Label>Postal Code</Form.Label>
+                      <Form.Label>Rtari Level</Form.Label>
                       <Form.Control
                         type='text'
-                        name='postal_code'
-                        value={personalForm.postal_code}
+                        name='rtari_level'
                         onChange={handleInputChange}
                       />
                     </Form.Group>
                   </Col>
                   <Col xs={12} md={4}>
                     <Form.Group controlId='formCompany'>
-                      <Form.Label>Company</Form.Label>
+                      <Form.Label>Rtari Expires</Form.Label>
                       <Form.Control
                         type='text'
-                        name='company'
-                        value={personalForm.company}
+                        name='rtari_expires'
+                        onChange={handleInputChange}
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs={12} md={4}>
+                    <Form.Group controlId='formCompany'>
+                      <Form.Label>English Status</Form.Label>
+                      <Form.Control
+                        type='text'
+                        name='english_status'
+                        onChange={handleInputChange}
+                      />
+                    </Form.Group>
+                  </Col>
+
+                  <Col xs={12} md={4}>
+                    <Form.Group controlId='formCompany'>
+                      <Form.Label>Hours English</Form.Label>
+                      <Form.Control
+                        type='text'
+                        name='hours_english'
+                        onChange={handleInputChange}
+                      />
+                    </Form.Group>
+                  </Col>
+
+                  <Col xs={12} md={4}>
+                    <Form.Group controlId='formCompany'>
+                      <Form.Label>Level English</Form.Label>
+                      <Form.Control
+                        type='text'
+                        name='level_english'
+                        onChange={handleInputChange}
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs={12} md={4}>
+                    <Form.Group controlId='formCompany'>
+                      <Form.Label>Other Career</Form.Label>
+                      <Form.Control
+                        type='text'
+                        name='other_career'
+                        onChange={handleInputChange}
+                      />
+                    </Form.Group>
+                  </Col>
+
+                  <Col xs={12} md={4}>
+                    <Form.Group controlId='formCompany'>
+                      <Form.Label>Contact</Form.Label>
+                      <Form.Control
+                        type='text'
+                        name='contact'
+                        onChange={handleInputChange}
+                      />
+                    </Form.Group>
+                  </Col>
+
+                  <Col xs={12} md={4}>
+                    <Form.Group controlId='formCompany'>
+                      <Form.Label>Option Payment</Form.Label>
+                      <Form.Control
+                        type='text'
+                        name='option_pay'
                         onChange={handleInputChange}
                       />
                     </Form.Group>
@@ -281,6 +354,8 @@ const PersonalData = () => {
       </Accordion>
       <InputGroup className='mb-3 mt-4'>
         <FormControl
+          type='email'
+          required
           placeholder='Search by email'
           aria-label='Search by email'
           aria-describedby='basic-addon2'
@@ -302,12 +377,13 @@ const PersonalData = () => {
               <Card.Body>
                 <Card.Title>{item.nombre}</Card.Title>
                 <Card.Subtitle className='mb-2 text-muted'>
-                {renderImage(item.empresa)}
+                  {renderImage(item.empresa)}
                 </Card.Subtitle>
                 <Card.Text>
                   Calification: <strong> {item.calif}</strong>
                 </Card.Text>
                 <Percentage />
+                Course: {item.curso}
               </Card.Body>
             </Card>
           </Col>
