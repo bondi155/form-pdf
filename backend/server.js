@@ -7,7 +7,6 @@ const cors = require("cors");
 const postDataController = require('./Controllers/GetFuncData')
 const getGoogle =  require ('./Controllers/FormApi');
 
-const dbAws = require("./Config/dbAwsConfig");
 
 app.use(cors());
 app.use(express.json());

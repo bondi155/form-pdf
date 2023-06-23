@@ -7,6 +7,35 @@ const { google } = require('googleapis');
 const mysql = require('mysql2');
 const connection = mysql.createConnection(process.env.DATABASE_URL);
 
+const COLUMN_NAMES = [
+  'full_name',
+  'personal_email',
+  'cellphone',
+  'age',
+  'country',
+  'course',
+  'flight_hours',
+  'flight_status',
+  'experience',
+  'type_airc',
+  'company',
+  'company_email',
+  'rtari_level',
+  'rtari_expires',
+  'english_status',
+  'hours_english',
+  'level_english',
+  'other_career',
+  'contact',
+  'option_pay',
+  'date_form',
+  'start_date',
+  'end_date',
+  'asist',
+  'payment',
+  'calif',
+  'status' // Nueva columna "status"
+];
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
@@ -16,6 +45,7 @@ const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
 const TOKEN_PATH = path.join(process.cwd(), 'token.json');
 const CREDENTIALS_PATH = path.join(process.cwd(), 'credentials_ulead.json');
 let tabName = 'UFS-28';
+
 /**
  * Reads previously authorized credentials from the save file.
  *
@@ -32,7 +62,7 @@ async function loadSavedCredentialsIfExist() {
 }
 
 /**
- * Serializes credentials to a file comptible with GoogleAUth.fromJSON.
+ * Serializes credentials to a file compatible with GoogleAuth.fromJSON.
  *
  * @param {OAuth2Client} client
  * @return {Promise<void>}
@@ -51,8 +81,7 @@ async function saveCredentials(client) {
 }
 
 /**
- * Load or request or authorization to call APIs.
- *
+ * Load or request authorization to call APIs.
  */
 async function authorize() {
   let client = await loadSavedCredentialsIfExist();
@@ -70,49 +99,77 @@ async function authorize() {
 }
 
 /**
- * Prints the names and majors of students in a sample spreadsheet:
- * @see https://docs.google.com/spreadsheets/d/1vdaO42mWRbISh3QTcutqaTncMoTRmNxYpcyW1n6MDRI/edit?resourcekey#gid=1794045859
+ * Prints the names and majors of students in a sample spreadsheet.
+ *
  * @param {google.auth.OAuth2} auth The authenticated Google OAuth client.
  */
 async function listMajors(auth) {
   const sheets = google.sheets({ version: 'v4', auth });
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId: '1vdaO42mWRbISh3QTcutqaTncMoTRmNxYpcyW1n6MDRI',
-    range: `${tabName}!A2:Z`,
+    range: `${tabName}!A2:AA`,
   });
 
   const rows = res.data.values;
 
   if (!rows || rows.length === 0) {
-    console.log(
-      'No data found in UleadAir sheet, check if the name of the tab is correct.'
-    );
+    console.log('No data found in UleadAir sheet. Check if the name of the tab is correct.');
     return;
   }
-console.log(rows)
 
-  const getSheetData = `INSERT INTO personal_data (full_name, personal_email, cellphone, age, country, course, flight_hours, flight_status, experience, type_airc, company, 
-    company_email, rtari_level, rtari_expires, english_status, hours_english, level_english, other_career, contact, option_pay, date_form, start_date, end_date, asist, payment, calif) 
-    VALUES (?, ?, ?, ? ,? ,? ,? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  const getSheetData = `INSERT INTO personal_data (${COLUMN_NAMES.join(', ')}) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
   rows.forEach((row) => {
-    // Aplica la validación y conversión de valores en blanco a NULL
-    const values = row.map((value) => (value !== '' && value !== undefined) ? value : null);
-    // Insertar cada fila en la base de datos
-console.log(values)
+    const personalEmail = row[COLUMN_NAMES.indexOf('personal_email')];
+    const course = row[COLUMN_NAMES.indexOf('course')];
 
-
-connection.query(getSheetData, values, (err, result) => {
+    // Verificar si ya existe un registro con el mismo correo electrónico y curso
+    const checkDuplicateQuery = 'SELECT COUNT(*) as count FROM personal_data WHERE personal_email = ? AND course = ?';
+    connection.query(checkDuplicateQuery, [personalEmail, course], (err, result) => {
       if (err) {
         console.log(err);
       } else {
-        console.log(result);
+        const count = result[0].count;
+        if (count === 0) {
+          // No existe un registro duplicado, realizar la inserción
+          const values = row.map((value) => (value !== '' && value !== undefined) ? value : null);
+          connection.query(getSheetData, values, (err, result) => {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log(result);
+            }
+          });
+        } else {
+          console.log(`Registro duplicado encontrado: personal_email = ${personalEmail}, course = ${course}`);
+        }
       }
     });
+
+    const xColumnIndex = COLUMN_NAMES.indexOf('asist');
+    const yColumnIndex = COLUMN_NAMES.indexOf('payment');
+    const zColumnIndex = COLUMN_NAMES.indexOf('calif');
+    const statusColumnIndex = COLUMN_NAMES.indexOf('status');
+
+    const xValue = row[xColumnIndex];
+    const yValue = row[yColumnIndex];
+    const zValue = row[zColumnIndex];
+
+    // Verificar si alguno de los campos X, Y o Z ha sido modificado
+    if (xValue !== 'pendiente' || yValue !== 'pendiente' || zValue !== 'pendiente') {
+      const updateDataQuery = `UPDATE personal_data SET ${COLUMN_NAMES[xColumnIndex]} = ?, ${COLUMN_NAMES[yColumnIndex]} = ?, ${COLUMN_NAMES[zColumnIndex]} = ?, ${COLUMN_NAMES[statusColumnIndex]} = 'actualizado' WHERE personal_email = ?`;
+      const valuesToUpdate = [xValue !== 'pendiente' ? xValue : null, yValue !== 'pendiente' ? yValue : null, zValue !== 'pendiente' ? zValue : null, personalEmail];
+      connection.query(updateDataQuery, valuesToUpdate, (err, result) => {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log(`Datos actualizados para el correo electrónico ${personalEmail}`);
+        }
+      });
+    }
   });
 }
 
-//setInterval(() =>{
-
-authorize().then(listMajors).catch(console.error);
-//},1000)
+authorize()
+  .then(listMajors)
+  .catch(console.error);
