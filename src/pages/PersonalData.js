@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import {API_URL} from '../config/config.js';
 import axios from 'axios';
 import {
   Container,
@@ -18,6 +19,7 @@ import aeromexico from '../components/img/airlines/aeromexico.png';
 const PersonalData = () => {
   const [personalData, setPersonalData] = useState([]);
   const [email, setEmail] = useState('');
+
 
   const [personalForm, setPersonalForm] = useState({
     full_name: '',
@@ -61,7 +63,7 @@ const PersonalData = () => {
   const fetchPerData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:5015/getPersonalData`,
+        `${API_URL}/getPersonalData`,
         { params: { email } }
       );
       if (Array.isArray(response.data)) {

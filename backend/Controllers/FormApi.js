@@ -1,9 +1,12 @@
 const fs = require('fs').promises;
+require('dotenv').config();
 const path = require('path');
 const process = require('process');
-const {authenticate} = require('@google-cloud/local-auth');
-const {google} = require('googleapis');
-const db = require('../Config/dbConfig');
+const { authenticate } = require('@google-cloud/local-auth');
+const { google } = require('googleapis');
+const mysql = require('mysql2');
+const connection = mysql.createConnection(process.env.DATABASE_URL);
+
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
@@ -11,8 +14,8 @@ const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
 // created automatically when the authorization flow completes for the first
 // time.
 const TOKEN_PATH = path.join(process.cwd(), 'token.json');
-const CREDENTIALS_PATH = path.join(process.cwd(), 'credentials.json');
-
+const CREDENTIALS_PATH = path.join(process.cwd(), 'credentials_ulead.json');
+let tabName = 'UFS-28';
 /**
  * Reads previously authorized credentials from the save file.
  *
@@ -68,50 +71,48 @@ async function authorize() {
 
 /**
  * Prints the names and majors of students in a sample spreadsheet:
- * @see https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
+ * @see https://docs.google.com/spreadsheets/d/1vdaO42mWRbISh3QTcutqaTncMoTRmNxYpcyW1n6MDRI/edit?resourcekey#gid=1794045859
  * @param {google.auth.OAuth2} auth The authenticated Google OAuth client.
  */
 async function listMajors(auth) {
-  const sheets = google.sheets({version: 'v4', auth});
+  const sheets = google.sheets({ version: 'v4', auth });
   const res = await sheets.spreadsheets.values.get({
-    spreadsheetId: '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms',
-    range: 'Class Data!A2:E',
+    spreadsheetId: '1vdaO42mWRbISh3QTcutqaTncMoTRmNxYpcyW1n6MDRI',
+    range: `${tabName}!A2:Z`,
   });
-
 
   const rows = res.data.values;
 
   if (!rows || rows.length === 0) {
-    console.log('No data found.');
+    console.log(
+      'No data found in UleadAir sheet, check if the name of the tab is correct.'
+    );
     return;
   }
-  console.log('Name, Major:');
+console.log(rows)
+
+  const getSheetData = `INSERT INTO personal_data (full_name, personal_email, cellphone, age, country, course, flight_hours, flight_status, experience, type_airc, company, 
+    company_email, rtari_level, rtari_expires, english_status, hours_english, level_english, other_career, contact, option_pay, date_form, start_date, end_date, asist, payment, calif) 
+    VALUES (?, ?, ?, ? ,? ,? ,? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
   rows.forEach((row) => {
-    console.log(`${row[0]}, ${row[4]}`);
+    // Aplica la validación y conversión de valores en blanco a NULL
+    const values = row.map((value) => (value !== '' && value !== undefined) ? value : null);
     // Insertar cada fila en la base de datos
-    db.query(
-      "INSERT INTO prueba (name, mayor) VALUES (?, ?)",
-      [row[0], row[4]],
-      (err, result) => {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log(result);
-        }
+console.log(values)
+
+
+connection.query(getSheetData, values, (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(result);
       }
-    );
+    });
   });
-  
 }
-
-
-
-
-
-
 
 //setInterval(() =>{
 
-    authorize().then(listMajors).catch(console.error);
-//},60000)
+authorize().then(listMajors).catch(console.error);
+//},1000)
