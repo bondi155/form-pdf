@@ -34,7 +34,7 @@ const COLUMN_NAMES = [
   'asist',
   'payment',
   'calif',
-  'status' // Nueva columna "status"
+  'status', // Nueva columna "status"
 ];
 
 // If modifying these scopes, delete token.json.
@@ -113,38 +113,83 @@ async function listMajors(auth) {
   const rows = res.data.values;
 
   if (!rows || rows.length === 0) {
-    console.log('No data found in UleadAir sheet. Check if the name of the tab is correct.');
+    console.log(
+      'No data found in UleadAir sheet. Check if the name of the tab is correct.'
+    );
     return;
   }
 
-  const getSheetData = `INSERT INTO personal_data (${COLUMN_NAMES.join(', ')}) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  const getSheetData = `INSERT INTO personal_data (${COLUMN_NAMES.join(
+    ', '
+  )}) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
   rows.forEach((row) => {
+    // Obtener los datos de la fila
     const personalEmail = row[COLUMN_NAMES.indexOf('personal_email')];
     const course = row[COLUMN_NAMES.indexOf('course')];
+    const status = row[COLUMN_NAMES.indexOf('status')];
 
     // Verificar si ya existe un registro con el mismo correo electrónico y curso
-    const checkDuplicateQuery = 'SELECT COUNT(*) as count FROM personal_data WHERE personal_email = ? AND course = ?';
-    connection.query(checkDuplicateQuery, [personalEmail, course], (err, result) => {
-      if (err) {
-        console.log(err);
-      } else {
-        const count = result[0].count;
-        if (count === 0) {
-          // No existe un registro duplicado, realizar la inserción
-          const values = row.map((value) => (value !== '' && value !== undefined) ? value : null);
-          connection.query(getSheetData, values, (err, result) => {
-            if (err) {
-              console.log(err);
-            } else {
-              console.log(result);
-            }
-          });
+    const checkDuplicateQuery = `SELECT COUNT(*) as count FROM personal_data WHERE personal_email = ? AND course = ?`;
+    connection.query(
+      checkDuplicateQuery,
+      [personalEmail, course],
+      (err, result) => {
+        if (err) {
+          console.log(err);
         } else {
-          console.log(`Registro duplicado encontrado: personal_email = ${personalEmail}, course = ${course}`);
+          const count = result[0].count;
+          if (count === 0) {
+            // No existe un registro duplicado, realizar la inserción
+            const values = row.map((value) =>
+              value !== '' && value !== undefined ? value : null
+            );
+            connection.query(getSheetData, values, (err, result) => {
+              if (err) {
+                console.log(err);
+              } else {
+                console.log(result);
+              }
+            });
+          } else {
+            console.log(
+              `Registro duplicado encontrado: personal_email = ${personalEmail}, course = ${course}`
+            );
+          }
         }
       }
-    });
+    );
+
+    if (status === 'finalizado') {
+      const checkDatabaseStatusQuery = `SELECT status FROM personal_data WHERE personal_email = ? AND course = ?`;
+      connection.query(
+        checkDatabaseStatusQuery,
+        [personalEmail, course],
+        (err, result) => {
+          if (err) {
+            console.log(err);
+          } else {
+            const databaseStatus = result[0].status;
+            if (databaseStatus !== 'finalizado') {
+              const updateStatusQuery = `UPDATE personal_data SET status = 'finalizado' WHERE personal_email = ? AND course = ?`;
+              connection.query(
+                updateStatusQuery,
+                [personalEmail, course],
+                (err, result) => {
+                  if (err) {
+                    console.log(err);
+                  } else {
+                    console.log(
+                      `Estado actualizado a "finalizado" para el correo electrónico ${personalEmail}`
+                    );
+                  }
+                }
+              );
+            }
+          }
+        }
+      );
+    }
 
     const xColumnIndex = COLUMN_NAMES.indexOf('asist');
     const yColumnIndex = COLUMN_NAMES.indexOf('payment');
@@ -156,20 +201,35 @@ async function listMajors(auth) {
     const zValue = row[zColumnIndex];
 
     // Verificar si alguno de los campos X, Y o Z ha sido modificado
-    if (xValue !== 'pendiente' || yValue !== 'pendiente' || zValue !== 'pendiente') {
-      const updateDataQuery = `UPDATE personal_data SET ${COLUMN_NAMES[xColumnIndex]} = ?, ${COLUMN_NAMES[yColumnIndex]} = ?, ${COLUMN_NAMES[zColumnIndex]} = ?, ${COLUMN_NAMES[statusColumnIndex]} = 'actualizado' WHERE personal_email = ?`;
-      const valuesToUpdate = [xValue !== 'pendiente' ? xValue : null, yValue !== 'pendiente' ? yValue : null, zValue !== 'pendiente' ? zValue : null, personalEmail];
-      connection.query(updateDataQuery, valuesToUpdate, (err, result) => {
-        if (err) {
-          console.log(err);
+    if (
+      xValue !== 'pendiente' ||
+      yValue !== 'pendiente' ||
+      zValue !== 'pendiente' ||
+      status === 'actualizado'
+    ) {
+
+
+        let updateDataQuery = `UPDATE personal_data SET ${COLUMN_NAMES[xColumnIndex]} = ?, ${COLUMN_NAMES[yColumnIndex]} = ?, ${COLUMN_NAMES[zColumnIndex]} = ?`;
+
+        // Verificar el estado antes de realizar la actualización
+        if (status === 'finalizado') {
+          updateDataQuery += `, ${COLUMN_NAMES[statusColumnIndex]} = 'finalizado'`;
         } else {
-          console.log(`Datos actualizados para el correo electrónico ${personalEmail}`);
+          updateDataQuery += `, ${COLUMN_NAMES[statusColumnIndex]} = 'actualizado'`;
         }
-      });
+        
+        updateDataQuery += ` WHERE personal_email = ?`;
+        const valuesToUpdate = [xValue !== 'pendiente' ? xValue : null, yValue !== 'pendiente' ? yValue : null, zValue !== 'pendiente' ? zValue : null, personalEmail];
+        
+        connection.query(updateDataQuery, valuesToUpdate, (err, result) => {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log(`Datos de pago o asistencia actualizados para el correo electrónico ${personalEmail}`);
+          }
+        });
     }
   });
 }
 
-authorize()
-  .then(listMajors)
-  .catch(console.error);
+authorize().then(listMajors).catch(console.error);
