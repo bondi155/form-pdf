@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
-import ApexCharts from 'apexcharts'
+import { useRecoilValue } from 'recoil';
+import { queryResults } from '../storage/GlobalStates';
 function Percentage() {
     const [options, setOptions] = useState({
         chart: {
@@ -46,7 +47,16 @@ function Percentage() {
         labels: ['Asist'],
     });
 
-    const [series, setSeries] = useState([67]);
+    const personalData = useRecoilValue(queryResults);
+
+  // Acceder a 'asist' en 'personalData'
+  const asistValues = personalData.map(item => item.asist);
+
+   
+
+    const [series, setSeries] = useState([asistValues]);
+
+
 
     return (
         <div id="chart">

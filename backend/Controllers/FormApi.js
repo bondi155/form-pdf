@@ -5,7 +5,8 @@ const process = require('process');
 const { authenticate } = require('@google-cloud/local-auth');
 const { google } = require('googleapis');
 const mysql = require('mysql2');
-const connection = mysql.createConnection(process.env.DATABASE_URL);
+const pool = mysql.createPool(process.env.DATABASE_URL);
+
 
 const COLUMN_NAMES = [
   'full_name',
@@ -44,7 +45,6 @@ const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
 // time.
 const TOKEN_PATH = path.join(process.cwd(), 'token.json');
 const CREDENTIALS_PATH = path.join(process.cwd(), 'credentials_ulead.json');
-let tabName = 'UFS-28';
 
 /**
  * Reads previously authorized credentials from the save file.
@@ -98,6 +98,10 @@ async function authorize() {
   return client;
 }
 
+//hacer un select de la tabla tab_sheets where id = ufs , mandar el valor desde front con un req.query y ese valor guardarlo en tabName digamos que no se podra apretar el boton 
+//hasta mandar el valor este ...creo yo , sino buscare otra forma la pensare 
+let tabName = 'UFS-28';
+
 /**
  * Prints the names and majors of students in a sample spreadsheet.
  *
@@ -131,7 +135,7 @@ async function listMajors(auth) {
 
     // Verificar si ya existe un registro con el mismo correo electrónico y curso
     const checkDuplicateQuery = `SELECT COUNT(*) as count FROM personal_data WHERE personal_email = ? AND course = ?`;
-    connection.query(
+    pool.query(
       checkDuplicateQuery,
       [personalEmail, course],
       (err, result) => {
@@ -144,7 +148,7 @@ async function listMajors(auth) {
             const values = row.map((value) =>
               value !== '' && value !== undefined ? value : null
             );
-            connection.query(getSheetData, values, (err, result) => {
+            pool.query(getSheetData, values, (err, result) => {
               if (err) {
                 console.log(err);
               } else {
@@ -161,35 +165,31 @@ async function listMajors(auth) {
     );
 
     if (status === 'finalizado') {
-      const checkDatabaseStatusQuery = `SELECT status FROM personal_data WHERE personal_email = ? AND course = ?`;
-      connection.query(
-        checkDatabaseStatusQuery,
-        [personalEmail, course],
-        (err, result) => {
+        const checkDatabaseStatusQuery = `SELECT status FROM personal_data WHERE personal_email = ? AND course = ?`;
+        pool.query(checkDatabaseStatusQuery, [personalEmail, course], (err, result) => {
           if (err) {
             console.log(err);
           } else {
-            const databaseStatus = result[0].status;
-            if (databaseStatus !== 'finalizado') {
-              const updateStatusQuery = `UPDATE personal_data SET status = 'finalizado' WHERE personal_email = ? AND course = ?`;
-              connection.query(
-                updateStatusQuery,
-                [personalEmail, course],
-                (err, result) => {
+            if (result && result.length > 0) {
+              const databaseStatus = result[0].status;
+              if (databaseStatus !== 'finalizado') {
+                const updateStatusQuery = `UPDATE personal_data SET status = 'finalizado' WHERE personal_email = ? AND course = ?`;
+                pool.query(updateStatusQuery, [personalEmail, course], (err, result) => {
                   if (err) {
                     console.log(err);
                   } else {
-                    console.log(
-                      `Estado actualizado a "finalizado" para el correo electrónico ${personalEmail}`
-                    );
+                    console.log(`Estado actualizado a "finalizado" para el correo electrónico ${personalEmail}`);
                   }
-                }
-              );
+                });
+              }
+            } else {
+              // No se encontraron registros, realizar las acciones necesarias en este caso
             }
           }
-        }
-      );
-    }
+        });
+      }
+      
+    
 
     const xColumnIndex = COLUMN_NAMES.indexOf('asist');
     const yColumnIndex = COLUMN_NAMES.indexOf('payment');
@@ -202,34 +202,43 @@ async function listMajors(auth) {
 
     // Verificar si alguno de los campos X, Y o Z ha sido modificado
     if (
-      xValue !== 'pendiente' ||
-      yValue !== 'pendiente' ||
-      zValue !== 'pendiente' ||
-      status === 'actualizado'
+      xValue !== 'Pending' ||
+      yValue !== 'Pending' ||
+      zValue !== 'Pending' ||
+      status === 'Updated'
     ) {
+      let updateDataQuery = `UPDATE personal_data SET ${COLUMN_NAMES[xColumnIndex]} = ?, ${COLUMN_NAMES[yColumnIndex]} = ?, ${COLUMN_NAMES[zColumnIndex]} = ?`;
 
+      // Verificar el estado antes de realizar la actualización
+      if (status === 'Closed') {
+        updateDataQuery += `, ${COLUMN_NAMES[statusColumnIndex]} = 'Closed'`;
+      } else {
+        updateDataQuery += `, ${COLUMN_NAMES[statusColumnIndex]} = 'Updated'`;
+      }
 
-        let updateDataQuery = `UPDATE personal_data SET ${COLUMN_NAMES[xColumnIndex]} = ?, ${COLUMN_NAMES[yColumnIndex]} = ?, ${COLUMN_NAMES[zColumnIndex]} = ?`;
+      updateDataQuery += ` WHERE personal_email = ?`;
+      const valuesToUpdate = [
+        xValue !== 'Pending' ? xValue : null,
+        yValue !== 'Pending' ? yValue : null,
+        zValue !== 'Pending' ? zValue : null,
+        personalEmail,
+      ];
 
-        // Verificar el estado antes de realizar la actualización
-        if (status === 'finalizado') {
-          updateDataQuery += `, ${COLUMN_NAMES[statusColumnIndex]} = 'finalizado'`;
+      pool.query(updateDataQuery, valuesToUpdate, (err, result) => {
+        if (err) {
+          console.log(err);
         } else {
-          updateDataQuery += `, ${COLUMN_NAMES[statusColumnIndex]} = 'actualizado'`;
+          console.log(
+            `Datos de pago o asistencia actualizados para el correo electrónico ${personalEmail}`
+          );
         }
-        
-        updateDataQuery += ` WHERE personal_email = ?`;
-        const valuesToUpdate = [xValue !== 'pendiente' ? xValue : null, yValue !== 'pendiente' ? yValue : null, zValue !== 'pendiente' ? zValue : null, personalEmail];
-        
-        connection.query(updateDataQuery, valuesToUpdate, (err, result) => {
-          if (err) {
-            console.log(err);
-          } else {
-            console.log(`Datos de pago o asistencia actualizados para el correo electrónico ${personalEmail}`);
-          }
-        });
+      });
     }
   });
 }
 
-authorize().then(listMajors).catch(console.error);
+
+module.exports = {
+    authorize,
+    listMajors
+}

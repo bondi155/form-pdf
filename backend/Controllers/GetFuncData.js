@@ -1,20 +1,21 @@
-const db = require('../Config/dbConfig');
-
+//const db = require('../Config/dbConfig'); local para pruebas
+const mysql = require('mysql2');
+const pool = mysql.createPool(process.env.DATABASE_URL);
 
 function consultaData__ (req, res) {
 
     const email = req.query.email ?? '';
   
-    const sqlGetPerData = "SELECT * FROM aviation_data where email = ?";
+    const sqlGetPerData = "SELECT * FROM personal_data where personal_email = ?";
 
-    db.query(sqlGetPerData, email, (err, result) => {
+    pool.query(sqlGetPerData, email, (err, result) => {
         if (err) {
           console.log(err);
-          return res.status(500).send("Error al obtener datos personales");
+          return res.status(500).send("Error to get personal data");
         }
         
         if (result.length === 0) {
-          return res.send("No se encontraron datos personales para el correo electrónico proporcionado");
+          return res.send("This email is no exist");
         }
         
         res.send(result);
