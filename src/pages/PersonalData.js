@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import {API_URL} from '../config/config.js';
+import React, { useState } from 'react';
+import { API_URL } from '../config/config.js';
 import axios from 'axios';
 import {
   Container,
@@ -15,22 +15,28 @@ import { useRecoilState } from 'recoil';
 import { queryResults } from '../storage/GlobalStates';
 import volaris from '../components/img/airlines/volaris.png';
 import aeromexico from '../components/img/airlines/aeromexico.png';
-
+import Swal from 'sweetalert2';
 const PersonalData = () => {
   const [personalData, setPersonalData] = useRecoilState(queryResults);
   const [email, setEmail] = useState('');
+  const [tabName, SetTabName] = useState('');
 
   const fetchPerData = async () => {
     try {
-      const response = await axios.get(
-        `${API_URL}/getPersonalData`,
-        { params: { email } }
-      );
+      const response = await axios.get(`${API_URL}/getPersonalData`, {
+        params: { email },
+      });
       if (Array.isArray(response.data)) {
         setPersonalData(response.data);
       } else {
         setPersonalData([]);
-        alert('There is no information for this email');
+        Swal.fire({
+          icon: 'info',
+          title: 'There is no information for this email',
+          showConfirmButton: false,
+          timer: 2300,
+        }
+        )
       }
       console.log(personalData);
     } catch (error) {
@@ -40,24 +46,47 @@ const PersonalData = () => {
 
   const handleSearch = () => {
     if (email === '') {
-      alert('Email must have a value');
+      Swal.fire({
+        icon: 'info',
+        title: 'Email must have a value',
+        showConfirmButton: false,
+        timer: 1000,
+      });
     } else {
       fetchPerData();
     }
   };
 
+  //data desde el sheet segunda funcion de api en server.js
   const fetchSheetData = async () => {
     try {
-      await axios.get(`${API_URL}/getDataSheets`);
-      alert('Data Base updated with Sheets information!')
-      console.log('API activada, base de datos actualizada');
+      await axios.get(`${API_URL}/getDataSheets`, {
+        tabName,
+      });
+      Swal.fire({
+        icon: 'success',
+        title: 'Info for Google Sheets sent to Uleadair Data Base',
+        showConfirmButton: false,
+        timer: 2300,
+      });
     } catch (error) {
+      Swal.fire(
+        'Error!',
+        'There was a error trying get data from Sheets',
+        'error'
+      );
+
       console.error('Error:', error);
     }
-  }
-  
+  };
 
   function renderImage(empresa) {
+    // En caso de no encontrar ninguna coincidencia, la función retorna 'No company charged'
+
+    if (!empresa) {
+      return 'No company charged in Forms';
+    }
+
     if (empresa.toLowerCase() === 'volaris') {
       return <img src={volaris} width='50%' alt='Volaris' />;
     } else if (empresa.toLowerCase() === 'aeromexico') {
@@ -65,20 +94,37 @@ const PersonalData = () => {
     } else if (empresa === 'empresa2') {
       return <img src='/path/to/empresa2-image.jpg' alt='Empresa 2' />;
     }
-    // Agrega más condiciones aquí para las demás empresas
-    // En caso de no encontrar ninguna coincidencia, la función retorna null
-    return null;
+    // Agregar más condiciones aquí para las demás empresas
   }
   return (
     <Container className='container-custom'>
-      <h1 className='mb-4'>Personal Data  <Button
-          variant='outline-secondary'
-          size='sm'
-          id='button-addon2'
-          onClick={fetchSheetData}
-        >
-          Update Pilots
-        </Button></h1>
+      <Row>
+        <Col md={{ span: 4 }}>
+          <h1 className='mb-4'>Personal Data </h1>
+        </Col>
+        <Col md={{ span: 3 }}>
+          {tabName}
+          <InputGroup className='mb-3 mt-3'>
+            <FormControl
+              type='text'
+              required
+              placeholder='Set course and get pilots'
+              aria-label='Set Course'
+              aria-describedby='basic-addon2'
+              size='sm'
+              onChange={(e) => SetTabName(e.target.value.toUpperCase())}
+            />
+            <Button
+              variant='outline-success'
+              size='sm'
+              id='button-addon2'
+              onClick={fetchSheetData}
+            >
+              Go
+            </Button>
+          </InputGroup>
+        </Col>
+      </Row>
       <InputGroup className='mb-3 mt-4'>
         <FormControl
           type='email'
@@ -98,26 +144,26 @@ const PersonalData = () => {
         </Button>
       </InputGroup>
       <Row>
-          {personalData.map((item) => (
-            <Col className='mb-3' sm={4} key={item.id}>
-              <Card style={{ width: '18rem', marginTop: '10px' }}>
-                <Card.Body>
-                  <Card.Title>{item.full_name}</Card.Title>
-                  <Card.Subtitle className='mb-2 text-muted'>
-                    {renderImage(item.company)}
-                  </Card.Subtitle>
-                  <Card.Text>
-                    Calification: <strong> {item.calif}</strong>
-                  </Card.Text>
-                  <Percentage />
-                  Course: {item.course}
-                  Pay : {item.payment}
-                </Card.Body>
-              </Card>
-            </Col>
-          ))}
-        </Row>
-      </Container>
+        {personalData.map((item) => (
+          <Col className='mb-3' sm={4} key={item.id}>
+            <Card style={{ width: '18rem', marginTop: '10px' }}>
+              <Card.Body>
+                <Card.Title>{item.full_name}</Card.Title>
+                <Card.Subtitle className='mb-2 text-muted'>
+                  {renderImage(item.company)}
+                </Card.Subtitle>
+                <Card.Text>
+                  Calification: <strong> {item.calif}</strong>
+                </Card.Text>
+                <Percentage />
+                Course: {item.course}
+                Pay : {item.payment}
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
+      </Row>
+    </Container>
   );
 };
 

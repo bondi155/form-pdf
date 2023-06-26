@@ -20,13 +20,14 @@ app.get("/getPersonalData",postDataController.consultaData__ );
 app.get("/getDataSheets", async (req, res) => {
   try {
       const auth = await authorize();
-      await listMajors(auth);
-      res.json('Datos recuperados y guardados correctamente');
+      await listMajors(auth, req);
+      res.send('Success getting Data from sheet');
   } catch (error) {
       console.error(error);
       res.status(500).send('Ocurrió un error al obtener los datos');
   }
 });
+
 const connection = mysql.createConnection(process.env.DATABASE_URL)
 console.log('Connected to PlanetScale!')
 connection.end()

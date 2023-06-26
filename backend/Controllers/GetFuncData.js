@@ -15,10 +15,11 @@ function consultaData__ (req, res) {
         }
         
         if (result.length === 0) {
-          return res.send("This email is no exist");
+          return res.send("This email is no exist in your Sheets");
         }
         
         res.send(result);
+        console.log(result);
       });
    
   }

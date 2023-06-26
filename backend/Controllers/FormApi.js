@@ -5,8 +5,8 @@ const process = require('process');
 const { authenticate } = require('@google-cloud/local-auth');
 const { google } = require('googleapis');
 const mysql = require('mysql2');
+const { tab } = require('@testing-library/user-event/dist/tab');
 const pool = mysql.createPool(process.env.DATABASE_URL);
-
 
 const COLUMN_NAMES = [
   'full_name',
@@ -97,17 +97,20 @@ async function authorize() {
   }
   return client;
 }
+//hacer un select de la tabla tab_sheets where id = ufs , mandar el valor desde front con un req.query y ese valor guardarlo en tabName digamos que no se podra apretar el boton
+//hasta mandar el valor este ...creo yo , sino buscare otra forma la pensare
 
-//hacer un select de la tabla tab_sheets where id = ufs , mandar el valor desde front con un req.query y ese valor guardarlo en tabName digamos que no se podra apretar el boton 
-//hasta mandar el valor este ...creo yo , sino buscare otra forma la pensare 
-let tabName = 'UFS-28';
+//let tabName = 'UFS-28';
 
 /**
  * Prints the names and majors of students in a sample spreadsheet.
  *
  * @param {google.auth.OAuth2} auth The authenticated Google OAuth client.
  */
-async function listMajors(auth) {
+async function listMajors(auth, req) {
+  const tabName = req.query.tabName ?? '';
+    console.log(tabName);
+
   const sheets = google.sheets({ version: 'v4', auth });
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId: '1vdaO42mWRbISh3QTcutqaTncMoTRmNxYpcyW1n6MDRI',
@@ -135,38 +138,38 @@ async function listMajors(auth) {
 
     // Verificar si ya existe un registro con el mismo correo electrónico y curso
     const checkDuplicateQuery = `SELECT COUNT(*) as count FROM personal_data WHERE personal_email = ? AND course = ?`;
-    pool.query(
-      checkDuplicateQuery,
-      [personalEmail, course],
-      (err, result) => {
-        if (err) {
-          console.log(err);
+    pool.query(checkDuplicateQuery, [personalEmail, course], (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        const count = result[0].count;
+        if (count === 0) {
+          // No existe un registro duplicado, realizar la inserción
+          const values = row.map((value) =>
+            value !== '' && value !== undefined ? value : null
+          );
+          pool.query(getSheetData, values, (err, result) => {
+            if (err) {
+              console.log(err);
+            } else {
+              res.send(result);
+              console.log(result);
+            }
+          });
         } else {
-          const count = result[0].count;
-          if (count === 0) {
-            // No existe un registro duplicado, realizar la inserción
-            const values = row.map((value) =>
-              value !== '' && value !== undefined ? value : null
-            );
-            pool.query(getSheetData, values, (err, result) => {
-              if (err) {
-                console.log(err);
-              } else {
-                console.log(result);
-              }
-            });
-          } else {
-            console.log(
-              `Registro duplicado encontrado: personal_email = ${personalEmail}, course = ${course}`
-            );
-          }
+          console.log(
+            `Registro duplicado encontrado: personal_email = ${personalEmail}, course = ${course}`
+          );
         }
       }
-    );
+    });
 
     if (status === 'finalizado') {
-        const checkDatabaseStatusQuery = `SELECT status FROM personal_data WHERE personal_email = ? AND course = ?`;
-        pool.query(checkDatabaseStatusQuery, [personalEmail, course], (err, result) => {
+      const checkDatabaseStatusQuery = `SELECT status FROM personal_data WHERE personal_email = ? AND course = ?`;
+      pool.query(
+        checkDatabaseStatusQuery,
+        [personalEmail, course],
+        (err, result) => {
           if (err) {
             console.log(err);
           } else {
@@ -174,22 +177,25 @@ async function listMajors(auth) {
               const databaseStatus = result[0].status;
               if (databaseStatus !== 'finalizado') {
                 const updateStatusQuery = `UPDATE personal_data SET status = 'finalizado' WHERE personal_email = ? AND course = ?`;
-                pool.query(updateStatusQuery, [personalEmail, course], (err, result) => {
-                  if (err) {
-                    console.log(err);
-                  } else {
-                    console.log(`Estado actualizado a "finalizado" para el correo electrónico ${personalEmail}`);
+                pool.query(
+                  updateStatusQuery,
+                  [personalEmail, course],
+                  (err, result) => {
+                    if (err) {
+                      console.log(err);
+                    } else {
+                      console.log(
+                        `Estado actualizado a "finalizado" para el correo electrónico ${personalEmail}`
+                      );
+                    }
                   }
-                });
+                );
               }
-            } else {
-              // No se encontraron registros, realizar las acciones necesarias en este caso
             }
           }
-        });
-      }
-      
-    
+        }
+      );
+    }
 
     const xColumnIndex = COLUMN_NAMES.indexOf('asist');
     const yColumnIndex = COLUMN_NAMES.indexOf('payment');
@@ -237,8 +243,7 @@ async function listMajors(auth) {
   });
 }
 
-
 module.exports = {
-    authorize,
-    listMajors
-}
+  authorize,
+  listMajors,
+};
