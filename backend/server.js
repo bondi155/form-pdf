@@ -20,8 +20,8 @@ app.get("/getPersonalData",postDataController.consultaData__ );
 app.get("/getDataSheets", async (req, res) => {
   try {
       const auth = await authorize();
-      await listMajors(auth, req);
-      res.send('Success getting Data from sheet');
+     const result = await listMajors(auth, req);
+      res.status(200).json({result, message: 'Success getting Data from sheet'});
   } catch (error) {
       console.error(error);
       res.status(500).send('Ocurrió un error al obtener los datos');

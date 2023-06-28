@@ -5,7 +5,6 @@ const process = require('process');
 const { authenticate } = require('@google-cloud/local-auth');
 const { google } = require('googleapis');
 const mysql = require('mysql2');
-const { tab } = require('@testing-library/user-event/dist/tab');
 const pool = mysql.createPool(process.env.DATABASE_URL);
 
 const COLUMN_NAMES = [
@@ -152,8 +151,8 @@ async function listMajors(auth, req) {
             if (err) {
               console.log(err);
             } else {
-              res.send(result);
               console.log(result);
+             return result;
             }
           });
         } else {
@@ -164,7 +163,7 @@ async function listMajors(auth, req) {
       }
     });
 
-    if (status === 'finalizado') {
+    if (status === 'Closed') {
       const checkDatabaseStatusQuery = `SELECT status FROM personal_data WHERE personal_email = ? AND course = ?`;
       pool.query(
         checkDatabaseStatusQuery,
@@ -175,8 +174,8 @@ async function listMajors(auth, req) {
           } else {
             if (result && result.length > 0) {
               const databaseStatus = result[0].status;
-              if (databaseStatus !== 'finalizado') {
-                const updateStatusQuery = `UPDATE personal_data SET status = 'finalizado' WHERE personal_email = ? AND course = ?`;
+              if (databaseStatus !== 'Closed') {
+                const updateStatusQuery = `UPDATE personal_data SET status = 'Closed' WHERE personal_email = ? AND course = ?`;
                 pool.query(
                   updateStatusQuery,
                   [personalEmail, course],
@@ -185,7 +184,7 @@ async function listMajors(auth, req) {
                       console.log(err);
                     } else {
                       console.log(
-                        `Estado actualizado a "finalizado" para el correo electrónico ${personalEmail}`
+                        `Estado actualizado a "Closed" para el correo electrónico ${personalEmail}`
                       );
                     }
                   }
@@ -208,9 +207,9 @@ async function listMajors(auth, req) {
 
     // Verificar si alguno de los campos X, Y o Z ha sido modificado
     if (
-      xValue !== 'Pending' ||
-      yValue !== 'Pending' ||
-      zValue !== 'Pending' ||
+      xValue !== '0' ||
+      yValue !== '0' ||
+      zValue !== '0' ||
       status === 'Updated'
     ) {
       let updateDataQuery = `UPDATE personal_data SET ${COLUMN_NAMES[xColumnIndex]} = ?, ${COLUMN_NAMES[yColumnIndex]} = ?, ${COLUMN_NAMES[zColumnIndex]} = ?`;
@@ -222,14 +221,16 @@ async function listMajors(auth, req) {
         updateDataQuery += `, ${COLUMN_NAMES[statusColumnIndex]} = 'Updated'`;
       }
 
+
       updateDataQuery += ` WHERE personal_email = ?`;
       const valuesToUpdate = [
-        xValue !== 'Pending' ? xValue : null,
-        yValue !== 'Pending' ? yValue : null,
-        zValue !== 'Pending' ? zValue : null,
+        xValue !== '0' ? xValue : '0',
+        yValue !== '0' ? yValue : '0',
+        zValue !== '0' ? zValue : '0',
         personalEmail,
       ];
 
+      //ver lo del tipo de dato , me esta mostrando que hay cambios por que el dato no es 0 sino '0'
       pool.query(updateDataQuery, valuesToUpdate, (err, result) => {
         if (err) {
           console.log(err);
@@ -247,3 +248,4 @@ module.exports = {
   authorize,
   listMajors,
 };
+// ver por que se pone en vacio otros datos 

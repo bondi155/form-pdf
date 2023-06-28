@@ -9,15 +9,17 @@ import {
   Col,
   FormControl,
   InputGroup,
+  ListGroup,
+  Tab,
 } from 'react-bootstrap';
 import Percentage from '../charts/Percentage';
-import { useRecoilState } from 'recoil';
-import { queryResults } from '../storage/GlobalStates';
 import volaris from '../components/img/airlines/volaris.png';
 import aeromexico from '../components/img/airlines/aeromexico.png';
 import Swal from 'sweetalert2';
+import images from '../components/Imagenes.js';
+
 const PersonalData = () => {
-  const [personalData, setPersonalData] = useRecoilState(queryResults);
+  const [personalData, setPersonalData] = useState([]);
   const [email, setEmail] = useState('');
   const [tabName, SetTabName] = useState('');
 
@@ -35,8 +37,7 @@ const PersonalData = () => {
           title: 'There is no information for this email',
           showConfirmButton: false,
           timer: 2300,
-        }
-        )
+        });
       }
       console.log(personalData);
     } catch (error) {
@@ -80,6 +81,7 @@ const PersonalData = () => {
     }
   };
 
+  //render imagenes empresa
   function renderImage(empresa) {
     // En caso de no encontrar ninguna coincidencia, la función retorna 'No company charged'
 
@@ -88,22 +90,40 @@ const PersonalData = () => {
     }
 
     if (empresa.toLowerCase() === 'volaris') {
-      return <img src={volaris} width='50%' alt='Volaris' />;
+      return <img src={volaris} width='9%' alt='Volaris' />;
     } else if (empresa.toLowerCase() === 'aeromexico') {
-      return <img src={aeromexico} alt='aeromexico' width='70%' />;
-    } else if (empresa === 'empresa2') {
+      return <img src={aeromexico} alt='Aeromexico' width='70%' />;
+    } else if (empresa === 'sansa') {
       return <img src='/path/to/empresa2-image.jpg' alt='Empresa 2' />;
     }
     // Agregar más condiciones aquí para las demás empresas
+  }
+  //render imagens calificationes.
+
+  function renderCalif(calification) {
+    if (!calification) {
+      return 'No Calification';
+    }
+
+    if (calification.toLowerCase() === 'a') {
+      return <img src={images.calif_a} width='9%' alt='A' />;
+    } else if (calification.toLowerCase() === 'b') {
+      return <img src={images.calif_b} width='9%' alt='B' />;
+    } else if (calification.toLowerCase() === 'b+') {
+      return <img src={images.calif_bmas} width='7%' alt='Bmas' />;
+    } else if (calification.toLowerCase() === 'c') {
+      return <img src={images.calif_c} width='9%' alt='C' />;
+    } else if (calification.toLowerCase() === 'd') {
+      return <img src={images.calif_d} width='9%' alt='D' />;
+    }
   }
   return (
     <Container className='container-custom'>
       <Row>
         <Col md={{ span: 4 }}>
           <h1 className='mb-4'>Personal Data </h1>
-        </Col>
+       </Col>
         <Col md={{ span: 3 }}>
-          {tabName}
           <InputGroup className='mb-3 mt-3'>
             <FormControl
               type='text'
@@ -144,23 +164,134 @@ const PersonalData = () => {
         </Button>
       </InputGroup>
       <Row>
-        {personalData.map((item) => (
-          <Col className='mb-3' sm={4} key={item.id}>
-            <Card style={{ width: '18rem', marginTop: '10px' }}>
-              <Card.Body>
-                <Card.Title>{item.full_name}</Card.Title>
-                <Card.Subtitle className='mb-2 text-muted'>
-                  {renderImage(item.company)}
-                </Card.Subtitle>
-                <Card.Text>
-                  Calification: <strong> {item.calif}</strong>
-                </Card.Text>
-                <Percentage />
-                Course: {item.course}
-                Pay : {item.payment}
-              </Card.Body>
-            </Card>
-          </Col>
+        {personalData.map((item, key) => (
+          <div key={key}>
+            <Col className='mb-5' sm={4} md={12} lg={12} key={item.id}>
+              <Card className='data-container'>
+                <Card.Body>
+                  <Card.Title>
+                    {item.full_name}, {item.age} {renderImage(item.company)}{' '}{renderCalif(item.calif)}
+                  </Card.Title>
+                  <div className='components'>
+                    <div>
+                      <Percentage
+                        seriesValue={item.asist}
+                        labelOption={'Assistance'}
+                      />
+                    </div>
+                  
+                    <div>
+                      <Percentage
+                        seriesValue={item.payment}
+                        labelOption={'Pay'}
+                      />
+                    </div>
+                  </div>
+                  <Tab.Container
+                    id='list-group-database-info'
+                    defaultActiveKey='#link1'
+                  >
+                    <Row>
+                      <Col sm={4}>
+                        <ListGroup>
+                          <ListGroup.Item action href='#link1'>
+                            Course Information
+                          </ListGroup.Item>
+                          <ListGroup.Item action href='#link2'>
+                            Pilot Information
+                          </ListGroup.Item>
+                          <ListGroup.Item action href='#link3'>
+                            English Information
+                          </ListGroup.Item>
+                          <ListGroup.Item action href='#link4'>
+                            Additional Information
+                          </ListGroup.Item>
+                        </ListGroup>
+                      </Col>
+                      <Col sm={8}>
+                        <Tab.Content>
+                          <Tab.Pane eventKey='#link1'>
+                            <ListGroup>
+                              <ListGroup.Item>
+                                Course: <strong> {item.course}</strong>
+                              </ListGroup.Item>
+                              <ListGroup.Item>
+                                Start:<strong> {item.start_date}</strong>
+                              </ListGroup.Item>
+                              <ListGroup.Item>
+                                End: <strong> {item.end_date}</strong>
+                              </ListGroup.Item>
+                              <ListGroup.Item>
+                                Inscription Date:
+                                <strong> {item.date_form}</strong>
+                              </ListGroup.Item>
+                            </ListGroup>
+                          </Tab.Pane>
+                          <Tab.Pane eventKey='#link2'>
+                            <ListGroup>
+                              <ListGroup.Item>
+                                Country: <strong> {item.country}</strong>
+                              </ListGroup.Item>
+                              <ListGroup.Item>
+                                Cell phone: <strong> {item.cellphone}</strong>
+                              </ListGroup.Item>
+                              <ListGroup.Item>
+                                Experience: <strong> {item.experience}</strong>
+                              </ListGroup.Item>
+                              <ListGroup.Item>
+                                Rtari Level: <strong>{item.rtari_level}</strong>
+                              </ListGroup.Item>
+                              <ListGroup.Item>
+                                Rtari Expires:{' '}
+                                <strong>{item.rtari_expires}</strong>
+                              </ListGroup.Item>
+                              <ListGroup.Item>
+                                Type of Aircraft:{' '}
+                                <strong> {item.type_airc}</strong>
+                              </ListGroup.Item>
+                            </ListGroup>
+                          </Tab.Pane>
+                          <Tab.Pane eventKey='#link3'>
+                            <ListGroup>
+                              <ListGroup.Item>
+                                Enlgish status:{' '}
+                                <strong>{item.english_status}</strong>
+                              </ListGroup.Item>
+                              <ListGroup.Item>
+                                English Hours:
+                                <strong> {item.hours_english}</strong>
+                              </ListGroup.Item>
+                              <ListGroup.Item>
+                                Level: <strong>{item.level_english}</strong>
+                              </ListGroup.Item>
+                            </ListGroup>
+                          </Tab.Pane>
+                          <Tab.Pane eventKey='#link4'>
+                            <ListGroup>
+                              <ListGroup.Item>
+                                How meet us: <strong>{item.contact}</strong>
+                              </ListGroup.Item>
+                              <ListGroup.Item>
+                                Status:<strong> {item.status}</strong>
+                              </ListGroup.Item>
+                              <ListGroup.Item>
+                                Option of pay:{' '}
+                                <strong>{item.option_pay}</strong>
+                              </ListGroup.Item>
+                              <ListGroup.Item>
+                               Company Email:{' '}
+                                <strong>{item.company_email}</strong>
+                              </ListGroup.Item>
+                            </ListGroup>
+                          </Tab.Pane>
+                        </Tab.Content>
+                      </Col>
+                    </Row>
+                  </Tab.Container>
+                </Card.Body>
+              </Card>
+            </Col>
+          </div>
         ))}
       </Row>
     </Container>

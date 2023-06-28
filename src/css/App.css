@@ -21,6 +21,16 @@
   color: grey;
 }
 
+.components {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+}
+
+.data-container {
+  margin-top: '10px'
+}
 
 .container-custom {
   max-width: 65%;
@@ -115,36 +125,3 @@ h6 {
 }
 
 /*Termina Login*/
-
-/* Formulario Personal data*/
-
-.pers-container {
-  background-image: url('../components/img/fondo_personal2.png');
-  /* Para cubrir el contenedor */
-  background-size: cover;
-
-  /* La imagen se posicionará en el centro */
-  background-position: center;
-
-  /* Se repetirá a lo largo y ancho del contenedor */
-  background-repeat: no-repeat;
-
-  /* El color de fondo con opacidad. El último valor (0.5 en este caso) es la opacidad */
-  background-color: rgba(255, 255, 255, 0.81);
-
-  /* La imagen de fondo y el color se mezclan */
-  background-blend-mode: overlay;
-
-}
-
-.pers-container .form-control {
-  transition: border 0.3s ease-out, box-shadow 0.3s ease-out;
-}
-
-.pers-container .form-control:focus {
-  border-color: #80bdff;
-  outline: 0;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-}
-
-/* Termina Formulario Personal data*/
