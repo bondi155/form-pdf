@@ -148,10 +148,12 @@ async function listMajors(auth, req) {
       } else {
         const count = result[0].count;
         if (count === 0) {
-          // No existe un registro duplicado, realizar la inserción
-          const values = row.map((value) =>
-            value !== '' && value !== undefined ? value : null
-          );
+          const values = row.map((value, index) => {
+            if (['asist', 'payment', 'calif'].includes(COLUMN_NAMES[index])) {
+              return '0'; // Retorna '0' para 'asist', 'payment' y 'calif' sin importar el valor en la hoja
+            }
+            return value !== '' && value !== undefined ? value : null;
+          });
           pool.query(getSheetData, values, (err, result) => {
             if (err) {
               console.log(err);
@@ -229,9 +231,9 @@ async function listMajors(auth, req) {
 
       updateDataQuery += ` WHERE personal_email = ?`;
       const valuesToUpdate = [
-        xValue !== '0' ? xValue : '0',
-        yValue !== '0' ? yValue : '0',
-        zValue !== '0' ? zValue : '0',
+        xValue !== '0' && xValue !== '' ? xValue : '0',
+        yValue !== '0' && yValue !== '' ? yValue : '0',
+        zValue !== '0' && zValue !== '' ? zValue : '0',
         personalEmail,
       ];
 
