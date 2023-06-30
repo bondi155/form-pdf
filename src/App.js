@@ -1,3 +1,4 @@
+import React,{useEffect, useState} from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import Login from './pages/Login';
 import NavigationBar from './components/NavigationBar';
@@ -6,8 +7,28 @@ import Home from './pages/Home';
 import './css/App.css';
 import PersonalData from './pages/PersonalData';
 import Evaluations from './pages/Evaluatiions';
+import { Spinner } from 'react-bootstrap';
 
 function App() {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    // Simulando un tiempo de carga
+    setTimeout(() => {
+      setIsLoaded(true);
+    }, 1000);
+  }, []);
+
+  if (!isLoaded) {
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </div>
+    );
+  }
+
   return (
     <BrowserRouter basename='/'>
       <Routes>
