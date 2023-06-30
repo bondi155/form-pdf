@@ -9,7 +9,7 @@ import Evaluations from './pages/Evaluatiions';
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename='/'>
       <Routes>
         <Route path='/' element={<Navigate replace to='/login' />} />
         <Route path='/login' element={<Login />} />
