@@ -42,6 +42,10 @@ const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
+//const TOKEN_PATH = process.env.GOOGLE_TOKENS;
+//const CREDENTIALS_PATH = process.env.GOOGLE_CREDENTIALS;
+
+
 const TOKEN_PATH = path.join(process.cwd(), 'token.json');
 const CREDENTIALS_PATH = path.join(process.cwd(), 'credentials_ulead.json');
 
@@ -56,6 +60,7 @@ async function loadSavedCredentialsIfExist() {
     const credentials = JSON.parse(content);
     return google.auth.fromJSON(credentials);
   } catch (err) {
+    console.log(err);
     return null;
   }
 }
@@ -96,8 +101,8 @@ async function authorize() {
   }
   return client;
 }
-//hacer un select de la tabla tab_sheets where id = ufs , mandar el valor desde front con un req.query y ese valor guardarlo en tabName digamos que no se podra apretar el boton
-//hasta mandar el valor este ...creo yo , sino buscare otra forma la pensare
+
+
 
 //let tabName = 'UFS-28';
 

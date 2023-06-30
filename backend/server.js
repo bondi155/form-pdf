@@ -16,7 +16,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/getPersonalData",postDataController.consultaData__ );
 
-
 app.get("/getDataSheets", async (req, res) => {
   try {
       const auth = await authorize();
