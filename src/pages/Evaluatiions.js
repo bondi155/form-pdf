@@ -2,102 +2,58 @@ import React, { useState } from 'react';
 import '../css/App.css';
 import {
   Container,
-  Card,
   Button,
   Row,
   Col,
-  FormControl,
-  InputGroup,
-  ListGroup,
-  Tab,
+  Form
 } from 'react-bootstrap';
 import axios from 'axios';
 import { API_URL } from '../config/config';
+
 function Evaluations() {
-  const [evaluationForm, setEvaluationForm] = useState({
-    no: '',
-    solicitante: '',
-    mes: '',
-    area_soli: '',
-    tipo_prueba: '',
-    no_embajador: '',
-    nombre_embajador: '',
-    posicion: '',
-    base: '',
-    correo: '',
-    horas_vuelo: '',
-    rtari: '',
-    fecha_primera_prueba: '',
-    hora: '',
-    calificacion: '',
-    resultado: '',
-  });
+  const [file, setFile] = useState(null);
+  const [fileName, setFileName] = useState('');
 
-  const handleFormChange = (e) => {
-    setEvaluationForm({
-      ...evaluationForm,
-      [e.target.name]: e.target.value,
-    });
+  const saveFile = (e) => {
+    setFile(e.target.files[0]);
+    setFileName(e.target.files[0].name);
   };
+  
+  const uploadFile = async (e) => {
+    e.preventDefault();
 
-  const getEvaluationData = () => {
+    if (!file) {
+      console.log('No se ha seleccionado ningún archivo.');
+      alert('Select a file please');
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('fileName', fileName);
+
     try {
-      const response = axios.post(`${API_URL}/postEvaluationData`, {
-        params: {},
-      });
-      setEvaluationForm(response.data);
-
-    } catch (error) {}
+      const res = await axios.post(`${API_URL}/uploadfile`, formData);
+      console.log(res);
+      alert(`Archivo ${fileName}, subido correctamente.`);
+    } catch (ex) {
+      console.log(ex);
+    }
   };
 
   return (
     <Container className='container-custom'>
       <h1>Evaluations</h1>
-    <Row className='mt-4'>
-    <Col> 
-    </Col> 
-    <Col> 
-    </Col> 
-    <Col> 
-    </Col> 
-    <Col> 
-    </Col> 
-
-    </Row>
-    <Row className='mt-1'>
-    <Col> 
-    </Col> 
-    <Col> 
-    </Col> 
-    <Col> 
-    </Col> 
-    <Col> 
-    </Col> 
-
-    </Row>
-    <Row className='mt-1'>
-    <Col> 
-    </Col> 
-    <Col> 
-    </Col> 
-    <Col> 
-    </Col> 
-    <Col> 
-    </Col> 
-
-    </Row>
-    <Row className='mt-1'>
-    <Col> 
-    </Col> 
-    <Col> 
-    </Col> 
-    <Col> 
-    </Col> 
-    <Col> 
-    </Col> 
-
-    </Row>
-
+      <Row className='mt-4'>
+        <Col>
+          <Form.Group controlId='formFileLg' className='mb-3'>
+            <Form.Label>Upload Consolidate Evaluations Excel</Form.Label>
+            <Form.Control type='file' size='md' onChange={saveFile} />
+          </Form.Group>
+          <Button variant='primary' onClick={uploadFile}>
+            Upload
+          </Button>
+        </Col>
+      </Row>
     </Container>
   );
 }
