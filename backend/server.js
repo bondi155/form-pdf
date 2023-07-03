@@ -5,8 +5,8 @@ const app = express();
 const port = process.env.PORT || 5015;
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const postDataController = require('./Controllers/GetFuncData');
-const mysql = require('mysql2');
+const getDataController = require('./Controllers/GetFuncData');
+//const mysql = require('mysql2');
 const { authorize, listMajors } = require('./Controllers/FormApi');
 const excelController = require('./Controllers/EvaluationsXlsx');
 const upload = multer({ dest: 'uploads/' });
@@ -16,7 +16,10 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Ruta para el manejo del info de personal data en base de datos
-app.get('/getPersonalData', postDataController.consultaData__);
+app.get('/getPersonalData', getDataController.consultaData__);
+
+// Ruta para el manejo del info de personal data en base de datos
+app.get('/getDataEvaluations', getDataController.consultaEvalData__);
 
 // Ruta para el manejo de informacion de sheets
 app.get('/getDataSheets', async (req, res) => {
@@ -36,9 +39,6 @@ app.get('/getDataSheets', async (req, res) => {
 app.post('/uploadfile', upload.single('file'), excelController.EvaluationsXlsx);
  
 
-const connection = mysql.createConnection(process.env.DATABASE_URL);
-console.log('Connected to PlanetScale!');
-connection.end();
 
 app.listen(port, () => {
   console.log('servidor funcionando en el puerto ' + port);

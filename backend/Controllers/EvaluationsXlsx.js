@@ -47,7 +47,7 @@ async function EvaluationsXlsx(req, res) {
     if (!data  || data.length === 0){
         console.log('Problema al insertar valores , verificar si estan los campos del A al P y en el orden del archivo consolidad');
     }else{
-    console.log('Datos recolectados del archivo Excel con éxito');   
+    console.log(req.file.originalname, 'Datos recolectados del archivo Excel con éxito');   
 }
    // console.log(data);
 
@@ -60,11 +60,10 @@ async function EvaluationsXlsx(req, res) {
           .status(500)
           .send('Error al insertar los datos de excel en base de datos', err);
       }else{
-        console.log('Datos insertados en la base ');
-
+        console.log('procesado correctamente en base de datos ');
         return res
         .status(200)
-        .send('Datos insertados con éxito en la base de datos');
+        .json({ code: 'SUCCESS', message: `${req.file.originalname} and information updated in DB.` });
       }
     });
 
@@ -72,7 +71,7 @@ async function EvaluationsXlsx(req, res) {
     console.error('Error al procesar el archivo Excel:', error);
     res
       .status(500)
-      .json({ error: 'Ocurrió un error al procesar el archivo Excel' });
+      .json({ code: 'NO PROCCESS ', error: 'Error to insert data. Check columns (A to P values)' });
   }
 }
 

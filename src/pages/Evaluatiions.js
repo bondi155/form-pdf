@@ -1,14 +1,9 @@
 import React, { useState } from 'react';
 import '../css/App.css';
-import {
-  Container,
-  Button,
-  Row,
-  Col,
-  Form
-} from 'react-bootstrap';
+import { Container, Button, Row, Col, Form } from 'react-bootstrap';
 import axios from 'axios';
 import { API_URL } from '../config/config';
+import GridEval from '../charts/GridEval';
 
 function Evaluations() {
   const [file, setFile] = useState(null);
@@ -18,12 +13,11 @@ function Evaluations() {
     setFile(e.target.files[0]);
     setFileName(e.target.files[0].name);
   };
-  
+
   const uploadFile = async (e) => {
     e.preventDefault();
 
     if (!file) {
-      console.log('No se ha seleccionado ningún archivo.');
       alert('Select a file please');
     }
 
@@ -33,8 +27,11 @@ function Evaluations() {
 
     try {
       const res = await axios.post(`${API_URL}/uploadfile`, formData);
-      console.log(res);
-      alert(`Archivo ${fileName}, subido correctamente.`);
+      if (res.status === 200 && res.data.code === 'SUCCESS') {
+        alert(`Excel file processed successfully ${res.data.message}`);
+      } else if (res.data.code === 'NO PROCCESS') {
+        alert(`${res.data.error}.`);
+      }
     } catch (ex) {
       console.log(ex);
     }
@@ -44,16 +41,19 @@ function Evaluations() {
     <Container className='container-custom'>
       <h1>Evaluations</h1>
       <Row className='mt-4'>
-        <Col>
+        <Col  className='mt-3' lg={{span:8}}>
           <Form.Group controlId='formFileLg' className='mb-3'>
             <Form.Label>Upload Consolidate Evaluations Excel</Form.Label>
             <Form.Control type='file' size='md' onChange={saveFile} />
           </Form.Group>
-          <Button variant='primary' onClick={uploadFile}>
+        </Col>
+        <Col className='mt-5' lg={{span:2}}>
+          <Button variant='outline-success' onClick={uploadFile}>
             Upload
           </Button>
         </Col>
       </Row>
+      <GridEval />
     </Container>
   );
 }

@@ -23,77 +23,77 @@ const theme = createTheme(
 function GridEval() {
   const [consulEval, setConsulEval] = useState([]);
   const columns = [
-    { field: 'id', headerName: 'ID', width: 90 },
+    { field: 'id', headerName: 'ID', width: 50 },
     {
       field: 'no',
       headerName: 'No.',
-      width: 150,
+      width: 90,
       editable: true,
     },
     {
-      field: 'mes',
+      field: 'month',
       headerName: 'Mes',
+      width: 100,
+      editable: true,
+    },
+    {
+      field: 'applicant_name',
+      headerName: 'Name Applicant',
       width: 150,
       editable: true,
     },
     {
-      field: 'no_embajador',
-      headerName: 'No. Embajador',
-      width: 150,
-      editable: true,
-    },
-    {
-      field: 'posicion',
-      headerName: 'Posición',
-      width: 150,
+      field: 'position',
+      headerName: 'Position',
+      width: 90,
       editable: true,
     },
     {
       field: 'base',
       headerName: 'Base',
+      width: 90,
+      editable: true,
+    },
+    {
+      field: 'Company_email',
+      headerName: 'Company Email',
       width: 150,
       editable: true,
     },
     {
-      field: 'correo',
-      headerName: 'Correo',
+      field: 'flight_hours',
+      headerName: 'Flight Hours',
       width: 150,
       editable: true,
     },
     {
-      field: 'horas_vuelo',
-      headerName: 'Horas de Vuelo',
-      width: 150,
-      editable: true,
-    },
-    {
-      field: 'rtari',
+      field: 'rtari_level',
       headerName: 'RTARI 4,5,6',
-      width: 150,
+      width: 20,
       editable: true,
     },
     {
-      field: 'fecha_primera_prueba',
-      headerName: 'Fecha 1º Prueba',
-      width: 150,
+      field: 'first_exam',
+      headerName: 'Date 1º Exam',
+      width: 90,
       editable: true,
     },
     {
-      field: 'hora',
-      headerName: 'Hora 24hs',
-      width: 150,
+      field: 'time',
+      headerName: 'Hour 24hs',
+      width: 90,
       editable: true,
     },
     {
-      field: 'calificacion',
+      field: 'exam_calif',
       headerName: 'Calificación',
-      width: 150,
+      width: 20,
       editable: true,
     },
     {
-      field: 'resultado',
+      field: 'result',
       headerName: 'Resultado',
-      width: 150,
+      width: 90,
       editable: true,
     },
   ];
@@ -102,34 +102,40 @@ function GridEval() {
   } catch (error) {}
 
   useEffect(() => {
+    (async () => {
     try {
-      const response = axios.get(`${API_URL}/getDataSheets`, {});
+      const response = await axios.get(`${API_URL}/getDataEvaluations`, {});
       setConsulEval(response.data);
     } catch (error) {
       console.log(error);
     }
+  })();
   }, []);
 
   const rows = consulEval.map((row) => ({
-    id: row.id_cliente,
+    id: row.id,
     no: row.no,
-    mes: row.mes,
-    no_embajador: row.no_embajador,
-    posicion: row.posicion,
+    applicant_name : row.applicant_name,
+    month: row.month,
+    applicant_area: row.applicant_area,
+    test_type: row.test_type,
+    no_ambassador: row.no_ambassador,
+    name_ambassador: row.name_ambassador,
+    position: row.position,
     base: row.base,
-    correo: row.correo,
-    horas_vuelo: row.horas_vuelo,
-    rtari: row.rtari,
-    fecha_primera_prueba: row.fecha_primera_prueba,
-    hora: row.hora,
-    calificacion: row.calificacion,
-    resultado: row.resultado,
+    company_email: row.company_email,
+    flight_hours: row.flight_hours,
+    rtari_level: row.rtari_level,
+    first_exam: row.first_exam,
+    time: row.time,
+    exam_calif: row.exam_calif,
+    result: row.result
   }));
-
   return (
+
     <>
       <div className='titulo pt-4 mb-3 text-break'>
-        <h1>Consulta</h1>
+        <h1>Evaluations Historic</h1>
       </div>
 
       <Box
@@ -147,21 +153,22 @@ function GridEval() {
         <ThemeProvider theme={theme}>
           <DataGrid
             sx={{ backgroundColor: 'white' }}
-            rows={rows}
+           rows={rows}
             columns={columns}
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: 5,
+                  pageSize:20 ,
                 },
               },
             }}
             slots={{
               toolbar: GridToolbar,
             }}
-            pageSizeOptions={[5]}
             checkboxSelection
             disableRowSelectionOnClick
+            pageSizeOptions={[5, 10, 20, 50, 100]} 
+
           />
         </ThemeProvider>
       </Box>
@@ -169,6 +176,5 @@ function GridEval() {
   );
 }
 
-//el props puedo usarlo para cuando pase el componente , le de otro valor , por ejemplo el de otro mapeo...
 
 export default GridEval;

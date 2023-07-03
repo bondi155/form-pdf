@@ -39,7 +39,7 @@ function App() {
           <Route path='/home' element={<Home />} />
           <Route path='/reportCard' element={<ReportCard />} />
           <Route path='/personalData' element={<PersonalData />} />
-          <Route path='/evaluationsPage' element={<Evaluations />} />
+          <Route path='/evaluationData' element={<Evaluations />} />
         </Route>
       </Routes>
     </BrowserRouter>
