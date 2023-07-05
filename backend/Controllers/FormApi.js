@@ -111,148 +111,155 @@ async function authorize() {
  *
  * @param {google.auth.OAuth2} auth The authenticated Google OAuth client.
  */
-async function listMajors(auth, req) {
-  const tabName = req.query.tabName ?? '';
-    console.log(tabName);
 
-  const sheets = google.sheets({ version: 'v4', auth });
-  const res = await sheets.spreadsheets.values.get({
-    spreadsheetId: '1vdaO42mWRbISh3QTcutqaTncMoTRmNxYpcyW1n6MDRI',
-    range: `${tabName}!A2:AA`,
-  });
-
-  const rows = res.data.values;
-
-  if (!rows || rows.length === 0) {
-    console.log(
-      'No data found in UleadAir sheet. Check if the name of the tab is correct.'
-    );
-    return;
-  }
-
-  const getSheetData = `INSERT INTO personal_data (${COLUMN_NAMES.join(
-    ', '
-  )}) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-
-  rows.forEach((row) => {
-    // Obtener los datos de la fila
-    const personalEmail = row[COLUMN_NAMES.indexOf('personal_email')];
-    const course = row[COLUMN_NAMES.indexOf('course')];
-    const status = row[COLUMN_NAMES.indexOf('status')];
-
-    // Verificar si ya existe un registro con el mismo correo electrónico y curso
-    const checkDuplicateQuery = `SELECT COUNT(*) as count FROM personal_data WHERE personal_email = ? AND course = ?`;
-    pool.query(checkDuplicateQuery, [personalEmail, course], (err, result) => {
-      if (err) {
-        console.log(err);
-      } else {
-        const count = result[0].count;
+//duplicate e insert 
+  async function checkDuplicatesAndInsert(rows, res) {
+    try {
+      let insertedEmails = []; 
+      for (const row of rows) {
+        const personalEmail = row[COLUMN_NAMES.indexOf('personal_email')];
+        const course = row[COLUMN_NAMES.indexOf('course')];
+  
+        const checkDuplicateQuery = `SELECT COUNT(*) as count FROM personal_data WHERE personal_email = ? AND course = ?`;
+        const [duplicateResult] = await pool.promise().query(checkDuplicateQuery, [personalEmail, course]);
+  
+        const count = duplicateResult[0].count;
         if (count === 0) {
           const values = row.map((value, index) => {
             if (['asist', 'payment', 'calif'].includes(COLUMN_NAMES[index])) {
-              return '0'; // Retorna '0' para 'asist', 'payment' y 'calif' sin importar el valor en la hoja
+              return '0';
+            }
+            if (COLUMN_NAMES[index] === 'status' && (value === '' || value === undefined)) {
+              return 'New';
             }
             return value !== '' && value !== undefined ? value : null;
           });
-          pool.query(getSheetData, values, (err, result) => {
-            if (err) {
-              console.log(err);
-            } else {
-              console.log(result);
-             return result;
-            }
-          });
+  
+          const getSheetData = `INSERT INTO personal_data (${COLUMN_NAMES.join(
+            ', '
+          )}) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+             await pool.promise().query(getSheetData, values);
+             insertedEmails.push(personalEmail);
+                  console.log('registros insertados', personalEmail);
+
         } else {
           console.log(
             `Registro duplicado encontrado: personal_email = ${personalEmail}, course = ${course}`
           );
+        
         }
       }
-    });
+      console.log(insertedEmails);
 
-    if (status === 'Closed') {
-      const checkDatabaseStatusQuery = `SELECT status FROM personal_data WHERE personal_email = ? AND course = ?`;
-      pool.query(
-        checkDatabaseStatusQuery,
-        [personalEmail, course],
-        (err, result) => {
-          if (err) {
-            console.log(err);
-          } else {
-            if (result && result.length > 0) {
-              const databaseStatus = result[0].status;
-              if (databaseStatus !== 'Closed') {
-                const updateStatusQuery = `UPDATE personal_data SET status = 'Closed' WHERE personal_email = ? AND course = ?`;
-                pool.query(
-                  updateStatusQuery,
-                  [personalEmail, course],
-                  (err, result) => {
-                    if (err) {
-                      console.log(err);
-                    } else {
-                      console.log(
-                        `Estado actualizado a "Closed" para el correo electrónico ${personalEmail}`
-                      );
-                    }
-                  }
-                );
-              }
+      return insertedEmails;
+      
+                } catch (error) {
+      console.log('Error en checkDuplicatesAndInsert:', error);
+    }
+  }
+  
+  //UPDATE
+  async function updateStatusIfClosed(rows) {
+    try {
+      for (const row of rows) {
+        const personalEmail = row[COLUMN_NAMES.indexOf('personal_email')];
+        const course = row[COLUMN_NAMES.indexOf('course')];
+        const status = row[COLUMN_NAMES.indexOf('status')];
+  
+        if (status === 'Closed') {
+          const checkDatabaseStatusQuery = `SELECT status FROM personal_data WHERE personal_email = ? AND course = ?`;
+          const [result] = await pool.promise().query(checkDatabaseStatusQuery, [personalEmail, course]);
+  
+          if (result && result.length > 0) {
+            const databaseStatus = result[0].status;
+            if (databaseStatus !== 'Closed') {
+              const updateStatusQuery = `UPDATE personal_data SET status = 'Closed' WHERE personal_email = ? AND course = ?`;
+              await pool.promise().query(updateStatusQuery, [personalEmail, course]);
+  
+              console.log(`Estado actualizado a "Closed" para el correo electrónico ${personalEmail}`);
             }
           }
         }
-      );
-    }
-
-    const xColumnIndex = COLUMN_NAMES.indexOf('asist');
-    const yColumnIndex = COLUMN_NAMES.indexOf('payment');
-    const zColumnIndex = COLUMN_NAMES.indexOf('calif');
-    const statusColumnIndex = COLUMN_NAMES.indexOf('status');
-
-    const xValue = row[xColumnIndex];
-    const yValue = row[yColumnIndex];
-    const zValue = row[zColumnIndex];
-
-    // Verificar si alguno de los campos X, Y o Z ha sido modificado
-    if (
-      xValue !== '0' ||
-      yValue !== '0' ||
-      zValue !== '0' ||
-      status === 'Updated'
-    ) {
-      let updateDataQuery = `UPDATE personal_data SET ${COLUMN_NAMES[xColumnIndex]} = ?, ${COLUMN_NAMES[yColumnIndex]} = ?, ${COLUMN_NAMES[zColumnIndex]} = ?`;
-
-      // Verificar el estado antes de realizar la actualización
-      if (status === 'Closed') {
-        updateDataQuery += `, ${COLUMN_NAMES[statusColumnIndex]} = 'Closed'`;
-      } else {
-        updateDataQuery += `, ${COLUMN_NAMES[statusColumnIndex]} = 'Updated'`;
       }
-
-
-      updateDataQuery += ` WHERE personal_email = ?`;
-      const valuesToUpdate = [
-        xValue !== '0' && xValue !== '' ? xValue : '0',
-        yValue !== '0' && yValue !== '' ? yValue : '0',
-        zValue !== '0' && zValue !== '' ? zValue : '0',
-        personalEmail,
-      ];
-
-      //ver lo del tipo de dato , me esta mostrando que hay cambios por que el dato no es 0 sino '0'
-      pool.query(updateDataQuery, valuesToUpdate, (err, result) => {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log(
-            `Datos de pago o asistencia actualizados para el correo electrónico ${personalEmail}`
-          );
-        }
-      });
+    } catch (error) {
+      console.log('Error en updateStatusIfClosed:', error);
     }
-  });
-}
+  }
+  
+  async function updatePaymentAndAttendance(rows,req,res) {
+    try {
+      for (const row of rows) {
+        const personalEmail = row[COLUMN_NAMES.indexOf('personal_email')];
+        const xColumnIndex = COLUMN_NAMES.indexOf('asist');
+        const yColumnIndex = COLUMN_NAMES.indexOf('payment');
+        const zColumnIndex = COLUMN_NAMES.indexOf('calif');
+        const statusColumnIndex = COLUMN_NAMES.indexOf('status');
+  
+        const xValue = row[xColumnIndex];
+        const yValue = row[yColumnIndex];
+        const zValue = row[zColumnIndex];
+        const status = row[statusColumnIndex];
+  
+        if (xValue !== '0' || yValue !== '0' || zValue !== '0' || status === 'Updated') {
+          let updateDataQuery = `UPDATE personal_data SET ${COLUMN_NAMES[xColumnIndex]} = ?, ${COLUMN_NAMES[yColumnIndex]} = ?, ${COLUMN_NAMES[zColumnIndex]} = ?`;
+  
+          if (status === 'Closed') {
+            updateDataQuery += `, ${COLUMN_NAMES[statusColumnIndex]} = 'Closed'`;
+          } else {
+            updateDataQuery += `, ${COLUMN_NAMES[statusColumnIndex]} = 'Updated'`;
+          }
+  
+          updateDataQuery += ` WHERE personal_email = ?`;
+          const valuesToUpdate = [
+            xValue !== '0' && xValue !== '' ? xValue : '0',
+            yValue !== '0' && yValue !== '' ? yValue : '0',
+            zValue !== '0' && zValue !== '' ? zValue : '0',
+            personalEmail,
+          ];
+  
+          await pool.promise().query(updateDataQuery, valuesToUpdate);
+  
+          console.log(`Datos de pago o asistencia actualizados para el correo electrónico ${personalEmail}`);
+        }
+      }
+    } catch (error) {
+      console.log('Error en updatePaymentAndAttendance:', error);
+    }
+  }
+  
+  async function listMajors(auth, req) {
+    try {
+      const tabName = req.query.tabName ?? '';
+      console.log(tabName);
+      const sheets = google.sheets({ version: 'v4', auth });
+      const res = await sheets.spreadsheets.values.get({
+        spreadsheetId: '1vdaO42mWRbISh3QTcutqaTncMoTRmNxYpcyW1n6MDRI',
+        range: `${tabName}!A2:AA`,
+      });
+  
+      const rows = res.data.values;
+  
+      if (!rows || rows.length === 0) {
+        console.log(
+          'No data found in UleadAir sheet. Check if the name of the tab is correct.'
+        );
+      }
+  
+      const insertedEmails = await checkDuplicatesAndInsert(rows);
+      
+      await updateStatusIfClosed(rows);
+      await updatePaymentAndAttendance(rows);
+
+      return insertedEmails;
+    } catch (error) {
+      console.log('Error en listMajors:', error);
+    }
+  }
 
 module.exports = {
   authorize,
   listMajors,
+  checkDuplicatesAndInsert,
+  updateStatusIfClosed,
+  updatePaymentAndAttendance,
 };
-// ver por que se pone en vacio otros datos 

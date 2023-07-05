@@ -8,6 +8,7 @@ import { esES as pickersBgBG } from '@mui/x-date-pickers/locales';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { GridToolbar } from '@mui/x-data-grid';
 import { API_URL } from '../config/config.js';
+import '../css/App.css';
 
 const theme = createTheme(
   {
@@ -23,22 +24,54 @@ const theme = createTheme(
 function GridEval() {
   const [consulEval, setConsulEval] = useState([]);
   const columns = [
+    
     { field: 'id', headerName: 'ID', width: 50 },
+
     {
       field: 'no',
       headerName: 'No.',
-      width: 90,
-      editable: true,
-    },
-    {
-      field: 'month',
-      headerName: 'Mes',
-      width: 100,
+      width: 70,
       editable: true,
     },
     {
       field: 'applicant_name',
       headerName: 'Name Applicant',
+      width: 150,
+      editable: true,
+    },
+    {
+      field: 'month',
+      headerName: 'Month',
+      width: 100,
+      editable: true,
+    },
+    {
+      field: 'applicant_area',
+      headerName: 'Name Area',
+      width: 120,
+      editable: true,
+    },
+    {
+      field: 'test_type',
+      headerName: 'Experience',
+      width: 100,
+      editable: true,
+    },
+    {
+      field: 'no_ambassador',
+      headerName: 'No Ambassador',
+      width: 90,
+      editable: true,
+    },
+    {
+      field: 'full_name',
+      headerName: 'Name Ambassador',
+      width: 150,
+      editable: true,
+    },
+    {
+      field: 'company',
+      headerName: 'Company',
       width: 150,
       editable: true,
     },
@@ -51,11 +84,11 @@ function GridEval() {
     {
       field: 'base',
       headerName: 'Base',
-      width: 90,
+      width: 70,
       editable: true,
     },
     {
-      field: 'Company_email',
+      field: 'company_email',
       headerName: 'Company Email',
       width: 150,
       editable: true,
@@ -63,36 +96,36 @@ function GridEval() {
     {
       field: 'flight_hours',
       headerName: 'Flight Hours',
-      width: 150,
+      width: 90,
       editable: true,
     },
     {
       field: 'rtari_level',
       headerName: 'RTARI 4,5,6',
-      width: 20,
+      width: 120,
       editable: true,
     },
     {
       field: 'first_exam',
-      headerName: 'Date 1º Exam',
-      width: 90,
+      headerName: '1º Exam.',
+      width: 110,
       editable: true,
     },
     {
       field: 'time',
-      headerName: 'Hour 24hs',
-      width: 90,
+      headerName: 'Hour',
+      width: 110,
       editable: true,
     },
     {
       field: 'exam_calif',
-      headerName: 'Calificación',
-      width: 20,
+      headerName: 'Calification',
+      width: 50,
       editable: true,
     },
     {
       field: 'result',
-      headerName: 'Resultado',
+      headerName: 'Result',
       width: 90,
       editable: true,
     },
@@ -112,34 +145,21 @@ function GridEval() {
   })();
   }, []);
 
-  const rows = consulEval.map((row) => ({
-    id: row.id,
-    no: row.no,
-    applicant_name : row.applicant_name,
-    month: row.month,
-    applicant_area: row.applicant_area,
-    test_type: row.test_type,
-    no_ambassador: row.no_ambassador,
-    name_ambassador: row.name_ambassador,
-    position: row.position,
-    base: row.base,
-    company_email: row.company_email,
-    flight_hours: row.flight_hours,
-    rtari_level: row.rtari_level,
-    first_exam: row.first_exam,
-    time: row.time,
-    exam_calif: row.exam_calif,
-    result: row.result
+
+  const rows = consulEval.map((row, index) => ({
+    id: index,
+    ...row,
   }));
+
+
   return (
 
     <>
-      <div className='titulo pt-4 mb-3 text-break'>
+      <div className='mt-5 mb-3 titulo-grid'>
         <h1>Evaluations Historic</h1>
       </div>
 
       <Box
-        //cambiar background color del grid
         sx={{
           flexGrow: 1,
           height: 600,
@@ -155,6 +175,7 @@ function GridEval() {
             sx={{ backgroundColor: 'white' }}
            rows={rows}
             columns={columns}
+            getRowId={(row) => row.id}
             initialState={{
               pagination: {
                 paginationModel: {
@@ -165,7 +186,6 @@ function GridEval() {
             slots={{
               toolbar: GridToolbar,
             }}
-            checkboxSelection
             disableRowSelectionOnClick
             pageSizeOptions={[5, 10, 20, 50, 100]} 
 

@@ -81,6 +81,11 @@ h6 {
   padding-bottom: 0px !important;
 }
 
+/*Titulo Grid */
+.titulo-grid {
+  text-align: center;
+}
+
 /*Login */
 
 .login-form {

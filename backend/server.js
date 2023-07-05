@@ -25,20 +25,19 @@ app.get('/getDataEvaluations', getDataController.consultaEvalData__);
 app.get('/getDataSheets', async (req, res) => {
   try {
     const auth = await authorize();
-    const result = await listMajors(auth, req);
+    const insertedEmails = await listMajors(auth, req);
     res
       .status(200)
-      .json({ result, message: 'Success getting Data from sheet' });
+      .json({ 
+        code:'INSERT_OKAY', message:`Success getting Data from sheet ${insertedEmails}`
+      });
   } catch (error) {
     console.error(error);
     res.status(500).send('Ocurrió un error al obtener los datos');
   }
 });
-
 // Ruta para el manejo del archivo Excel
 app.post('/uploadfile', upload.single('file'), excelController.EvaluationsXlsx);
- 
-
 
 app.listen(port, () => {
   console.log('servidor funcionando en el puerto ' + port);

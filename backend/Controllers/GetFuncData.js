@@ -2,28 +2,90 @@
 const mysql = require('mysql2');
 const pool = mysql.createPool(process.env.DATABASE_URL);
 
-function consultaData__(req, res) {
-  const email = req.query.email ?? '';
+const sqlGetPerDataByName = `
+SELECT pd.id AS pd_id, pd.full_name AS pd_full_name, pd.personal_email, pd.cellphone, pd.age, 
+pd.country, pd.course, pd.flight_hours AS pd_flight_hours, pd.flight_status, pd.experience, 
+pd.type_airc, pd.company AS pd_company, pd.company_email AS pd_company_email, 
+pd.rtari_level AS pd_rtari_level, pd.rtari_expires, pd.english_status, pd.hours_english AS pd_hours_english, 
+pd.level_english, pd.other_career, pd.contact, pd.option_pay, pd.date_form, pd.start_date, 
+pd.end_date, pd.asist, pd.payment, pd.calif, pd.status, ed.* 
+FROM personal_data pd
+LEFT JOIN evaluation_data ed ON pd.full_name = ed.full_name
+WHERE pd.full_name = ?
+`;
 
-  const sqlGetPerData = 'SELECT * FROM personal_data where personal_email = ?';
+function consultJoin__(req, res, name) {
+  try {
+    pool.query(sqlGetPerDataByName, name, (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).send('Error to get personal data trought mail');
+      }
 
-  pool.query(sqlGetPerData, email, (err, result) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).send('Error to get personal data');
-    }
-
-    if (result.length === 0) {
-      return res.send('This email is no exist in your Sheets');
-    }
-
-    res.send(result);
-    console.log(result);
-  });
+      if (result.length === 0) {
+        return res.send('No data found');
+      }
+      res.send(result);
+      console.log(result);
+    });
+  } catch (error) {
+    console.log(error);
+  }
 }
 
+function consultEmail__(req, res) {
+  try {
+    const email = req.query.email ?? '';
+    const sqlGetPerDataByEmail =
+      'SELECT * FROM personal_data WHERE personal_email = ?';
+    pool.query(sqlGetPerDataByEmail, email, (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).send('Error to get personal data');
+      }
 
-function consultaEvalData__ (req, res) {
+      if (result.length === 0) {
+        return res.send('No data found');
+      }
+
+      const name = result[0].full_name;
+
+      console.log(name);
+
+      consultJoin__(req, res, name);
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+function consultaData__(req, res) {
+  try {
+    const email = req.query.email ?? '';
+
+    if (email.includes('@')) {
+      consultEmail__(req, res);
+    } else {
+      pool.query(sqlGetPerDataByName, email, (err, result) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).send('Error to get personal data');
+        }
+
+        if (result.length === 0) {
+          return res.send('No data found');
+        }
+
+        res.send(result);
+        console.log(result);
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function consultaEvalData__(req, res) {
   const sqlGetEvalData = 'SELECT * FROM evaluation_data';
 
   pool.query(sqlGetEvalData, (err, result) => {
@@ -38,4 +100,5 @@ function consultaEvalData__ (req, res) {
 module.exports = {
   consultaData__,
   consultaEvalData__,
+  consultEmail__,
 };

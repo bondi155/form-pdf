@@ -26,7 +26,9 @@ const PersonalData = () => {
   const fetchPerData = async () => {
     try {
       const response = await axios.get(`${API_URL}/getPersonalData`, {
-        params: { email },
+        params: {
+           email
+         },
       });
       if (Array.isArray(response.data)) {
         setPersonalData(response.data);
@@ -41,7 +43,7 @@ const PersonalData = () => {
       }
       console.log(personalData);
     } catch (error) {
-      console.log(error);
+      console.log(error);  
     }
   };
 
@@ -61,26 +63,34 @@ const PersonalData = () => {
   //data desde el sheet segunda funcion de api en server.js
   const fetchSheetData = async () => {
     try {
-      await axios.get(`${API_URL}/getDataSheets`, {
+      const response = await axios.get(`${API_URL}/getDataSheets`, {
         tabName,
       });
+      const result = response.data.result;
+      console.log(result);
       Swal.fire({
         icon: 'success',
-        title: 'Info for Google Sheets sent to Uleadair Data Base',
+        title: 'Google Sheets Information sent to Uleadair Data Base',
         showConfirmButton: false,
         timer: 2300,
       });
+  
+      if (response.data.code === 'DUPLICATE') {
+        alert(response.data.message);
+      }
+  
+      // Continuar con el resto del código...
     } catch (error) {
       Swal.fire(
         'Error!',
-        'There was a error trying get data from Sheets',
+        'There was an error trying to get data from Sheets',
         'error'
       );
-
+  
       console.error('Error:', error);
     }
   };
-
+  
   //render imagenes empresa
   function renderImage(empresa) {
     // En caso de no encontrar ninguna coincidencia, la función retorna 'No company charged'
@@ -120,10 +130,10 @@ const PersonalData = () => {
   return (
     <Container className='container-custom'>
       <Row>
-        <Col md={{ span: 4 }}>
+        <Col sm={6} lg={4} md={6}>
           <h1 className='mb-4'>Personal Data </h1>
        </Col>
-        <Col md={{ span: 3 }}>
+        <Col sm={6} lg={3} md={6}>
           <InputGroup className='mb-3 mt-3'>
             <FormControl
               type='text'
@@ -147,9 +157,8 @@ const PersonalData = () => {
       </Row>
       <InputGroup className='mb-3 mt-4'>
         <FormControl
-          type='email'
-          required
-          placeholder='Search by email'
+          type='text'
+          placeholder='Search by name or email'
           aria-label='Search by email'
           aria-describedby='basic-addon2'
           onChange={(e) => setEmail(e.target.value)}
@@ -170,7 +179,7 @@ const PersonalData = () => {
               <Card className='data-container'>
                 <Card.Body>
                   <Card.Title>
-                    {item.full_name}, {item.age} {renderImage(item.company)}{' '}{renderCalif(item.calif)}
+                    {item.pd_full_name}, {item.age} {renderImage(item.pd_company)}{' '}{renderCalif(item.calif)}
                   </Card.Title>
                   <div className='components'>
                     <div>
@@ -179,7 +188,6 @@ const PersonalData = () => {
                         labelOption={'Assistance'}
                       />
                     </div>
-                  
                     <div>
                       <Percentage
                         seriesValue={item.payment}
@@ -239,7 +247,7 @@ const PersonalData = () => {
                                 Experience: <strong> {item.experience}</strong>
                               </ListGroup.Item>
                               <ListGroup.Item>
-                                Rtari Level: <strong>{item.rtari_level}</strong>
+                                Rtari Level: <strong>{item.pd_rtari_level}</strong>
                               </ListGroup.Item>
                               <ListGroup.Item>
                                 Rtari Expires:{' '}

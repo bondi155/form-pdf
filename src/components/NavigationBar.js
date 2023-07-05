@@ -36,11 +36,14 @@ function NavigationBar() {
             <Link to='/personalData' className='nav-link'>
               Personal data{' '}
             </Link>
-            <Link to='/reportCard' className='nav-link'>
-              Report Card
+            <Link to='/evaluationData' className='nav-link'>
+              Evaluation data{' '}
             </Link>
             <Link to='/formController' className='nav-link'>
               Form Controller{' '}
+            </Link>
+            <Link to='/reportCard' className='nav-link'>
+              Report Card
             </Link>
             &nbsp;
           </Nav>
