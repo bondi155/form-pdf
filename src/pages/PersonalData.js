@@ -17,21 +17,24 @@ import volaris from '../components/img/airlines/volaris.png';
 import aeromexico from '../components/img/airlines/aeromexico.png';
 import Swal from 'sweetalert2';
 import images from '../components/Imagenes.js';
+import SpinnerComponent from '../components/Spinner.js';
 
 const PersonalData = () => {
   const [personalData, setPersonalData] = useState([]);
   const [email, setEmail] = useState('');
   const [tabName, SetTabName] = useState('');
-
+  const [isloading, SetIsloading] = useState(false);
   const fetchPerData = async () => {
     try {
+      SetIsloading(true);
       const response = await axios.get(`${API_URL}/getPersonalData`, {
         params: {
-           email
-         },
+          email,
+        },
       });
       if (Array.isArray(response.data)) {
         setPersonalData(response.data);
+        SetIsloading(false);
       } else {
         setPersonalData([]);
         Swal.fire({
@@ -43,7 +46,7 @@ const PersonalData = () => {
       }
       console.log(personalData);
     } catch (error) {
-      console.log(error);  
+      console.log(error);
     }
   };
 
@@ -63,22 +66,29 @@ const PersonalData = () => {
   //data desde el sheet segunda funcion de api en server.js
   const fetchSheetData = async () => {
     try {
+      SetIsloading(true);
       const response = await axios.get(`${API_URL}/getDataSheets`, {
         tabName,
       });
-      const result = response.data.result;
-      console.log(result);
-      Swal.fire({
-        icon: 'success',
-        title: 'Google Sheets Information sent to Uleadair Data Base',
-        showConfirmButton: false,
-        timer: 2300,
-      });
-  
-      if (response.data.code === 'DUPLICATE') {
-        alert(response.data.message);
+      const emails = response.data.emails;
+      const textEmails = `${emails}`;
+      const Textduplicated = response.data.message;
+      SetIsloading(false);
+
+      if (response.data.code === 'INSERT_OKAY') {
+        Swal.fire({
+          icon: 'success',
+          title: 'Google Sheets Information sent to Uleadair DataBase',
+          text: textEmails,
+        });
+      } else if (response.data.code === 'DUPLICATED') {
+        Swal.fire({
+          icon: 'success',
+          title: Textduplicated,
+          text: textEmails,
+        });
       }
-  
+
       // Continuar con el resto del código...
     } catch (error) {
       Swal.fire(
@@ -86,11 +96,11 @@ const PersonalData = () => {
         'There was an error trying to get data from Sheets',
         'error'
       );
-  
+
       console.error('Error:', error);
     }
   };
-  
+
   //render imagenes empresa
   function renderImage(empresa) {
     // En caso de no encontrar ninguna coincidencia, la función retorna 'No company charged'
@@ -132,7 +142,7 @@ const PersonalData = () => {
       <Row>
         <Col sm={6} lg={4} md={6}>
           <h1 className='mb-4'>Personal Data </h1>
-       </Col>
+        </Col>
         <Col sm={6} lg={3} md={6}>
           <InputGroup className='mb-3 mt-3'>
             <FormControl
@@ -144,14 +154,14 @@ const PersonalData = () => {
               size='sm'
               onChange={(e) => SetTabName(e.target.value.toUpperCase())}
             />
-            <Button
-              variant='outline-success'
-              size='sm'
-              id='button-addon2'
-              onClick={fetchSheetData}
-            >
-              Go
-            </Button>
+              <Button
+                variant='outline-success'
+                size='sm'
+                id='button-addon2'
+                onClick={fetchSheetData}
+              >
+                Go
+              </Button>
           </InputGroup>
         </Col>
       </Row>
@@ -172,6 +182,8 @@ const PersonalData = () => {
           Search
         </Button>
       </InputGroup>
+      {isloading ? (<SpinnerComponent/>) :(    
+
       <Row>
         {personalData.map((item, key) => (
           <div key={key}>
@@ -179,7 +191,8 @@ const PersonalData = () => {
               <Card className='data-container'>
                 <Card.Body>
                   <Card.Title>
-                    {item.pd_full_name}, {item.age} {renderImage(item.pd_company)}{' '}{renderCalif(item.calif)}
+                    {item.pd_full_name}, {item.age}{' '}
+                    {renderImage(item.pd_company)} {renderCalif(item.calif)}
                   </Card.Title>
                   <div className='components'>
                     <div>
@@ -247,7 +260,8 @@ const PersonalData = () => {
                                 Experience: <strong> {item.experience}</strong>
                               </ListGroup.Item>
                               <ListGroup.Item>
-                                Rtari Level: <strong>{item.pd_rtari_level}</strong>
+                                Rtari Level:{' '}
+                                <strong>{item.pd_rtari_level}</strong>
                               </ListGroup.Item>
                               <ListGroup.Item>
                                 Rtari Expires:{' '}
@@ -287,7 +301,7 @@ const PersonalData = () => {
                                 <strong>{item.option_pay}</strong>
                               </ListGroup.Item>
                               <ListGroup.Item>
-                               Company Email:{' '}
+                                Company Email:{' '}
                                 <strong>{item.company_email}</strong>
                               </ListGroup.Item>
                             </ListGroup>
@@ -302,7 +316,8 @@ const PersonalData = () => {
           </div>
         ))}
       </Row>
-    </Container>
+       )}
+          </Container>
   );
 };
 

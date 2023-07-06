@@ -7,7 +7,7 @@ import GridEval from '../charts/GridEval';
 
 function Evaluations() {
   const [file, setFile] = useState(null);
-  const [fileName, setFileName] = useState('');
+  const [fileName, setFileName] = useState('temp');
 
   const saveFile = (e) => {
     setFile(e.target.files[0]);

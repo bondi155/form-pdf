@@ -7,8 +7,7 @@ import Home from './pages/Home';
 import './css/App.css';
 import PersonalData from './pages/PersonalData';
 import Evaluations from './pages/Evaluatiions';
-import { Spinner } from 'react-bootstrap';
-
+import SpinnerComponent from './components/Spinner';
 function App() {
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -21,11 +20,9 @@ function App() {
 
   if (!isLoaded) {
     return (
-      <div className="d-flex justify-content-center align-items-center vh-100">
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </Spinner>
-      </div>
+      <div className='d-flex justify-content-center align-items-center vh-100'> 
+    <SpinnerComponent />
+    </div>
     );
   }
 

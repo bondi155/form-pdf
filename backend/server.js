@@ -25,12 +25,28 @@ app.get('/getDataEvaluations', getDataController.consultaEvalData__);
 app.get('/getDataSheets', async (req, res) => {
   try {
     const auth = await authorize();
-    const insertedEmails = await listMajors(auth, req);
-    res
+    const {insertedEmails, duplicatedState} = await listMajors(auth, req);
+if (duplicatedState){
+  res
+  .status(200)
+  .json({ 
+    code:'DUPLICATED', 
+    message:'Success getting Data from sheet (You have duplicated rows, dont worry it were not inserted)',
+    emails: insertedEmails
+    
+  });
+
+}else {
+  res
       .status(200)
       .json({ 
-        code:'INSERT_OKAY', message:`Success getting Data from sheet ${insertedEmails}`
+        code:'INSERT_OKAY', 
+        message:'Success getting Data from sheet',
+        emails: insertedEmails
+        
       });
+   }
+    
   } catch (error) {
     console.error(error);
     res.status(500).send('Ocurrió un error al obtener los datos');

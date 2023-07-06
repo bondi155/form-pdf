@@ -45,7 +45,6 @@ const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
 //const TOKEN_PATH = process.env.GOOGLE_TOKENS;
 //const CREDENTIALS_PATH = process.env.GOOGLE_CREDENTIALS;
 
-
 const TOKEN_PATH = path.join(process.cwd(), 'token.json');
 const CREDENTIALS_PATH = path.join(process.cwd(), 'credentials_ulead.json');
 
@@ -102,8 +101,6 @@ async function authorize() {
   return client;
 }
 
-
-
 //let tabName = 'UFS-28';
 
 /**
@@ -112,149 +109,171 @@ async function authorize() {
  * @param {google.auth.OAuth2} auth The authenticated Google OAuth client.
  */
 
-//duplicate e insert 
-  async function checkDuplicatesAndInsert(rows, res) {
-    try {
-      let insertedEmails = []; 
-      for (const row of rows) {
-        const personalEmail = row[COLUMN_NAMES.indexOf('personal_email')];
-        const course = row[COLUMN_NAMES.indexOf('course')];
-  
-        const checkDuplicateQuery = `SELECT COUNT(*) as count FROM personal_data WHERE personal_email = ? AND course = ?`;
-        const [duplicateResult] = await pool.promise().query(checkDuplicateQuery, [personalEmail, course]);
-  
-        const count = duplicateResult[0].count;
-        if (count === 0) {
-          const values = row.map((value, index) => {
-            if (['asist', 'payment', 'calif'].includes(COLUMN_NAMES[index])) {
-              return '0';
-            }
-            if (COLUMN_NAMES[index] === 'status' && (value === '' || value === undefined)) {
-              return 'New';
-            }
-            return value !== '' && value !== undefined ? value : null;
-          });
-  
-          const getSheetData = `INSERT INTO personal_data (${COLUMN_NAMES.join(
-            ', '
-          )}) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-             await pool.promise().query(getSheetData, values);
-             insertedEmails.push(personalEmail);
-                  console.log('registros insertados', personalEmail);
+//duplicate e insert
+async function checkDuplicatesAndInsert(rows, res) {
+  try {
+    let insertedEmails = [];
+    let ducplicated;
+    let duplicatedState = false;      
 
-        } else {
-          console.log(
-            `Registro duplicado encontrado: personal_email = ${personalEmail}, course = ${course}`
-          );
-        
-        }
-      }
-      console.log(insertedEmails);
+    for (const row of rows) {
+      const personalEmail = row[COLUMN_NAMES.indexOf('personal_email')];
+      const course = row[COLUMN_NAMES.indexOf('course')];
 
-      return insertedEmails;
-      
-                } catch (error) {
-      console.log('Error en checkDuplicatesAndInsert:', error);
-    }
-  }
-  
-  //UPDATE
-  async function updateStatusIfClosed(rows) {
-    try {
-      for (const row of rows) {
-        const personalEmail = row[COLUMN_NAMES.indexOf('personal_email')];
-        const course = row[COLUMN_NAMES.indexOf('course')];
-        const status = row[COLUMN_NAMES.indexOf('status')];
-  
-        if (status === 'Closed') {
-          const checkDatabaseStatusQuery = `SELECT status FROM personal_data WHERE personal_email = ? AND course = ?`;
-          const [result] = await pool.promise().query(checkDatabaseStatusQuery, [personalEmail, course]);
-  
-          if (result && result.length > 0) {
-            const databaseStatus = result[0].status;
-            if (databaseStatus !== 'Closed') {
-              const updateStatusQuery = `UPDATE personal_data SET status = 'Closed' WHERE personal_email = ? AND course = ?`;
-              await pool.promise().query(updateStatusQuery, [personalEmail, course]);
-  
-              console.log(`Estado actualizado a "Closed" para el correo electrónico ${personalEmail}`);
-            }
+      const checkDuplicateQuery = `SELECT COUNT(*) as count FROM personal_data WHERE personal_email = ? AND course = ?`;
+      const [duplicateResult] = await pool
+        .promise()
+        .query(checkDuplicateQuery, [personalEmail, course]);
+
+      const count = duplicateResult[0].count;
+      if (count === 0) {
+        const values = row.map((value, index) => {
+          if (['asist', 'payment', 'calif'].includes(COLUMN_NAMES[index])) {
+            return '0';
           }
-        }
-      }
-    } catch (error) {
-      console.log('Error en updateStatusIfClosed:', error);
-    }
-  }
-  
-  async function updatePaymentAndAttendance(rows,req,res) {
-    try {
-      for (const row of rows) {
-        const personalEmail = row[COLUMN_NAMES.indexOf('personal_email')];
-        const xColumnIndex = COLUMN_NAMES.indexOf('asist');
-        const yColumnIndex = COLUMN_NAMES.indexOf('payment');
-        const zColumnIndex = COLUMN_NAMES.indexOf('calif');
-        const statusColumnIndex = COLUMN_NAMES.indexOf('status');
-  
-        const xValue = row[xColumnIndex];
-        const yValue = row[yColumnIndex];
-        const zValue = row[zColumnIndex];
-        const status = row[statusColumnIndex];
-  
-        if (xValue !== '0' || yValue !== '0' || zValue !== '0' || status === 'Updated') {
-          let updateDataQuery = `UPDATE personal_data SET ${COLUMN_NAMES[xColumnIndex]} = ?, ${COLUMN_NAMES[yColumnIndex]} = ?, ${COLUMN_NAMES[zColumnIndex]} = ?`;
-  
-          if (status === 'Closed') {
-            updateDataQuery += `, ${COLUMN_NAMES[statusColumnIndex]} = 'Closed'`;
-          } else {
-            updateDataQuery += `, ${COLUMN_NAMES[statusColumnIndex]} = 'Updated'`;
+          if (
+            COLUMN_NAMES[index] === 'status' &&
+            (value === '' || value === undefined)
+          ) {
+            return 'New';
           }
-  
-          updateDataQuery += ` WHERE personal_email = ?`;
-          const valuesToUpdate = [
-            xValue !== '0' && xValue !== '' ? xValue : '0',
-            yValue !== '0' && yValue !== '' ? yValue : '0',
-            zValue !== '0' && zValue !== '' ? zValue : '0',
-            personalEmail,
-          ];
-  
-          await pool.promise().query(updateDataQuery, valuesToUpdate);
-  
-          console.log(`Datos de pago o asistencia actualizados para el correo electrónico ${personalEmail}`);
-        }
-      }
-    } catch (error) {
-      console.log('Error en updatePaymentAndAttendance:', error);
-    }
-  }
-  
-  async function listMajors(auth, req) {
-    try {
-      const tabName = req.query.tabName ?? '';
-      console.log(tabName);
-      const sheets = google.sheets({ version: 'v4', auth });
-      const res = await sheets.spreadsheets.values.get({
-        spreadsheetId: '1vdaO42mWRbISh3QTcutqaTncMoTRmNxYpcyW1n6MDRI',
-        range: `${tabName}!A2:AA`,
-      });
-  
-      const rows = res.data.values;
-  
-      if (!rows || rows.length === 0) {
+          return value !== '' && value !== undefined ? value : null;
+        });
+
+        const getSheetData = `INSERT INTO personal_data (${COLUMN_NAMES.join(
+          ', '
+        )}) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        await pool.promise().query(getSheetData, values);
+        insertedEmails.push(personalEmail);
+        console.log('registros insertados', personalEmail);
+      } else {
         console.log(
-          'No data found in UleadAir sheet. Check if the name of the tab is correct.'
+          `Registro duplicado encontrado: personal_email = ${personalEmail}, course = ${course}`
+        );
+        
+         ducplicated =`Registro duplicado encontrado: personal_email = ${personalEmail}, course = ${course}`;
+         duplicatedState = true;
+         //console.log(duplicatedState);
+      }
+    }
+    //    console.log(insertedEmails);
+
+    return {insertedEmails, ducplicated, duplicatedState};
+  } catch (error) {
+    console.log('Error en checkDuplicatesAndInsert:', error);
+  }
+}
+
+//UPDATE
+async function updateStatusIfClosed(rows) {
+  try {
+    for (const row of rows) {
+      const personalEmail = row[COLUMN_NAMES.indexOf('personal_email')];
+      const course = row[COLUMN_NAMES.indexOf('course')];
+      const status = row[COLUMN_NAMES.indexOf('status')];
+
+      if (status === 'Closed') {
+        const checkDatabaseStatusQuery = `SELECT status FROM personal_data WHERE personal_email = ? AND course = ?`;
+        const [result] = await pool
+          .promise()
+          .query(checkDatabaseStatusQuery, [personalEmail, course]);
+
+        if (result && result.length > 0) {
+          const databaseStatus = result[0].status;
+          if (databaseStatus !== 'Closed') {
+            const updateStatusQuery = `UPDATE personal_data SET status = 'Closed' WHERE personal_email = ? AND course = ?`;
+            await pool
+              .promise()
+              .query(updateStatusQuery, [personalEmail, course]);
+
+            console.log(
+              `Estado actualizado a "Closed" para el correo electrónico ${personalEmail}`
+            );
+          }
+        }
+      }
+    }
+  } catch (error) {
+    console.log('Error en updateStatusIfClosed:', error);
+  }
+}
+
+async function updatePaymentAndAttendance(rows, req, res) {
+  try {
+    for (const row of rows) {
+      const personalEmail = row[COLUMN_NAMES.indexOf('personal_email')];
+      const xColumnIndex = COLUMN_NAMES.indexOf('asist');
+      const yColumnIndex = COLUMN_NAMES.indexOf('payment');
+      const zColumnIndex = COLUMN_NAMES.indexOf('calif');
+      const statusColumnIndex = COLUMN_NAMES.indexOf('status');
+
+      const xValue = row[xColumnIndex];
+      const yValue = row[yColumnIndex];
+      const zValue = row[zColumnIndex];
+      const status = row[statusColumnIndex];
+
+      if (
+        xValue !== '0' ||
+        yValue !== '0' ||
+        zValue !== '0' ||
+        status === 'Updated'
+      ) {
+        let updateDataQuery = `UPDATE personal_data SET ${COLUMN_NAMES[xColumnIndex]} = ?, ${COLUMN_NAMES[yColumnIndex]} = ?, ${COLUMN_NAMES[zColumnIndex]} = ?`;
+
+        if (status === 'Closed') {
+          updateDataQuery += `, ${COLUMN_NAMES[statusColumnIndex]} = 'Closed'`;
+        } else {
+          updateDataQuery += `, ${COLUMN_NAMES[statusColumnIndex]} = 'Updated'`;
+        }
+
+        updateDataQuery += ` WHERE personal_email = ?`;
+        const valuesToUpdate = [
+          xValue !== '0' && xValue !== '' ? xValue : '0',
+          yValue !== '0' && yValue !== '' ? yValue : '0',
+          zValue !== '0' && zValue !== '' ? zValue : '0',
+          personalEmail,
+        ];
+
+        await pool.promise().query(updateDataQuery, valuesToUpdate);
+
+        console.log(
+          `Datos de pago o asistencia actualizados para el correo electrónico ${personalEmail}`
         );
       }
-  
-      const insertedEmails = await checkDuplicatesAndInsert(rows);
-      
-      await updateStatusIfClosed(rows);
-      await updatePaymentAndAttendance(rows);
-
-      return insertedEmails;
-    } catch (error) {
-      console.log('Error en listMajors:', error);
     }
+  } catch (error) {
+    console.log('Error en updatePaymentAndAttendance:', error);
   }
+}
+
+async function listMajors(auth, req) {
+  try {
+    const tabName = req.query.tabName ?? '';
+    console.log(tabName);
+    const sheets = google.sheets({ version: 'v4', auth });
+    const res = await sheets.spreadsheets.values.get({
+      spreadsheetId: '1vdaO42mWRbISh3QTcutqaTncMoTRmNxYpcyW1n6MDRI',
+      range: `${tabName}!A2:AA`,
+    });
+
+    const rows = res.data.values;
+
+    if (!rows || rows.length === 0) {
+      console.log(
+        'No data found in UleadAir sheet. Check if the name of the tab is correct.'
+      );
+    }
+
+    const {insertedEmails, duplicated, duplicatedState} = await checkDuplicatesAndInsert(rows);
+
+    await updateStatusIfClosed(rows);
+    await updatePaymentAndAttendance(rows);
+
+    return {insertedEmails, duplicated, duplicatedState};
+  } catch (error) {
+    console.log('Error en listMajors:', error);
+  }
+}
 
 module.exports = {
   authorize,
