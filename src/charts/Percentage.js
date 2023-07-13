@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 
 function Percentage({ seriesValue, labelOption}) {
-  const [options, setOptions] = useState({
+  const [options, ] = useState({
     chart: {
-      height: 350,
+      height: 250,
       type: 'radialBar',
       offsetY: -10,
     },
@@ -56,12 +56,12 @@ function Percentage({ seriesValue, labelOption}) {
   }, [seriesValue]);
 
   return (
-    <div id='chart'>
+    <div className='mb-3' id='chart'>
       <ReactApexChart
         options={options}
         series={series}
         type='radialBar'
-        height={350}
+        height={250}
       />
     </div>
   );

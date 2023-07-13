@@ -85,6 +85,37 @@ function consultaData__(req, res) {
   }
 }
 
+// Aquí se modifica la consulta SQL para que busque coincidencias parciales
+const sqlGetPerDataByNameLike = `
+  SELECT pd.full_name AS pd_full_name 
+  FROM personal_data pd
+  WHERE pd.full_name LIKE ?
+`;
+
+// Aquí se crea el endpoint adicional para el autocompletado
+function autocompleteName(req, res) {
+  try {
+    // se toma la entrada del usuario y se añade el comodín % al inicio y al final
+    const email = `%${req.query.email ?? ''}%`;
+
+    pool.query(sqlGetPerDataByNameLike, email, (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).send('Error to get personal data for autocomplete');
+      }
+
+      if (result.length === 0) {
+        return res.send('No data found');
+      }
+
+      // sólo se devuelven los nombres encontrados
+      res.send(result.map(item => item.pd_full_name));
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 function consultaEvalData__(req, res) {
   const sqlGetEvalData = 'SELECT * FROM evaluation_data';
 
@@ -101,4 +132,5 @@ module.exports = {
   consultaData__,
   consultaEvalData__,
   consultEmail__,
+  autocompleteName
 };

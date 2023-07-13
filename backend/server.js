@@ -20,6 +20,7 @@ app.get('/getPersonalData', getDataController.consultaData__);
 
 // Ruta para el manejo del info de personal data en base de datos
 app.get('/getDataEvaluations', getDataController.consultaEvalData__);
+app.get('/suggestNames', getDataController.autocompleteName  );
 
 // Ruta para el manejo de informacion de sheets
 app.get('/getDataSheets', async (req, res) => {
