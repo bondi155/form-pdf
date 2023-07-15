@@ -13,7 +13,7 @@ FROM personal_data pd
 LEFT JOIN evaluation_data ed ON pd.full_name = ed.full_name
 WHERE pd.full_name = ?
 `;
-
+//join del nombre
 function consultJoin__(req, res, name) {
   try {
     pool.query(sqlGetPerDataByName, name, (err, result) => {
@@ -32,7 +32,7 @@ function consultJoin__(req, res, name) {
     console.log(error);
   }
 }
-
+//si se busca por email
 function consultEmail__(req, res) {
   try {
     const email = req.query.email ?? '';
@@ -58,7 +58,7 @@ function consultEmail__(req, res) {
     console.log(err);
   }
 }
-
+//ejecucion con condicion de funciones
 function consultaData__(req, res) {
   try {
     const email = req.query.email ?? '';
@@ -87,11 +87,10 @@ function consultaData__(req, res) {
 
 // Aquí se modifica la consulta SQL para que busque coincidencias parciales
 const sqlGetPerDataByNameLike = `
-  SELECT pd.full_name AS pd_full_name 
+  SELECT DISTINCT pd.full_name AS pd_full_name, pd.personal_email AS pd_personal_email
   FROM personal_data pd
   WHERE pd.full_name LIKE ?
 `;
-
 // Aquí se crea el endpoint adicional para el autocompletado
 function autocompleteName(req, res) {
   try {
@@ -108,14 +107,18 @@ function autocompleteName(req, res) {
         return res.send('No data found');
       }
 
-      // sólo se devuelven los nombres encontrados
-      res.send(result.map(item => item.pd_full_name));
+      const suggestions = result.map(item => ({
+        name: item.pd_full_name,
+        email: item.pd_personal_email
+      }));
+
+      res.send(suggestions);
     });
   } catch (error) {
     console.log(error);
   }
 }
-
+//evaluation data select 
 function consultaEvalData__(req, res) {
   const sqlGetEvalData = 'SELECT * FROM evaluation_data';
 
@@ -128,9 +131,30 @@ function consultaEvalData__(req, res) {
   });
 }
 
+
+//func para validar usuarios 
+
+function ConsultaLogin__ (req, res ){
+  const user = req.user.body;
+  const password = req.user.password;
+
+ const selectLogin = 'SELECT * FROM users';
+
+ pool.query(selectLogin,[user, password], (err, result) =>{
+if(err){
+  console.log("Error al realizar la conexion");
+  return res.status(500).send('Error to get Evaluation data');
+}
+res.send (result);
+
+ })
+
+}
+
 module.exports = {
   consultaData__,
   consultaEvalData__,
   consultEmail__,
-  autocompleteName
+  autocompleteName,
+  ConsultaLogin__
 };

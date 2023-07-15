@@ -12,6 +12,8 @@ import {
   ListGroup,
   Tab,
   Dropdown,
+  Tabs,
+  Accordion,
 } from 'react-bootstrap';
 import Percentage from '../charts/Percentage';
 import volaris from '../components/img/airlines/volaris.png';
@@ -82,6 +84,7 @@ const PersonalData = () => {
 
   //boton de search, variable suggestion si hace un match con algun elemento de la lista directamente muestra el dato
   const handleSearch = async () => {
+    let suggestions = [];
     Setmatch(false);
     if (email === '') {
       Swal.fire({
@@ -94,16 +97,16 @@ const PersonalData = () => {
       Setmatch(true);
       fetchPerData();
     } else {
-      const suggestions = await handleInputName(email);
+      suggestions = await handleInputName(email);
       if (Array.isArray(suggestions)) {
         const exactMatch = suggestions.find(
-          (suggestion) => suggestion.toLowerCase() === email.toLowerCase()
+          (suggestion) => suggestion.name.toLowerCase() === email.toLowerCase()
         );
         if (exactMatch) {
           Setmatch(true);
           fetchPerData();
         }
-      }else{
+      } else {
         Swal.fire({
           icon: 'info',
           title: 'No suggestions available',
@@ -111,7 +114,7 @@ const PersonalData = () => {
           timer: 1000,
         });
       }
-      }
+    }
   };
 
   // se activa el query con like y muestra los list names
@@ -182,7 +185,7 @@ const PersonalData = () => {
     }
 
     if (empresa.toLowerCase() === 'volaris') {
-      return <img src={volaris} width='9%' alt='Volaris' />;
+      return <img src={volaris} width='7%' alt='Volaris' />;
     } else if (empresa.toLowerCase() === 'aeromexico') {
       return <img src={aeromexico} alt='Aeromexico' width='70%' />;
     } else if (empresa === 'sansa') {
@@ -207,6 +210,18 @@ const PersonalData = () => {
       return <img src={images.calif_d} width='9%' alt='D' />;
     }
   }
+
+  //agrupo por course para que aparezcan diferentes pestañas
+  const groupedData = (match ? personalData : personalDataFromEffect).reduce(
+    (grouped, item) => {
+      if (!grouped[item.course]) {
+        grouped[item.course] = [];
+      }
+      grouped[item.course].push(item);
+      return grouped;
+    },
+    {}
+  );
 
   return (
     <Container className='container-custom'>
@@ -264,10 +279,10 @@ const PersonalData = () => {
               <Dropdown.Item
                 key={index}
                 onClick={() => {
-                  setSelectedEmail(suggestion);
+                  setSelectedEmail(suggestion.email);
                 }}
               >
-                {suggestion}
+                {suggestion.name} - {suggestion.email}
               </Dropdown.Item>
             ))}
           </Dropdown.Menu>
@@ -278,137 +293,237 @@ const PersonalData = () => {
         <SpinnerComponent />
       ) : (
         <Row>
-          {(match ? personalData : personalDataFromEffect).map((item, key) => (
-            <div key={key}>
-              <Col className='mb-5' sm={4} md={12} lg={12} key={item.id}>
-                <Card className='data-container'>
-                  <Card.Body>
-                    <Card.Title>
-                      {item.pd_full_name}, {item.age}{' '}
-                      {renderImage(item.pd_company)} {renderCalif(item.calif)}
-                    </Card.Title>
-                    <div className='components'>
-                      <div>
-                        <Percentage
-                          seriesValue={item.asist}
-                          labelOption={'Assistance'}
-                        />
-                      </div>
-                      <div>
-                        <Percentage
-                          seriesValue={item.payment}
-                          labelOption={'Pay'}
-                        />
-                      </div>
-                    </div>
-                    <Tab.Container
-                      id='list-group-database-info'
-                      defaultActiveKey='#link1'
-                    >
-                      <Row>
-                        <Col sm={4}>
-                          <ListGroup>
-                            <ListGroup.Item action href='#link1'>
-                              Course Information
-                            </ListGroup.Item>
-                            <ListGroup.Item action href='#link2'>
-                              Pilot Information
-                            </ListGroup.Item>
-                            <ListGroup.Item action href='#link3'>
-                              English Information
-                            </ListGroup.Item>
-                            <ListGroup.Item action href='#link4'>
-                              Additional Information
-                            </ListGroup.Item>
-                          </ListGroup>
-                        </Col>
-                        <Col sm={8}>
-                          <Tab.Content>
-                            <Tab.Pane eventKey='#link1'>
+          <Tabs
+            className='course-tab'
+            defaultActiveKey={Object.keys(groupedData)[0]}
+            id='tab-info'
+          >
+            {Object.entries(groupedData).map(([course, items], key) => (
+              <Tab eventKey={course} title={course} key={key}>
+                {items.map((item, innerKey) => (
+                  <Col className='mb-2' sm={4} md={12} lg={12} key={innerKey}>
+                    <Card className='data-container'>
+                      <Card.Body>
+                        <Card.Title>
+                          {item.pd_full_name}, {item.age}{' '}
+                          {renderImage(item.pd_company)}{' '}
+                          {renderCalif(item.calif)}
+                        </Card.Title>
+                        <div className='components'>
+                          <div>
+                            <Percentage
+                              seriesValue={item.asist}
+                              labelOption={'Assistance'}
+                            />
+                          </div>
+                          <div>
+                            <Percentage
+                              seriesValue={item.payment}
+                              labelOption={'Pay'}
+                            />
+                          </div>
+                        </div>
+                        <Tab.Container
+                          id='list-group-database-info'
+                          defaultActiveKey='#link1'
+                        >
+                          <Row>
+                            <Col sm={4}>
                               <ListGroup>
-                                <ListGroup.Item>
-                                  Course: <strong> {item.course}</strong>
+                                <ListGroup.Item action href='#link1'>
+                                  Course Information
                                 </ListGroup.Item>
-                                <ListGroup.Item>
-                                  Start:<strong> {item.start_date}</strong>
+                                <ListGroup.Item action href='#link2'>
+                                  Pilot Information
                                 </ListGroup.Item>
-                                <ListGroup.Item>
-                                  End: <strong> {item.end_date}</strong>
+                                <ListGroup.Item action href='#link3'>
+                                  English Information
                                 </ListGroup.Item>
-                                <ListGroup.Item>
-                                  Inscription Date:
-                                  <strong> {item.date_form}</strong>
+                                <ListGroup.Item action href='#link4'>
+                                  Additional Information
+                                </ListGroup.Item>
+                                <ListGroup.Item action href='#link5'>
+                                  Evaluation Information
                                 </ListGroup.Item>
                               </ListGroup>
-                            </Tab.Pane>
-                            <Tab.Pane eventKey='#link2'>
-                              <ListGroup>
-                                <ListGroup.Item>
-                                  Country: <strong> {item.country}</strong>
-                                </ListGroup.Item>
-                                <ListGroup.Item>
-                                  Cell phone: <strong> {item.cellphone}</strong>
-                                </ListGroup.Item>
-                                <ListGroup.Item>
-                                  Experience:{' '}
-                                  <strong> {item.experience}</strong>
-                                </ListGroup.Item>
-                                <ListGroup.Item>
-                                  Rtari Level:{' '}
-                                  <strong>{item.pd_rtari_level}</strong>
-                                </ListGroup.Item>
-                                <ListGroup.Item>
-                                  Rtari Expires:{' '}
-                                  <strong>{item.rtari_expires}</strong>
-                                </ListGroup.Item>
-                                <ListGroup.Item>
-                                  Type of Aircraft:{' '}
-                                  <strong> {item.type_airc}</strong>
-                                </ListGroup.Item>
-                              </ListGroup>
-                            </Tab.Pane>
-                            <Tab.Pane eventKey='#link3'>
-                              <ListGroup>
-                                <ListGroup.Item>
-                                  Enlgish status:{' '}
-                                  <strong>{item.english_status}</strong>
-                                </ListGroup.Item>
-                                <ListGroup.Item>
-                                  English Hours:
-                                  <strong> {item.hours_english}</strong>
-                                </ListGroup.Item>
-                                <ListGroup.Item>
-                                  Level: <strong>{item.level_english}</strong>
-                                </ListGroup.Item>
-                              </ListGroup>
-                            </Tab.Pane>
-                            <Tab.Pane eventKey='#link4'>
-                              <ListGroup>
-                                <ListGroup.Item>
-                                  How meet us: <strong>{item.contact}</strong>
-                                </ListGroup.Item>
-                                <ListGroup.Item>
-                                  Status:<strong> {item.status}</strong>
-                                </ListGroup.Item>
-                                <ListGroup.Item>
-                                  Option of pay:{' '}
-                                  <strong>{item.option_pay}</strong>
-                                </ListGroup.Item>
-                                <ListGroup.Item>
-                                  Company Email:{' '}
-                                  <strong>{item.company_email}</strong>
-                                </ListGroup.Item>
-                              </ListGroup>
-                            </Tab.Pane>
-                          </Tab.Content>
-                        </Col>
-                      </Row>
-                    </Tab.Container>
-                  </Card.Body>
-                </Card>
-              </Col>
-            </div>
-          ))}
+                            </Col>
+                            <Col sm={8}>
+                              <Tab.Content>
+                                <Tab.Pane eventKey='#link1'>
+                                  <ListGroup>
+                                    <ListGroup.Item>
+                                      Course: <strong> {item.course}</strong>
+                                    </ListGroup.Item>
+                                    <ListGroup.Item>
+                                      Start:<strong> {item.start_date}</strong>
+                                    </ListGroup.Item>
+                                    <ListGroup.Item>
+                                      End: <strong> {item.end_date}</strong>
+                                    </ListGroup.Item>
+                                    <ListGroup.Item>
+                                      Inscription Date:
+                                      <strong> {item.date_form}</strong>
+                                    </ListGroup.Item>
+                                  </ListGroup>
+                                </Tab.Pane>
+                                <Tab.Pane eventKey='#link2'>
+                                  <ListGroup>
+                                    <ListGroup.Item>
+                                      Country: <strong> {item.country}</strong>
+                                    </ListGroup.Item>
+                                    <ListGroup.Item>
+                                      Cell phone:{' '}
+                                      <strong> {item.cellphone}</strong>
+                                    </ListGroup.Item>
+                                    <ListGroup.Item>
+                                      Experience:{' '}
+                                      <strong> {item.experience}</strong>
+                                    </ListGroup.Item>
+                                    <ListGroup.Item>
+                                      Rtari Level:{' '}
+                                      <strong>{item.pd_rtari_level}</strong>
+                                    </ListGroup.Item>
+                                    <ListGroup.Item>
+                                      Rtari Expires:{' '}
+                                      <strong>{item.rtari_expires}</strong>
+                                    </ListGroup.Item>
+                                    <ListGroup.Item>
+                                      Type of Aircraft:{' '}
+                                      <strong> {item.type_airc}</strong>
+                                    </ListGroup.Item>
+                                  </ListGroup>
+                                </Tab.Pane>
+                                <Tab.Pane eventKey='#link3'>
+                                  <ListGroup>
+                                    <ListGroup.Item>
+                                      Enlgish status:{' '}
+                                      <strong>{item.english_status}</strong>
+                                    </ListGroup.Item>
+                                    <ListGroup.Item>
+                                      English Hours:
+                                      <strong> {item.hours_english}</strong>
+                                    </ListGroup.Item>
+                                    <ListGroup.Item>
+                                      Level:{' '}
+                                      <strong>{item.level_english}</strong>
+                                    </ListGroup.Item>
+                                  </ListGroup>
+                                </Tab.Pane>
+                                <Tab.Pane eventKey='#link4'>
+                                  <ListGroup>
+                                    <ListGroup.Item>
+                                      How meet us:{' '}
+                                      <strong>{item.contact}</strong>
+                                    </ListGroup.Item>
+                                    <ListGroup.Item>
+                                      Status:<strong> {item.status}</strong>
+                                    </ListGroup.Item>
+                                    <ListGroup.Item>
+                                      Option of pay:{' '}
+                                      <strong>{item.option_pay}</strong>
+                                    </ListGroup.Item>
+                                    <ListGroup.Item>
+                                      Company Email:{' '}
+                                      <strong>{item.company_email}</strong>
+                                    </ListGroup.Item>
+                                  </ListGroup>
+                                </Tab.Pane>{' '}
+                                <Tab.Pane eventKey='#link5'>
+                                  <Accordion>
+                                    <Accordion.Item eventKey='0'>
+                                      <Accordion.Header>
+                                        Evaluations
+                                      </Accordion.Header>
+                                      <Accordion.Body>
+                                        <ListGroup>
+                                          <ListGroup.Item>
+                                            Applicant Name:{' '}
+                                            <strong>
+                                              {' '}
+                                              {item.applicant_name}
+                                            </strong>
+                                          </ListGroup.Item>
+                                          <ListGroup.Item>
+                                            Month:{' '}
+                                            <strong> {item.month}</strong>
+                                          </ListGroup.Item>
+                                          <ListGroup.Item>
+                                            Applicant Area:{' '}
+                                            <strong>
+                                              {' '}
+                                              {item.applicant_area}
+                                            </strong>
+                                          </ListGroup.Item>
+                                          <ListGroup.Item>
+                                            Test Type:{' '}
+                                            <strong>{item.test_type}</strong>
+                                          </ListGroup.Item>
+                                          <ListGroup.Item>
+                                            Ambassador:{' '}
+                                            <strong>
+                                              {item.no_ambassador}
+                                            </strong>
+                                          </ListGroup.Item>
+                                          <ListGroup.Item>
+                                            Full Name:{' '}
+                                            <strong>{item.full_name}</strong>
+                                          </ListGroup.Item>
+                                          <ListGroup.Item>
+                                            Position:{' '}
+                                            <strong> {item.position}</strong>
+                                          </ListGroup.Item>
+                                          <ListGroup.Item>
+                                            Base: <strong> {item.base}</strong>
+                                          </ListGroup.Item>
+                                          <ListGroup.Item>
+                                            Company Email:{' '}
+                                            <strong>
+                                              {' '}
+                                              {item.company_email}
+                                            </strong>
+                                          </ListGroup.Item>
+                                          <ListGroup.Item>
+                                            Flight Hours:{' '}
+                                            <strong>
+                                              {' '}
+                                              {item.flight_hours}
+                                            </strong>
+                                          </ListGroup.Item>
+                                          <ListGroup.Item>
+                                            RTARI Level:{' '}
+                                            <strong> {item.rtari_level}</strong>
+                                          </ListGroup.Item>
+                                          <ListGroup.Item>
+                                            First Exam:{' '}
+                                            <strong> {item.first_exam}</strong>
+                                          </ListGroup.Item>
+                                          <ListGroup.Item>
+                                            Time: <strong> {item.time}</strong>
+                                          </ListGroup.Item>
+                                          <ListGroup.Item>
+                                            Exam Calification:{' '}
+                                            <strong> {item.exam_calif}</strong>
+                                          </ListGroup.Item>
+                                          <ListGroup.Item>
+                                            Result:{' '}
+                                            <strong> {item.result}</strong>
+                                          </ListGroup.Item>
+                                        </ListGroup>
+                                      </Accordion.Body>
+                                    </Accordion.Item>
+                                  </Accordion>
+                                </Tab.Pane>
+                              </Tab.Content>
+                            </Col>
+                          </Row>
+                        </Tab.Container>
+                      </Card.Body>
+                    </Card>
+                  </Col>
+                ))}
+              </Tab>
+            ))}
+          </Tabs>
         </Row>
       )}
     </Container>

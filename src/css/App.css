@@ -92,6 +92,18 @@ h6 {
 
 }
 
+/* Tab. */
+
+.course-tab {}
+
+.nav-tabs {
+  --bs-nav-tabs-border-color: none !important;
+  border-bottom: none !important;
+}
+
+.nav {
+  padding-left: 0.8rem !important;
+}
 
 /*Login */
 
