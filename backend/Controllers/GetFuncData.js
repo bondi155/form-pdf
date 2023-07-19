@@ -1,6 +1,7 @@
 //const db = require('../Config/dbConfig'); local para pruebas
 const mysql = require('mysql2');
 const pool = mysql.createPool(process.env.DATABASE_URL);
+const bcrypt = require('bcrypt');
 
 const sqlGetPerDataByName = `
 SELECT pd.id AS pd_id, pd.full_name AS pd_full_name, pd.personal_email, pd.cellphone, pd.age, 
@@ -100,16 +101,18 @@ function autocompleteName(req, res) {
     pool.query(sqlGetPerDataByNameLike, email, (err, result) => {
       if (err) {
         console.log(err);
-        return res.status(500).send('Error to get personal data for autocomplete');
+        return res
+          .status(500)
+          .send('Error to get personal data for autocomplete');
       }
 
       if (result.length === 0) {
         return res.send('No data found');
       }
 
-      const suggestions = result.map(item => ({
+      const suggestions = result.map((item) => ({
         name: item.pd_full_name,
-        email: item.pd_personal_email
+        email: item.pd_personal_email,
       }));
 
       res.send(suggestions);
@@ -118,7 +121,7 @@ function autocompleteName(req, res) {
     console.log(error);
   }
 }
-//evaluation data select 
+//evaluation data select
 function consultaEvalData__(req, res) {
   const sqlGetEvalData = 'SELECT * FROM evaluation_data';
 
@@ -131,24 +134,40 @@ function consultaEvalData__(req, res) {
   });
 }
 
-
-//func para validar usuarios 
-
-function ConsultaLogin__ (req, res ){
-  const user = req.user.body;
-  const password = req.user.password;
-
- const selectLogin = 'SELECT * FROM users';
-
- pool.query(selectLogin,[user, password], (err, result) =>{
-if(err){
-  console.log("Error al realizar la conexion");
-  return res.status(500).send('Error to get Evaluation data');
+//get list users.
+function listUsers__(req, res) {
+  const sqlGetusuarios = 'SELECT * FROM users ';
+  pool.query(sqlGetusuarios, (error, result) => {
+    error ? console.log(error) : res.send(result);
+  });
 }
-res.send (result);
 
- })
+//func para validar usuarios
+function loginUsers__(req, res) {
+  const username = req.body.username;
+  const password = req.body.password;
 
+  const selectLogin = 'SELECT * FROM users WHERE username = ?';
+
+  pool.query(selectLogin, [username], (err, result) => {
+    if (err) {
+      console.log('Error al realizar la conexion');
+      res.status(500).send('Error al realizar la conexion');
+    }
+    if (result.length > 0) {
+      bcrypt.compare(password, result[0].password, (err, response) => {
+        if (err) {
+          console.log(err);
+        } else if (response) {
+          res.send(result);
+        } else {
+          res.send({ code: 'USR_INCOR' });
+        }
+      });
+    } else {
+      res.send({ code: 'USR_NOT_EXIST' });
+    }
+  });
 }
 
 module.exports = {
@@ -156,5 +175,6 @@ module.exports = {
   consultaEvalData__,
   consultEmail__,
   autocompleteName,
-  ConsultaLogin__
+  loginUsers__,
+  listUsers__,
 };

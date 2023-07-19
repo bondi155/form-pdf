@@ -47,7 +47,6 @@ function Percentage({ seriesValue, labelOption}) {
   });
 
 
-
   const [series, setSeries] = useState([0]);
 
 

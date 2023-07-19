@@ -6,6 +6,7 @@ const port = process.env.PORT || 5015;
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const getDataController = require('./Controllers/GetFuncData');
+const PostDataController = require ('./Controllers/PostFuncData');
 //const mysql = require('mysql2');
 const { authorize, listMajors } = require('./Controllers/FormApi');
 const excelController = require('./Controllers/EvaluationsXlsx');
@@ -14,15 +15,17 @@ const upload = multer({ dest: 'uploads/' });
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.get('/getPersonalData', getDataController.consultaData__);//get personal data with join 
+app.get('/getDataEvaluations', getDataController.consultaEvalData__);//get evaluation data in data-grid
+app.get('/suggestNames', getDataController.autocompleteName);//suggest list of names
+app.post('/loginUsers', getDataController.loginUsers__);//login 
+app.get('/getUserList', getDataController.listUsers__);//get user for list
+app.post('/createUser', PostDataController.userCreate__);//creation of users
+app.delete('/deleteUser/:id', PostDataController.deleteUser__); //delete user by id
+app.delete('/deleteEvaluation/:id', PostDataController.deleteEvaluation__); //delete evaluation by id
 
-// Ruta para el manejo del info de personal data en base de datos
-app.get('/getPersonalData', getDataController.consultaData__);
 
-// Ruta para el manejo del info de personal data en base de datos
-app.get('/getDataEvaluations', getDataController.consultaEvalData__);
-app.get('/suggestNames', getDataController.autocompleteName  );
-
-// Ruta para el manejo de informacion de sheets
+//get sheet data with validation 
 app.get('/getDataSheets', async (req, res) => {
   try {
     const auth = await authorize();

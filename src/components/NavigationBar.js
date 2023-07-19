@@ -1,10 +1,18 @@
 import React from 'react';
-import { Navbar, Nav } from 'react-bootstrap';
+import { Navbar, Nav, Button } from 'react-bootstrap';
 import { Outlet } from 'react-router-dom';
 import logoNav from '../components/img/logonav.png';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-function NavigationBar() {
+function NavigationBar({setIslogin, islogin}) {
+  const navigate = useNavigate();
+  
+  const handleLogout = () => {
+    setIslogin(false); 
+    navigate("/"); 
+  };
+
   return (
     <>
       <Navbar
@@ -30,7 +38,7 @@ function NavigationBar() {
         <Navbar.Toggle />
         <Navbar.Collapse className='justify-content-end'>
           <Nav>
-            <Link to='/userCreate' className='nav-link'>
+            <Link to='/userCreation' className='nav-link'>
               Users
             </Link>
             <Link to='/personalData' className='nav-link'>
@@ -45,6 +53,7 @@ function NavigationBar() {
             <Link to='/reportCard' className='nav-link'>
               Report Card
             </Link>
+            <Button variant='link' size='sm' onClick={handleLogout}>Logout</Button>
             &nbsp;
           </Nav>
         </Navbar.Collapse>

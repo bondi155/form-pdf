@@ -8,9 +8,10 @@ import './css/App.css';
 import PersonalData from './pages/PersonalData';
 import Evaluations from './pages/Evaluatiions';
 import SpinnerComponent from './components/Spinner';
+import UserCreate from './pages/UserCreate';
 function App() {
+  const [islogin, setIslogin] = useState(false); 
   const [isLoaded, setIsLoaded] = useState(false);
-
   useEffect(() => {
     // Simulando un tiempo de carga
     setTimeout(() => {
@@ -30,13 +31,14 @@ function App() {
     <BrowserRouter basename='/'>
       <Routes>
         <Route path='/' element={<Navigate replace to='/login' />} />
-        <Route path='/login' element={<Login />} />
+        <Route path='/login' element={<Login  islogin={islogin} setIslogin={setIslogin} />} />
         <Route path='/*' element={<Navigate replace to='/login' />} />
-        <Route element={<NavigationBar />}>
+        <Route element={<NavigationBar islogin={islogin} setIslogin={setIslogin} />}>
           <Route path='/home' element={<Home />} />
           <Route path='/reportCard' element={<ReportCard />} />
           <Route path='/personalData' element={<PersonalData />} />
           <Route path='/evaluationData' element={<Evaluations />} />
+          <Route path='/userCreation' element={<UserCreate />} />
         </Route>
       </Routes>
     </BrowserRouter>
