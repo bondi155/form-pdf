@@ -1,18 +1,66 @@
 //const db = require('../Config/dbConfig'); local para pruebas
+require('dotenv').config();
 const mysql = require('mysql2');
 const pool = mysql.createPool(process.env.DATABASE_URL);
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const secretkey = process.env.JWT_SECRET;
 
 const sqlGetPerDataByName = `
-SELECT pd.id AS pd_id, pd.full_name AS pd_full_name, pd.personal_email, pd.cellphone, pd.age, 
-pd.country, pd.course, pd.flight_hours AS pd_flight_hours, pd.flight_status, pd.experience, 
-pd.type_airc, pd.company AS pd_company, pd.company_email AS pd_company_email, 
-pd.rtari_level AS pd_rtari_level, pd.rtari_expires, pd.english_status, pd.hours_english AS pd_hours_english, 
-pd.level_english, pd.other_career, pd.contact, pd.option_pay, pd.date_form, pd.start_date, 
-pd.end_date, pd.asist, pd.payment, pd.calif, pd.status, ed.* 
+SELECT 
+  pd.id AS pd_id, 
+  pd.full_name AS pd_full_name, 
+  pd.personal_email, 
+  pd.cellphone, 
+  pd.age, 
+  pd.country, 
+  pd.course, 
+  pd.flight_hours AS pd_flight_hours, 
+  pd.flight_status, 
+  pd.experience, 
+  pd.type_airc, 
+  pd.company AS pd_company, 
+  pd.company_email AS pd_company_email, 
+  pd.rtari_level AS pd_rtari_level, 
+  pd.rtari_expires, 
+  pd.english_status, 
+  pd.hours_english AS pd_hours_english, 
+  pd.level_english, 
+  pd.other_career, 
+  pd.contact, 
+  pd.option_pay, 
+  pd.date_form, 
+  pd.start_date, 
+  pd.end_date, 
+  pd.asist, 
+  pd.payment, 
+  pd.calif, 
+  pd.status, 
+  GROUP_CONCAT(ed.id) AS ed_ids, 
+  GROUP_CONCAT(ed.base) AS ed_bases, 
+  GROUP_CONCAT(ed.company_email) AS ed_company_emails, 
+  GROUP_CONCAT(ed.flight_hours) AS ed_flight_hours, 
+  GROUP_CONCAT(ed.rtari_level) AS ed_rtari_levels, 
+  GROUP_CONCAT(ed.first_exam) AS ed_first_exams, 
+  GROUP_CONCAT(ed.time) AS ed_times, 
+  GROUP_CONCAT(ed.exam_calif) AS ed_exam_califs, 
+  GROUP_CONCAT(ed.result) AS ed_results,
+  GROUP_CONCAT(ed.applicant_name) AS ed_applicant_name,
+  GROUP_CONCAT(ed.month) AS ed_month,
+  GROUP_CONCAT(ed.applicant_area) AS ed_applicant_area,
+  GROUP_CONCAT(ed.test_type) AS ed_test_type,
+  GROUP_CONCAT(ed.no_ambassador) AS ed_no_ambassador,
+  GROUP_CONCAT(ed.full_name) AS ed_full_name,
+  GROUP_CONCAT(ed.position) AS ed_position
 FROM personal_data pd
 LEFT JOIN evaluation_data ed ON pd.full_name = ed.full_name
 WHERE pd.full_name = ?
+GROUP BY pd.id, pd.full_name, pd.personal_email, pd.cellphone, pd.age, 
+pd.country, pd.course, pd.flight_hours, pd.flight_status, pd.experience, 
+pd.type_airc, pd.company, pd.company_email, 
+pd.rtari_level, pd.rtari_expires, pd.english_status, pd.hours_english, 
+pd.level_english, pd.other_career, pd.contact, pd.option_pay, pd.date_form, pd.start_date, 
+pd.end_date, pd.asist, pd.payment, pd.calif, pd.status
 `;
 //join del nombre
 function consultJoin__(req, res, name) {
@@ -138,11 +186,20 @@ function consultaEvalData__(req, res) {
 function listUsers__(req, res) {
   const sqlGetusuarios = 'SELECT * FROM users ';
   pool.query(sqlGetusuarios, (error, result) => {
-    error ? console.log(error) : res.send(result);
+    if (error) {
+      console.log(error);
+    } else {
+      const userList = result.map((row) => ({
+        id: row.id,
+        user: row.username,
+        role: row.role,
+      }));
+      res.send(userList);
+    }
   });
 }
 
-//func para validar usuarios
+//func para validar usuarios , executamos eso esto en terminal para generar el key = node -e "console.log(require('crypto').randomBytes(256).toString('base64'))
 function loginUsers__(req, res) {
   const username = req.body.username;
   const password = req.body.password;
@@ -159,7 +216,15 @@ function loginUsers__(req, res) {
         if (err) {
           console.log(err);
         } else if (response) {
-          res.send(result);
+          const token = jwt.sign({ id: result[0].id }, secretkey, {
+            expiresIn: '1h',
+          });
+          res.send({
+            token,
+            id: result[0].id,
+            username: result[0].username,
+            role: result[0].role,
+          });
         } else {
           res.send({ code: 'USR_INCOR' });
         }
@@ -170,6 +235,19 @@ function loginUsers__(req, res) {
   });
 }
 
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (token == null) return res.sendStatus(401);
+
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403);
+    req.user = user;
+    next();
+  });
+}
+
 module.exports = {
   consultaData__,
   consultaEvalData__,
@@ -177,4 +255,5 @@ module.exports = {
   autocompleteName,
   loginUsers__,
   listUsers__,
+  authenticateToken,
 };

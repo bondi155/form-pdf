@@ -3,12 +3,12 @@ const pool = mysql.createPool(process.env.DATABASE_URL);
 const bcrypt = require('bcrypt'); 
 const saltRounds = 10;
 
+//user create
 function userCreate__(req, res) {
   const username = req.body.username;
   const role = req.body.role;
   const password = req.body.password;
 
-  console.log(username, password, role);
   bcrypt.hash(password, saltRounds, (err, hash) => {
     if (err) {
       console.log(err);

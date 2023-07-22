@@ -440,73 +440,73 @@ const PersonalData = () => {
                                             Applicant Name:{' '}
                                             <strong>
                                               {' '}
-                                              {item.applicant_name}
+                                              {item.ed_applicant_name}
                                             </strong>
                                           </ListGroup.Item>
                                           <ListGroup.Item>
                                             Month:{' '}
-                                            <strong> {item.month}</strong>
+                                            <strong> {item.ed_month}</strong>
                                           </ListGroup.Item>
                                           <ListGroup.Item>
                                             Applicant Area:{' '}
                                             <strong>
                                               {' '}
-                                              {item.applicant_area}
+                                              {item.ed_applicant_area}
                                             </strong>
                                           </ListGroup.Item>
                                           <ListGroup.Item>
                                             Test Type:{' '}
-                                            <strong>{item.test_type}</strong>
+                                            <strong>{item.ed_test_type}</strong>
                                           </ListGroup.Item>
                                           <ListGroup.Item>
                                             Ambassador:{' '}
                                             <strong>
-                                              {item.no_ambassador}
+                                              {item.ed_no_ambassador}
                                             </strong>
                                           </ListGroup.Item>
                                           <ListGroup.Item>
                                             Full Name:{' '}
-                                            <strong>{item.full_name}</strong>
+                                            <strong>{item.ed_full_name}</strong>
                                           </ListGroup.Item>
                                           <ListGroup.Item>
                                             Position:{' '}
-                                            <strong> {item.position}</strong>
+                                            <strong> {item.ed_position}</strong>
                                           </ListGroup.Item>
                                           <ListGroup.Item>
-                                            Base: <strong> {item.base}</strong>
+                                            Base: <strong> {item.ed_bases}</strong>
                                           </ListGroup.Item>
                                           <ListGroup.Item>
                                             Company Email:{' '}
                                             <strong>
                                               {' '}
-                                              {item.company_email}
+                                              {item.ed_company_emails}
                                             </strong>
                                           </ListGroup.Item>
                                           <ListGroup.Item>
                                             Flight Hours:{' '}
                                             <strong>
                                               {' '}
-                                              {item.flight_hours}
+                                              {item.ed_flight_hours}
                                             </strong>
                                           </ListGroup.Item>
                                           <ListGroup.Item>
                                             RTARI Level:{' '}
-                                            <strong> {item.rtari_level}</strong>
+                                            <strong> {item.ed_rtari_levels}</strong>
                                           </ListGroup.Item>
                                           <ListGroup.Item>
                                             First Exam:{' '}
-                                            <strong> {item.first_exam}</strong>
+                                            <strong> {item.ed_first_exams}</strong>
                                           </ListGroup.Item>
                                           <ListGroup.Item>
-                                            Time: <strong> {item.time}</strong>
+                                            Time: <strong> {item.ed_times}</strong>
                                           </ListGroup.Item>
                                           <ListGroup.Item>
                                             Exam Calification:{' '}
-                                            <strong> {item.exam_calif}</strong>
+                                            <strong> {item.ed_exam_califs}</strong>
                                           </ListGroup.Item>
                                           <ListGroup.Item>
                                             Result:{' '}
-                                            <strong> {item.result}</strong>
+                                            <strong> {item.ed_results}</strong>
                                           </ListGroup.Item>
                                         </ListGroup>
                                       </Accordion.Body>

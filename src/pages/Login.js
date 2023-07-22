@@ -8,7 +8,7 @@ import '../css/App.css';
 import { API_URL } from '../config/config';
 import axios from 'axios';
 
-function Login({setIslogin}) {
+function Login({ setIslogin }) {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({ username: '', role: '', password: '' });
@@ -25,7 +25,7 @@ function Login({setIslogin}) {
       const response = await axios.post(`${API_URL}/loginUsers`, {
         username: form.username,
         password: form.password,
-      });//pass incorrecto
+      }); //pass incorrecto
       if (response.data.code === 'USR_INCOR') {
         Swal.fire({
           icon: 'error',
@@ -39,7 +39,11 @@ function Login({setIslogin}) {
           title: 'Oops...',
           text: 'User does not exist',
         });
-      } else {//si pasa bien 
+      } else {
+        //si pasa bien
+        localStorage.setItem('jwtToken', response.data.token);
+        axios.defaults.headers.common['Authorization'] =
+          'Bearer ' + response.data.token;
         setIslogin(true);
         navigate('/home', { replace: true });
       }
@@ -51,6 +55,7 @@ function Login({setIslogin}) {
       });
     }
   };
+
   return (
     <div className='App'>
       <Form className='login-form'>

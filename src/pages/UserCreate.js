@@ -63,6 +63,7 @@ function UserCreate() {
     try {
       const response = await axios.get(`${API_URL}/getUserList`);
       setListUser(response.data);
+      console.log(response.data);
     } catch (err) {
       console.log('Error', err);
     }
@@ -71,12 +72,6 @@ function UserCreate() {
   useEffect(() => {
     getUserData();
   }, []);
-
-  const userlistrows = listUser.map((row) => ({
-    id: row.id,
-    user: row.username,
-    role: row.role,
-  }));
 
   //borrar usuario
   const handleDelete = async (id) => {
@@ -147,6 +142,7 @@ function UserCreate() {
               />
             </Form.Group>
           </Col>
+          <input type='hidden' name='_csrf' value='{{csrfToken}}' />
           <Col lg={2} sm={{ span: 3, offset: 5 }}>
             <Button className='mb-5' variant='outline-success' type='submit'>
               Create User
@@ -157,7 +153,7 @@ function UserCreate() {
       <h2 className='center-text'>User List</h2>
       <div className='tablaUsuario'>
         <GridEval
-          rows={userlistrows}
+          rows={listUser}
           columnsVar={userColumns}
           onDelete={handleDelete}
         />

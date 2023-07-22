@@ -1,6 +1,8 @@
 import { atom } from 'recoil';
 
-export const queryResults = atom({
-  default: [],
-  key: 'queryResults',
+//Recoil para el token CSRF
+const csrfTokenState = atom({
+  default: '',
+  key: 'csrfTokenState',
+
 });

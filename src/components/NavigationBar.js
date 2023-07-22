@@ -4,13 +4,16 @@ import { Outlet } from 'react-router-dom';
 import logoNav from '../components/img/logonav.png';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-
-function NavigationBar({setIslogin, islogin}) {
+import axios from 'axios';
+function NavigationBar({ setIslogin }) {
   const navigate = useNavigate();
-  
+
   const handleLogout = () => {
-    setIslogin(false); 
-    navigate("/"); 
+    localStorage.removeItem('jwtToken');
+    axios.defaults.headers.common['Authorization'] = '';
+    axios.defaults.headers.common['X-CSRF-Token'] = '';
+    setIslogin(false);
+    navigate('/');
   };
 
   return (
@@ -53,7 +56,9 @@ function NavigationBar({setIslogin, islogin}) {
             <Link to='/reportCard' className='nav-link'>
               Report Card
             </Link>
-            <Button variant='link' size='sm' onClick={handleLogout}>Logout</Button>
+            <Button variant='link' size='sm' onClick={handleLogout}>
+              Logout
+            </Button>
             &nbsp;
           </Nav>
         </Navbar.Collapse>
