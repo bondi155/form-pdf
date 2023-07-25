@@ -10,6 +10,8 @@ import Evaluations from './pages/Evaluatiions';
 import SpinnerComponent from './components/Spinner';
 import UserCreate from './pages/UserCreate';
 import PrivateRoute from './pages/PrivateRoute';
+import axios from 'axios';
+import Swal from 'sweetalert2';
 function App() {
   const [islogin, setIslogin] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -28,6 +30,26 @@ function App() {
     );
   }
 
+  // quita al usuario luego de la expiracion del token
+  axios.interceptors.response.use(
+    function (response) {
+      // Si la respuesta fue exitosa, simplemente la devolvemos
+      return response;
+    },
+    function (error) {
+      if (error.response && error.response.status === 403) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Security Message',
+          text: 'Token expire, please login again',
+        });
+
+        window.location.href = '/';
+      }
+      // Si el error no fue un 403, simplemente lo devolvemos para que pueda ser manejado mas adelante
+      return Promise.reject(error);
+    }
+  );
   return (
     <BrowserRouter basename='/'>
       <Routes>

@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { API_URL } from '../config/config.js';
 import GridEval from '../charts/GridEval';
-
+import Swal from 'sweetalert2';
 const userColumns = [
   { field: 'id', headerName: 'ID', width: 150 },
 
@@ -65,7 +65,16 @@ function UserCreate() {
       setListUser(response.data);
       console.log(response.data);
     } catch (err) {
-      console.log('Error', err);
+      if (err.response && err.response.status === 403) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Security Message',
+          text: 'Token expire, please login again',
+        });
+      } else {
+        Swal.fire('Ooops', 'Unable to get data', 'error');
+        console.log('Error', err);
+      }
     }
   };
 
@@ -75,21 +84,25 @@ function UserCreate() {
 
   //borrar usuario
   const handleDelete = async (id) => {
-    if (window.confirm('seguro quiere borrar este usuario?')) {
-      // Intenta eliminar al usuario de la base de datos
-      await axios.delete(`${API_URL}/deleteUser/${id}`);
-
-      // Si se tiene éxito, actualiza el estado para eliminar al usuario de la vista
-      setListUser(listUser.filter((user) => user.id !== id));
-
-      // Aquí puedes mostrar un mensaje de éxito si lo deseas
-      alert('Usuario eliminado correctamente');
-    }
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await axios.delete(`${API_URL}/deleteUser/${id}`);
+        setListUser(listUser.filter((user) => user.id !== id));
+        Swal.fire('Deleted!', 'The user has been deleted.', 'success');
+      }
+    });
     try {
     } catch (err) {
-      // Aquí puedes manejar cualquier error que pueda ocurrir
       console.error(err);
-      alert('Hubo un error al eliminar al usuario');
+      Swal.fire('Ooops', 'Unable to delete user', 'error');
     }
   };
 
@@ -124,8 +137,8 @@ function UserCreate() {
                   {' '}
                   User Type{' '}
                 </option>
-                <option value='capturista'>Capturista</option>
-                <option value='aprobador'>Aprobador</option>
+                <option value='company'>Company</option>
+                <option value='controller'>Controller</option>
                 <option value='admin'>Administrator</option>
               </Form.Select>
             </Form.Group>

@@ -68,7 +68,7 @@ function consultJoin__(req, res, name) {
     pool.query(sqlGetPerDataByName, name, (err, result) => {
       if (err) {
         console.log(err);
-        return res.status(500).send('Error to get personal data trought mail');
+        return res.status(500).send('Error to get personal data trought Name');
       }
 
       if (result.length === 0) {
@@ -90,7 +90,7 @@ function consultEmail__(req, res) {
     pool.query(sqlGetPerDataByEmail, email, (err, result) => {
       if (err) {
         console.log(err);
-        return res.status(500).send('Error to get personal data');
+        return res.status(500).send('Error to get personal data by email');
       }
 
       if (result.length === 0) {
@@ -208,13 +208,14 @@ function loginUsers__(req, res) {
 
   pool.query(selectLogin, [username], (err, result) => {
     if (err) {
-      console.log('Error al realizar la conexion');
-      res.status(500).send('Error al realizar la conexion');
+      console.log('Error al realizar la conexion bd para bcrypt password');
+      res.status(500).send('Error al realizar la conexion bd para bcrypt password');
     }
     if (result.length > 0) {
       bcrypt.compare(password, result[0].password, (err, response) => {
         if (err) {
           console.log(err);
+          res.status(500).send('Error to compare encrypt password');
         } else if (response) {
           const token = jwt.sign({ id: result[0].id }, secretkey, {
             expiresIn: '1h',
@@ -235,18 +236,7 @@ function loginUsers__(req, res) {
   });
 }
 
-function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
 
-  if (token == null) return res.sendStatus(401);
-
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403);
-    req.user = user;
-    next();
-  });
-}
 
 module.exports = {
   consultaData__,
@@ -255,5 +245,4 @@ module.exports = {
   autocompleteName,
   loginUsers__,
   listUsers__,
-  authenticateToken,
 };

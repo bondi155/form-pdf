@@ -54,11 +54,10 @@ const PersonalData = () => {
         });
         SetIsloading(false);
       }
-      console.log(personalData);
-    } catch (error) {
+    } catch (err) {
       SetIsloading(false);
-
-      console.log(error);
+      Swal.fire('Ooops', 'Unable to get data', 'error');
+      console.log(err);
     }
   };
 
@@ -84,6 +83,7 @@ const PersonalData = () => {
 
   //boton de search, variable suggestion si hace un match con algun elemento de la lista directamente muestra el dato
   const handleSearch = async () => {
+    try{ 
     let suggestions = [];
     Setmatch(false);
     if (email === '') {
@@ -115,6 +115,23 @@ const PersonalData = () => {
         });
       }
     }
+  }catch(err) {
+    SetIsloading(false);
+      if (err.response && err.response.status === 403) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Security Message',
+          text: 'Token expire, please login again',
+        });
+      } else {
+        Swal.fire(
+          'Error!',
+          'There was an connection error to Data Base',
+          'error'
+        );
+      }
+
+  }
   };
 
   // se activa el query con like y muestra los list names
@@ -129,8 +146,9 @@ const PersonalData = () => {
           setSuggestions(response.data);
           return response.data;
         }
-      } catch (error) {
-        console.error('Error al obtener las sugerencias', error);
+      } catch (err) {
+        Swal.fire('Ooops', 'Unable to get data', 'error');
+        console.error('Error al obtener las sugerencias', err);
       }
     } else {
       setSuggestions([]);
@@ -168,14 +186,23 @@ const PersonalData = () => {
           text: textEmails,
         });
       }
-    } catch (error) {
-      Swal.fire(
-        'Error!',
-        'There was an error trying to get data from Sheets',
-        'error'
-      );
+    } catch (err) {
+      SetIsloading(false);
+      if (err.response && err.response.status === 403) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Security Message',
+          text: 'Token expire, please login again',
+        });
+      } else {
+        Swal.fire(
+          'Error!',
+          'There was an connection error to Google Sheets',
+          'error'
+        );
+      }
 
-      console.error('Error:', error);
+      console.error('Error:', err);
     }
   };
 
@@ -473,7 +500,8 @@ const PersonalData = () => {
                                             <strong> {item.ed_position}</strong>
                                           </ListGroup.Item>
                                           <ListGroup.Item>
-                                            Base: <strong> {item.ed_bases}</strong>
+                                            Base:{' '}
+                                            <strong> {item.ed_bases}</strong>
                                           </ListGroup.Item>
                                           <ListGroup.Item>
                                             Company Email:{' '}
@@ -491,18 +519,28 @@ const PersonalData = () => {
                                           </ListGroup.Item>
                                           <ListGroup.Item>
                                             RTARI Level:{' '}
-                                            <strong> {item.ed_rtari_levels}</strong>
+                                            <strong>
+                                              {' '}
+                                              {item.ed_rtari_levels}
+                                            </strong>
                                           </ListGroup.Item>
                                           <ListGroup.Item>
                                             First Exam:{' '}
-                                            <strong> {item.ed_first_exams}</strong>
+                                            <strong>
+                                              {' '}
+                                              {item.ed_first_exams}
+                                            </strong>
                                           </ListGroup.Item>
                                           <ListGroup.Item>
-                                            Time: <strong> {item.ed_times}</strong>
+                                            Time:{' '}
+                                            <strong> {item.ed_times}</strong>
                                           </ListGroup.Item>
                                           <ListGroup.Item>
                                             Exam Calification:{' '}
-                                            <strong> {item.ed_exam_califs}</strong>
+                                            <strong>
+                                              {' '}
+                                              {item.ed_exam_califs}
+                                            </strong>
                                           </ListGroup.Item>
                                           <ListGroup.Item>
                                             Result:{' '}

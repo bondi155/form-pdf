@@ -4,7 +4,7 @@ import { Container, Button, Row, Col, Form } from 'react-bootstrap';
 import axios from 'axios';
 import { API_URL } from '../config/config';
 import GridEval from '../charts/GridEval';
-
+import Swal from 'sweetalert2';
 const evalColumns = [
   { field: 'id', headerName: 'ID', width: 50 },
 
@@ -155,14 +155,23 @@ function Evaluations() {
       );
     }
   };
-
+  //get eval data from db
   const getEvalData = async () => {
     try {
       const response = await axios.get(`${API_URL}/getDataEvaluations`, {});
       setConsulEval(response.data);
       console.log('informacion obtenida');
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      if (err.response && err.response.status === 403) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Security Message',
+          text: 'Token expire, please login again',
+        });
+      } else {
+        console.log(err);
+        Swal.fire('Ooops', 'Unable to get data', 'error');
+      }
     }
   };
 
@@ -177,16 +186,21 @@ function Evaluations() {
 
   //borrar Evaluation
   const handleDelete = async (id) => {
-    if (window.confirm('seguro quiere borrar este usuario?')) {
-      // Intenta eliminar al usuario de la base de datos
-      await axios.delete(`${API_URL}/deleteEvaluation/${id}`);
-
-      // Si se tiene éxito, actualiza el estado para eliminar al usuario de la vista
-      setConsulEval(consulEval.filter((user) => user.id !== id));
-
-      // Aquí puedes mostrar un mensaje de éxito si lo deseas
-      alert('Usuario eliminado correctamente');
-    }
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await axios.delete(`${API_URL}/deleteEvaluation/${id}`);
+        setConsulEval(consulEval.filter((user) => user.id !== id));
+        Swal.fire('Deleted!', 'The user has been deleted.', 'success');
+      }
+    });
     try {
     } catch (err) {
       // Aquí puedes manejar cualquier error que pueda ocurrir

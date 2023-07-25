@@ -11,7 +11,6 @@ function NavigationBar({ setIslogin }) {
   const handleLogout = () => {
     localStorage.removeItem('jwtToken');
     axios.defaults.headers.common['Authorization'] = '';
-    axios.defaults.headers.common['X-CSRF-Token'] = '';
     setIslogin(false);
     navigate('/');
   };
