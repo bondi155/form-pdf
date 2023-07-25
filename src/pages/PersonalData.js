@@ -253,15 +253,15 @@ const PersonalData = () => {
   return (
     <Container className='container-custom'>
       <Row>
-        <Col sm={6} lg={4} md={6}>
-          <h1 className='mb-2'>Personal Data </h1>
+        <Col sm={6} lg={6} md={6}>
+          <h1 className='mb-2'>Consolidate Information </h1>
         </Col>
-        <Col sm={6} lg={3} md={6}>
+        <Col sm={6} lg={4} md={6}>
           <InputGroup className='mb-3 mt-3'>
             <FormControl
               type='text'
               required
-              placeholder='Set course and get pilots'
+              placeholder='Tab name (Get students from Google Sheets)'
               aria-label='Set Course'
               aria-describedby='basic-addon2'
               size='sm'
@@ -277,6 +277,7 @@ const PersonalData = () => {
             </Button>
           </InputGroup>
         </Col>
+        <hr></hr>
       </Row>
       <InputGroup className='mb-3 mt-4'>
         <FormControl

@@ -213,7 +213,8 @@ function Evaluations() {
     <>
       <Container className='container-custom'>
         <h1>Evaluations</h1>
-        <Row className='mt-4'>
+        <hr></hr>
+        <Row className='mt-2'>
           <Col className='mt-3' lg={{ span: 10 }}>
             <Form.Group controlId='formFileLg' className='mb-3'>
               <Form.Label>Upload Consolidate Evaluations Excel</Form.Label>

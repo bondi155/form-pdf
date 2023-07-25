@@ -108,7 +108,7 @@ function UserCreate() {
 
   return (
     <Container className='container-custom'>
-      <h2>User Create Page </h2>
+      <h1>User Create Page </h1>
       <hr></hr>
       <form onSubmit={addNewUser}>
         <Row>

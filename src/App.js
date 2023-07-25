@@ -44,7 +44,11 @@ function App() {
           text: 'Token expire, please login again',
         });
 
-        window.location.href = '/';
+          localStorage.removeItem('jwtToken');
+          axios.defaults.headers.common['Authorization'] = '';
+          window.location.href = '/';
+
+      
       }
       // Si el error no fue un 403, simplemente lo devolvemos para que pueda ser manejado mas adelante
       return Promise.reject(error);
