@@ -5,6 +5,8 @@ import axios from 'axios';
 import { API_URL } from '../config/config';
 import GridEval from '../charts/GridEval';
 import Swal from 'sweetalert2';
+import { BsFillCloudUploadFill } from 'react-icons/bs';
+
 const evalColumns = [
   { field: 'id', headerName: 'ID', width: 50 },
 
@@ -110,7 +112,41 @@ const evalColumns = [
     width: 90,
     editable: true,
   },
+  {
+    field: 'upload',
+    headerName: 'Report Card',
+    width: 130,
+
+    renderCell: (params) => (
+      <div className='file_input'>
+        <input
+          id='file_btn'
+          type='file'
+          onChange={(event) => handlePdfUpload(event, params.row.id)}
+        />
+        <label htmlFor='file_btn'>
+          <BsFillCloudUploadFill size={30} style={{ cursor: 'pointer' }} />
+        </label>
+      </div>
+    ),
+  },
 ];
+
+const handlePdfUpload = (e, id) => {
+  const file = e.target.files[0];
+
+  const formData = new FormData();
+  formData.append('pdf', file);
+  if(!e.target.file[0]){   
+alert('Vuelva a seleccionar un archivo ')
+  }
+  try {
+    axios.post(`/uploadPDF/${id}`, formData);
+    console.log('upload success');
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 function Evaluations() {
   const [file, setFile] = useState(null);
@@ -179,8 +215,8 @@ function Evaluations() {
     getEvalData();
   }, []);
 
-  const rows = consulEval.map((row, index) => ({
-    id: index,
+  const rows = consulEval.map((row) => ({
+    id: row.id,
     ...row,
   }));
 

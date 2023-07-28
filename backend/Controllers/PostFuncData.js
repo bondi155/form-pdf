@@ -1,6 +1,6 @@
 const mysql = require('mysql2');
 const pool = mysql.createPool(process.env.DATABASE_URL);
-const bcrypt = require('bcrypt'); 
+const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 //user create
@@ -20,10 +20,13 @@ function userCreate__(req, res) {
     pool.query(sqlCreateUser, [username, role, hash], (error, result) => {
       if (error) {
         console.log(error.code);
-    
+
         if (error.code === 'ER_DUP_ENTRY') {
-          res.status(500).json({ code: 'USER_DUPLI', message: 'This user name already exists' });
-        } 
+          res.status(500).json({
+            code: 'USER_DUPLI',
+            message: 'This user name already exists',
+          });
+        }
       } else {
         res.status(200).json('User create!');
       }
@@ -31,7 +34,7 @@ function userCreate__(req, res) {
   });
 }
 
-//delete user 
+//delete user
 function deleteUser__(req, res) {
   const id = req.params.id;
 
@@ -40,7 +43,9 @@ function deleteUser__(req, res) {
   pool.query(sqlDeleteUser, [id], (error, result) => {
     if (error) {
       console.log(error);
-      res.status(500).json({ message: 'An error occurred while deleting the user' });
+      res
+        .status(500)
+        .json({ message: 'An error occurred while deleting the user' });
     } else {
       res.status(200).json({ message: 'User deleted successfully' });
     }
@@ -56,15 +61,35 @@ function deleteEvaluation__(req, res) {
   pool.query(sqlDeleteUser, [id], (error, result) => {
     if (error) {
       console.log(error);
-      res.status(500).json({ message: 'An error occurred while deleting a evaluation row' });
+      res
+        .status(500)
+        .json({ message: 'An error occurred while deleting a evaluation row' });
     } else {
       res.status(200).json({ message: 'Evaluation row deleted successfully' });
     }
   });
 }
-module.exports = 
-{ 
-    userCreate__,
-    deleteEvaluation__,
-    deleteUser__
+//upload report card
+function reportPdf__(req, res) {
+  const id = req.params.id;
+  const file = req.file;
+
+  const sqlUploadReport =
+    'UPDATE evaluation_data SET report_card = ? WHERE id = ?';
+
+  pool.query(sqlUploadReport, [file.path, id], (error, result) => {
+    if (error) {
+      console.log(error);
+      return res.status(500).send('Hubo un error al subir el archivo');
+    }
+
+    res.send('Archivo subido con éxito');
+  });
 }
+
+module.exports = {
+  userCreate__,
+  deleteEvaluation__,
+  deleteUser__,
+  reportPdf__,
+};

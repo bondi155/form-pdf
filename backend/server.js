@@ -11,6 +11,7 @@ const getDataController = require('./Controllers/GetFuncData');
 const PostDataController = require ('./Controllers/PostFuncData');
 //const mysql = require('mysql2');
 const { authorize, listMajors } = require('./Controllers/FormApi');
+const { authorizeDrive, listFiles} = require ('./Controllers/DriveApi');
 const excelController = require('./Controllers/EvaluationsXlsx');
 const upload = multer({ dest: 'uploads/' });
 const jwt = require('jsonwebtoken');
@@ -89,6 +90,11 @@ if (duplicatedState){
 });
 // Ruta para el manejo del archivo Excel
 app.post('/uploadfile', authenticateToken, upload.single('file'), excelController.EvaluationsXlsx);
+//ruta para subir reportcard a cada id especifico
+app.post('/uploadReport', authenticateToken, upload.single('pdf'), PostDataController.reportPdf__);
+
+
+//authorizeDrive().then(listFiles).catch(console.error);
 
 app.listen(port, () => {
   console.log('servidor funcionando en el puerto ' + port);

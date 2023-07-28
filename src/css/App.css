@@ -144,3 +144,14 @@ h6 {
 .center-text {
   text-align: center;
 }
+
+
+/* input file*/
+#file_btn {
+  display: none;
+
+}
+
+.file_input {
+  margin-left: 2rem;
+}

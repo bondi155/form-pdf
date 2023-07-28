@@ -49,12 +49,12 @@ function NavigationBar({ setIslogin }) {
             <Link to='/evaluationData' className='nav-link'>
               Evaluation data{' '}
             </Link>
-            <Link to='/formController' className='nav-link'>
+          {/*  <Link to='/formController' className='nav-link'>
               Form Controller{' '}
             </Link>
             <Link to='/reportCard' className='nav-link'>
               Report Card
-            </Link>
+            </Link> */}
             <Button variant='link' size='sm' onClick={handleLogout}>
               Logout
             </Button>
