@@ -1,11 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import '../css/App.css';
-import { Container, Button, Row, Col, Form } from 'react-bootstrap';
+import { Container, Button, Row, Col, Form, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import { API_URL } from '../config/config';
 import GridEval from '../charts/GridEval';
 import Swal from 'sweetalert2';
 import { BsFillCloudUploadFill } from 'react-icons/bs';
+
+function CommentModal({ comment }) {
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  return (
+    <>
+      <Button size='sm' variant="success" onClick={handleShow}>
+        Comment{' '}
+      </Button>
+
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Comment</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{comment}</Modal.Body>
+        <Modal.Footer>
+          <Button variant='secondary' onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
+  );
+}
 
 const evalColumns = [
   { field: 'id', headerName: 'ID', width: 50 },
@@ -17,9 +44,15 @@ const evalColumns = [
     editable: true,
   },
   {
+    field: 'company',
+    headerName: 'Company',
+    width: 90,
+    editable: true,
+  },
+  {
     field: 'applicant_name',
-    headerName: 'Name Applicant',
-    width: 150,
+    headerName: 'Applicant',
+    width: 120,
     editable: true,
   },
   {
@@ -30,7 +63,7 @@ const evalColumns = [
   },
   {
     field: 'applicant_area',
-    headerName: 'Name Area',
+    headerName: 'Area',
     width: 120,
     editable: true,
   },
@@ -49,12 +82,6 @@ const evalColumns = [
   {
     field: 'full_name',
     headerName: 'Name Ambassador',
-    width: 150,
-    editable: true,
-  },
-  {
-    field: 'company',
-    headerName: 'Company',
     width: 150,
     editable: true,
   },
@@ -114,37 +141,72 @@ const evalColumns = [
   },
   {
     field: 'upload',
-    headerName: 'Report Card',
-    width: 130,
+    headerName: 'Upload Pdf',
+    width: 100,
 
     renderCell: (params) => (
       <div className='file_input'>
         <input
-          id='file_btn'
+          id={`file_btn_${params.row.id}`}
+          className='file-btn'
           type='file'
-          onChange={(event) => handlePdfUpload(event, params.row.id)}
+          onChange={(e) => handlePdfUpload(e, params.row.id)}
         />
-        <label htmlFor='file_btn'>
+        <label htmlFor={`file_btn_${params.row.id}`}>
           <BsFillCloudUploadFill size={30} style={{ cursor: 'pointer' }} />
         </label>
       </div>
     ),
   },
+  {
+    field: 'report_url',
+    headerName: 'Report',
+    width: 130,
+    renderCell: (params) => {
+      if (!params.value) {
+        return <span>No Report</span>; // O cualquier otra cosa que quieras mostrar cuando no haya una URL
+      }
+
+      const correctedUrl = `${API_URL}/${params.value.replace('\\', '/')}`;
+      console.log(`URL: ${correctedUrl}`);
+
+      return (
+        <a href={correctedUrl} download>
+          Download Report
+        </a>
+      );
+    },
+  },
+  {
+    field: 'comments',
+    headerName: 'Comments',
+    width: 100,
+    renderCell: (params) => {
+      if (!params.row.comments) {
+        return <span>No comments</span>;
+      } else {
+        return <CommentModal comment={params.row.comments} />;
+      }
+    },
+  },
 ];
 
+//subir pdf report card
 const handlePdfUpload = (e, id) => {
   const file = e.target.files[0];
-
+  console.log(id);
   const formData = new FormData();
-  formData.append('pdf', file);
-  if(!e.target.file[0]){   
-alert('Vuelva a seleccionar un archivo ')
+  formData.append('file', file);
+  if (!file) {
+    alert('Vuelva a seleccionar un archivo ');
   }
   try {
-    axios.post(`/uploadPDF/${id}`, formData);
+    axios.post(`${API_URL}/uploadReport/${id}`, formData);
     console.log('upload success');
+    alert('upload success');
   } catch (err) {
     console.log(err);
+    alert('error uploading file', err);
   }
 };
 
@@ -217,6 +279,7 @@ function Evaluations() {
 
   const rows = consulEval.map((row) => ({
     id: row.id,
+    comments: row.comments,
     ...row,
   }));
 

@@ -2,7 +2,6 @@ const mysql = require('mysql2');
 const pool = mysql.createPool(process.env.DATABASE_URL);
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-
 //user create
 function userCreate__(req, res) {
   const username = req.body.username;
@@ -69,13 +68,18 @@ function deleteEvaluation__(req, res) {
     }
   });
 }
+
 //upload report card
 function reportPdf__(req, res) {
+  if (!req.file) {
+    return res.status(400).send({message:'No se encontró el archivo', code:'FILE_NOT_FOUND'});
+  }
   const id = req.params.id;
   const file = req.file;
-
+  console.log(req.file);
+console.log(id);
   const sqlUploadReport =
-    'UPDATE evaluation_data SET report_card = ? WHERE id = ?';
+    'UPDATE evaluation_data SET report_url = ? WHERE id = ?';
 
   pool.query(sqlUploadReport, [file.path, id], (error, result) => {
     if (error) {
@@ -83,7 +87,7 @@ function reportPdf__(req, res) {
       return res.status(500).send('Hubo un error al subir el archivo');
     }
 
-    res.send('Archivo subido con éxito');
+    res.status(200).send('Archivo subido con éxito');
   });
 }
 

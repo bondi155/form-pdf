@@ -7,11 +7,13 @@ import Swal from 'sweetalert2';
 import '../css/App.css';
 import { API_URL } from '../config/config';
 import axios from 'axios';
+import SpinnerComponent from '../components/Spinner.js';
 
 function Login({ setIslogin }) {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({ username: '', role: '', password: '' });
+  const [isloading, SetIsloading] = useState(false);
 
   const handleInputChange = (event) => {
     setForm({
@@ -22,11 +24,13 @@ function Login({ setIslogin }) {
 
   const handleClick = async () => {
     try {
+      SetIsloading(true);
       const response = await axios.post(`${API_URL}/loginUsers`, {
         username: form.username,
         password: form.password,
       }); //pass incorrecto
       if (response.data.code === 'USR_INCOR') {
+        SetIsloading(false);
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
@@ -34,6 +38,7 @@ function Login({ setIslogin }) {
         });
         //importante user no existe , si no pasaran como ok los que no existen
       } else if (response.data.code === 'USR_NOT_EXIST') {
+        SetIsloading(false);
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
@@ -45,9 +50,11 @@ function Login({ setIslogin }) {
         axios.defaults.headers.common['Authorization'] =
           'Bearer ' + response.data.token;
         setIslogin(true);
+        SetIsloading(false);
         navigate('/home', { replace: true });
       }
     } catch (error) {
+      SetIsloading(false);
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
@@ -58,6 +65,9 @@ function Login({ setIslogin }) {
 
   return (
     <div className='App'>
+        {isloading ? (
+        <SpinnerComponent />
+      ) : (
       <Form className='login-form'>
         <img src={logo} className='App-logo' alt='logo' />
 
@@ -88,6 +98,7 @@ function Login({ setIslogin }) {
           Iniciar Sesión
         </Button>
       </Form>
+        )}
     </div>
   );
 }

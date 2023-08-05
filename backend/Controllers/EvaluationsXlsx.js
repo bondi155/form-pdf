@@ -54,7 +54,7 @@ async function readExcelFile(file) {
   }
 }
 function executeQuery(res, fileName, data) {
-  const evaluationQuery = `INSERT INTO evaluation_data (no, applicant_name, month, applicant_area, test_type, no_ambassador, full_name, company, position, base, company_email, flight_hours, rtari_level, first_exam, time, exam_calif, result ) VALUES ?`;
+  const evaluationQuery = `INSERT INTO evaluation_data (no, company, applicant_name, month, applicant_area, test_type, no_ambassador, full_name, position, base, company_email, flight_hours, rtari_level, first_exam, time, exam_calif, result ) VALUES ?`;
 
   pool.query(evaluationQuery, [data], (err, result) => {
     if (err) {

@@ -6,7 +6,7 @@ import ReportCard from './pages/ReportCard';
 import Home from './pages/Home';
 import './css/App.css';
 import PersonalData from './pages/PersonalData';
-import Evaluations from './pages/Evaluatiions';
+import Evaluations from './pages/Evaluations';
 import SpinnerComponent from './components/Spinner';
 import UserCreate from './pages/UserCreate';
 import PrivateRoute from './pages/PrivateRoute';

@@ -5,6 +5,7 @@ const pool = mysql.createPool(process.env.DATABASE_URL);
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const secretkey = process.env.JWT_SECRET;
+const path = require('path');
 
 const sqlGetPerDataByName = `
 SELECT 
@@ -236,7 +237,17 @@ function loginUsers__(req, res) {
   });
 }
 
+//descarga de archivo 
+function download__(req, res){
+try{
+  const filename = req.params.filename;
+  const filepath = path.join(__dirname, 'reports', filename);
+  res.download(filepath);
+}catch(error){
+  console.log(error);
+}
 
+}
 
 module.exports = {
   consultaData__,
@@ -245,4 +256,5 @@ module.exports = {
   autocompleteName,
   loginUsers__,
   listUsers__,
+  download__
 };

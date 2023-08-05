@@ -50,10 +50,13 @@ function UserCreate() {
         role: userCreate.role,
         password: userCreate.password,
       });
-      alert('Usuario creado ');
-    } catch (err) {
+      Swal.fire(
+        'Good job!',
+        'User Created!',
+        'success'
+      )    } catch (err) {
       if (err.response.data.code === 'USER_DUPLI') {
-        alert('This user name already exists, please change the user name');
+        Swal.fire('This user name already exists, please change the user name');
       }
     }
   };
@@ -155,8 +158,7 @@ function UserCreate() {
               />
             </Form.Group>
           </Col>
-          <input type='hidden' name='_csrf' value='{{csrfToken}}' />
-          <Col lg={2} sm={{ span: 3, offset: 5 }}>
+          <Col lg={4} sm={{ span: 4, offset: 5 }} md={6}>
             <Button className='mb-5' variant='outline-success' type='submit'>
               Create User
             </Button>
@@ -164,13 +166,11 @@ function UserCreate() {
         </Row>
       </form>
       <h2 className='center-text'>User List</h2>
-      <div className='tablaUsuario'>
         <GridEval
           rows={listUser}
           columnsVar={userColumns}
           onDelete={handleDelete}
         />
-      </div>
     </Container>
   );
 }

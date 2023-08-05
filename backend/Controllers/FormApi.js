@@ -8,12 +8,15 @@ const mysql = require('mysql2');
 const pool = mysql.createPool(process.env.DATABASE_URL);
 
 const COLUMN_NAMES = [
+  'date_form',
+  'start_date',
+  'end_date',
+  'course',
   'full_name',
   'personal_email',
   'cellphone',
   'age',
   'country',
-  'course',
   'flight_hours',
   'flight_status',
   'experience',
@@ -28,9 +31,6 @@ const COLUMN_NAMES = [
   'other_career',
   'contact',
   'option_pay',
-  'date_form',
-  'start_date',
-  'end_date',
   'asist',
   'payment',
   'calif',
@@ -45,7 +45,7 @@ const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
 //const TOKEN_PATH = process.env.GOOGLE_TOKENS;
 //const CREDENTIALS_PATH = process.env.GOOGLE_CREDENTIALS;
 
-const TOKEN_PATH = path.join(process.cwd(), 'token.json');
+const TOKEN_PATH = path.join(process.cwd(), 'token_sheet.json');
 const CREDENTIALS_PATH = path.join(process.cwd(), 'credentials_ulead.json');
 
 /**

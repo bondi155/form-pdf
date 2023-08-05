@@ -147,11 +147,15 @@ h6 {
 
 
 /* input file*/
-#file_btn {
+.file-btn {
   display: none;
 
 }
 
 .file_input {
   margin-left: 2rem;
+}
+
+.tablaUsuario {
+  width: 100%;
 }
