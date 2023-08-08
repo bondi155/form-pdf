@@ -91,9 +91,30 @@ console.log(id);
   });
 }
 
+function comments__ (req, res) {
+  const id = req.body.id;
+  const comment = req.body.comment;
+  console.log(req.body);
+  try{
+    
+    const updateComment = 'UPDATE personal_data SET comments_pd = ? WHERE id = ?';
+    pool.query(updateComment,[comment, id], (error, result) =>{
+      console.log(error);
+      return res.status(200).send('Comment Updated');
+    })
+
+  }catch(error){
+    console.log(error);
+    return res.status(500).send('error', error);
+  }
+
+
+}
+
 module.exports = {
   userCreate__,
   deleteEvaluation__,
   deleteUser__,
   reportPdf__,
+  comments__
 };

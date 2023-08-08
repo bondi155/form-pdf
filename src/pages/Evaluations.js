@@ -168,7 +168,7 @@ const evalColumns = [
       }
 
       const correctedUrl = `${API_URL}/${params.value.replace('\\', '/')}`;
-      console.log(`URL: ${correctedUrl}`);
+      //console.log(`URL: ${correctedUrl}`);
 
       return (
         <a href={correctedUrl} download>

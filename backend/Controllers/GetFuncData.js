@@ -37,6 +37,7 @@ SELECT
   pd.payment, 
   pd.calif, 
   pd.status, 
+  pd.comments_pd,
   GROUP_CONCAT(ed.id) AS ed_ids, 
   GROUP_CONCAT(ed.base) AS ed_bases, 
   GROUP_CONCAT(ed.company_email) AS ed_company_emails, 
@@ -210,7 +211,9 @@ function loginUsers__(req, res) {
   pool.query(selectLogin, [username], (err, result) => {
     if (err) {
       console.log('Error al realizar la conexion bd para bcrypt password');
-      res.status(500).send('Error al realizar la conexion bd para bcrypt password');
+      res
+        .status(500)
+        .send('Error al realizar la conexion bd para bcrypt password');
     }
     if (result.length > 0) {
       bcrypt.compare(password, result[0].password, (err, response) => {
@@ -237,16 +240,15 @@ function loginUsers__(req, res) {
   });
 }
 
-//descarga de archivo 
-function download__(req, res){
-try{
-  const filename = req.params.filename;
-  const filepath = path.join(__dirname, 'reports', filename);
-  res.download(filepath);
-}catch(error){
-  console.log(error);
-}
-
+//descarga de archivo
+function download__(req, res) {
+  try {
+    const filename = req.params.filename;
+    const filepath = path.join(__dirname, 'reports', filename);
+    res.download(filepath);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 module.exports = {
@@ -256,5 +258,5 @@ module.exports = {
   autocompleteName,
   loginUsers__,
   listUsers__,
-  download__
+  download__,
 };

@@ -34,6 +34,8 @@ async function readExcelFile(file) {
         row.getCell('P').value,
         // Aquí extraemos el valor de 'result' directamente agregamos tambien una columna para compañia , agregar eso al archivo consolidado.
         row.getCell('Q').value ? row.getCell('Q').value.result : null,
+        row.getCell('R').value,
+
       ];
 
       if (rowData.some(cell => cell !== null)) {
@@ -54,7 +56,7 @@ async function readExcelFile(file) {
   }
 }
 function executeQuery(res, fileName, data) {
-  const evaluationQuery = `INSERT INTO evaluation_data (no, company, applicant_name, month, applicant_area, test_type, no_ambassador, full_name, position, base, company_email, flight_hours, rtari_level, first_exam, time, exam_calif, result ) VALUES ?`;
+  const evaluationQuery = `INSERT INTO evaluation_data (no, company, applicant_name, month, applicant_area, test_type, no_ambassador, full_name, position, base, company_email, flight_hours, rtari_level, first_exam, time, exam_calif, result, comments ) VALUES ?`;
 
   pool.query(evaluationQuery, [data], (err, result) => {
     if (err) {

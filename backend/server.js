@@ -77,6 +77,8 @@ app.get('/suggestNames', authenticateToken, getDataController.autocompleteName);
 app.post('/loginUsers', authenticateToken, getDataController.loginUsers__); //login
 app.get('/getUserList', authenticateToken, getDataController.listUsers__); //get user for list
 app.post('/createUser', authenticateToken, PostDataController.userCreate__); //creation of users
+app.put('/updateComment', authenticateToken, PostDataController.comments__); //update comment personal_Data
+
 app.delete(
   '/deleteUser/:id',
   authenticateToken,
@@ -130,6 +132,8 @@ app.post(
   );
 //ruta descargar report card
 app.get('/download/:filename', authenticateToken, getDataController.download__); //login
+
+
 
 //authorizeDrive().then(listFiles).catch(console.error);
 

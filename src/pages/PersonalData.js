@@ -31,7 +31,8 @@ const PersonalData = () => {
   const [match, Setmatch] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState('');
   const [personalDataFromEffect, setPersonalDataFromEffect] = useState([]);
-
+  const [newComment, setNewComment] = useState('');
+  const [selectedId, setSelectedId] = useState(null);
   // traemos info para personal_data . llamamos a la api..
   const fetchPerData = async () => {
     try {
@@ -43,6 +44,7 @@ const PersonalData = () => {
       });
       if (Array.isArray(response.data)) {
         setPersonalData(response.data);
+        console.log(response.data);
         SetIsloading(false);
       } else {
         setPersonalData([]);
@@ -83,40 +85,41 @@ const PersonalData = () => {
 
   //boton de search, variable suggestion si hace un match con algun elemento de la lista directamente muestra el dato
   const handleSearch = async () => {
-    try{ 
-    let suggestions = [];
-    Setmatch(false);
-    if (email === '') {
-      Swal.fire({
-        icon: 'info',
-        title: 'Search term must have a value',
-        showConfirmButton: false,
-        timer: 1000,
-      });
-    } else if (email.includes('@')) {
-      Setmatch(true);
-      fetchPerData();
-    } else {
-      suggestions = await handleInputName(email);
-      if (Array.isArray(suggestions)) {
-        const exactMatch = suggestions.find(
-          (suggestion) => suggestion.name.toLowerCase() === email.toLowerCase()
-        );
-        if (exactMatch) {
-          Setmatch(true);
-          fetchPerData();
-        }
-      } else {
+    try {
+      let suggestions = [];
+      Setmatch(false);
+      if (email === '') {
         Swal.fire({
           icon: 'info',
-          title: 'No suggestions available',
+          title: 'Search term must have a value',
           showConfirmButton: false,
           timer: 1000,
         });
+      } else if (email.includes('@')) {
+        Setmatch(true);
+        fetchPerData();
+      } else {
+        suggestions = await handleInputName(email);
+        if (Array.isArray(suggestions)) {
+          const exactMatch = suggestions.find(
+            (suggestion) =>
+              suggestion.name.toLowerCase() === email.toLowerCase()
+          );
+          if (exactMatch) {
+            Setmatch(true);
+            fetchPerData();
+          }
+        } else {
+          Swal.fire({
+            icon: 'info',
+            title: 'No suggestions available',
+            showConfirmButton: false,
+            timer: 1000,
+          });
+        }
       }
-    }
-  }catch(err) {
-    SetIsloading(false);
+    } catch (err) {
+      SetIsloading(false);
       if (err.response && err.response.status === 403) {
         Swal.fire({
           icon: 'error',
@@ -130,8 +133,7 @@ const PersonalData = () => {
           'error'
         );
       }
-
-  }
+    }
   };
 
   // se activa el query con like y muestra los list names
@@ -203,6 +205,38 @@ const PersonalData = () => {
       }
 
       console.error('Error:', err);
+    }
+  };
+  //mapear personal data el id . luego meter el id dentro de una funcion seteando selectid, luego ese sleect id = igual a id den el axios del put
+  useEffect(() => {
+    if (personalDataFromEffect.length > 0) {
+        setSelectedId(personalDataFromEffect[0]?.pd_id);
+    } else if (personalData.length > 0) {
+        setSelectedId(personalData[0]?.pd_id);
+    }
+}, [personalData, personalDataFromEffect]);
+
+  console.log("Selected ID:", selectedId);
+
+  //actualizacion de comentario para cada id
+  const handleSendComment = async () => {
+    try {
+      const response = await axios.put(`${API_URL}/updateComment`, {
+        id: selectedId,
+        comment: newComment,
+      });
+      if (response.status === 200) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Comment Updated',
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      Swal.fire({
+        icon: 'error',
+        title: 'error',
+      });
     }
   };
 
@@ -327,10 +361,10 @@ const PersonalData = () => {
             id='tab-info'
           >
             {Object.entries(groupedData).map(([course, items], key) => (
-              <Tab eventKey={course} title={course} key={key}>
+              <Tab eventKey={course} title={course} key={key} >
                 {items.map((item, innerKey) => (
-                  <Col className='mb-2' sm={4} md={12} lg={12} key={innerKey}>
-                    <Card className='data-container'>
+                  <Col className='mb-2' sm={12} md={12} lg={12} key={innerKey}>
+                    <Card className='data-container' onClick={() => setSelectedId(item.pd_id)}>
                       <Card.Body>
                         <Card.Title>
                           {item.pd_full_name}, {item.age}{' '}
@@ -372,6 +406,9 @@ const PersonalData = () => {
                                 </ListGroup.Item>
                                 <ListGroup.Item action href='#link5'>
                                   Evaluation Information
+                                </ListGroup.Item>
+                                <ListGroup.Item action href='#link6'>
+                                  Comments{' '}
                                 </ListGroup.Item>
                               </ListGroup>
                             </Col>
@@ -551,6 +588,38 @@ const PersonalData = () => {
                                       </Accordion.Body>
                                     </Accordion.Item>
                                   </Accordion>
+                                </Tab.Pane>
+                                <Tab.Pane eventKey='#link6'>
+                                  <ListGroup>
+                                    <ListGroup.Item>
+                                      {item.comments_pd ? (
+                                        <strong>{item.comments_pd}</strong>
+                                      ) : (
+                                        <div>
+                                          <InputGroup className='mb-3 mt-3'>
+                                            <FormControl
+                                              placeholder='Comment'
+                                              size='sm'
+                                              type='text'
+                                              name='newComment'
+                                              onChange={(e) =>
+                                                setNewComment(e.target.value)
+                                              }
+                                            />
+                                          <Button
+                                            size='sm'
+                                            variant='success'
+                                            onClick={handleSendComment}
+                                          >
+                                            Send
+                                          </Button>
+                                          </InputGroup>
+
+                                        </div>
+                                      )}
+                                      <strong>{item.comments_pd}</strong>
+                                    </ListGroup.Item>
+                                  </ListGroup>
                                 </Tab.Pane>
                               </Tab.Content>
                             </Col>
