@@ -249,7 +249,7 @@ async function updatePaymentAndAttendance(rows, req, res) {
 async function listMajors(auth, req) {
   try {
     const tabName = req.query.tabName ?? '';
-    console.log(tabName);
+    //console.log(tabName);
     const sheets = google.sheets({ version: 'v4', auth });
     const res = await sheets.spreadsheets.values.get({
       spreadsheetId: '1vdaO42mWRbISh3QTcutqaTncMoTRmNxYpcyW1n6MDRI',

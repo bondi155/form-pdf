@@ -164,14 +164,19 @@ const PersonalData = () => {
     }
   };
 
+
+
   const fetchSheetData = async () => {
     try {
       SetIsloading(true);
       const response = await axios.get(`${API_URL}/getDataSheets`, {
-        tabName,
+        params:{  
+        tabName : tabName ,
+      }
       });
       const emails = response.data.emails;
       const textEmails = `${emails}`;
+      const emailsList = `<ul>${textEmails.split(',').map(email => `<li>${email.trim()}</li>`).join('')}</ul>`;
       const Textduplicated = response.data.message;
       SetIsloading(false);
 
@@ -179,13 +184,13 @@ const PersonalData = () => {
         Swal.fire({
           icon: 'success',
           title: 'Google Sheets Information sent to Uleadair DataBase',
-          text: textEmails,
+          html: emailsList,
         });
       } else if (response.data.code === 'DUPLICATED') {
         Swal.fire({
           icon: 'success',
           title: Textduplicated,
-          text: textEmails,
+          html: emailsList,
         });
       }
     } catch (err) {
@@ -216,7 +221,7 @@ const PersonalData = () => {
     }
 }, [personalData, personalDataFromEffect]);
 
-  console.log("Selected ID:", selectedId);
+  //console.log("Selected ID:", selectedId);
 
   //actualizacion de comentario para cada id
   const handleSendComment = async () => {

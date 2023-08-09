@@ -4,7 +4,6 @@ const multer = require('multer');
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const app = express();
-const path = require('path');
 const port = process.env.PORT || 5015;
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -90,6 +89,24 @@ app.delete(
   PostDataController.deleteEvaluation__
 ); //delete evaluation by id
 
+//get de drive api 
+app.get('/googleDrive', authenticateToken, async (req, res) => { 
+  
+try{
+const authDrive = await authorizeDrive();
+ const files = await listFiles(authDrive, req, res);
+ if(files){
+  res.status(200).json({message:'Succes getting list files from drive', code: 'SUCCESS', list:files })
+ } else{
+  res.status(500).json({message:'ERROR getting data from drive', code:'ERROR_CONN_FILES', list:[]})
+ }
+
+}catch(err){
+  console.log('error en googledrive', err)
+}
+
+
+})
 //get sheet data with validation
 app.get('/getDataSheets', authenticateToken, async (req, res) => {
   try {
@@ -109,6 +126,7 @@ app.get('/getDataSheets', authenticateToken, async (req, res) => {
         emails: insertedEmails,
       });
     }
+    
   } catch (error) {
     console.error(error);
     res.status(500).send('Ocurrió un error al obtener los datos');
