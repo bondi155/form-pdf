@@ -45,9 +45,11 @@ const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
 //const TOKEN_PATH = process.env.GOOGLE_TOKENS;
 //const CREDENTIALS_PATH = process.env.GOOGLE_CREDENTIALS;
 
-const TOKEN_PATH = path.join(process.cwd(), 'token_sheet.json');
-const CREDENTIALS_PATH = path.join(process.cwd(), 'credentials_ulead.json');
+//const TOKEN_PATH = path.join(process.cwd(), 'token_sheet.json');
+//const CREDENTIALS_PATH = path.join(process.cwd(), 'credentials_ulead.json');
 
+const TOKEN_PATH = '/etc/secrets/token_sheet.json';
+const CREDENTIALS_PATH = '/etc/secrets/credentials_ulead.json';
 /**
  * Reads previously authorized credentials from the save file.
  *
