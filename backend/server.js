@@ -4,6 +4,7 @@ const multer = require('multer');
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const app = express();
+app.set('trust proxy', 1); 
 const port = process.env.PORT || 5015;
 const bodyParser = require('body-parser');
 const cors = require('cors');
