@@ -13,6 +13,8 @@ import {
 import axios from 'axios';
 import { API_URL } from '../config/config';
 import SpinnerComponent from '../components/Spinner';
+import images from '../components/Imagenes.js';
+
 function Home() {
   const [searchInput, SetSearchInput] = useState('');
   const [isloading, SetIsloading] = useState(false);
@@ -37,13 +39,14 @@ function Home() {
   return (
     <Container className='container-custom'>
       <Row>
-        <Col sm={12} lg={12} md={12}>
-          <h1 className='mb-2'>Drive Directory</h1>
-          <p>
-            <strong>Welcome to Drive Directory!</strong>
-          </p>
-          <hr />
+        <Col sm={12} lg={8} md={12}>
+          <h1 className='mb-2'>Google Drive Directory  <img src={images.drive} alt='driveimg' /></h1>
+         
         </Col>
+        <Col className='mt-2' sm={12} lg={2} md={12}>
+       
+        </Col>
+
         <Col sm={12} lg={12} md={12}>
           <InputGroup className='mb-3 mt-4'>
             <FormControl
@@ -64,11 +67,13 @@ function Home() {
             </Button>
           </InputGroup>
         </Col>
+        <hr />
+
         {isloading ? (
           <SpinnerComponent />
         ) : (
           <Col sm={12} lg={12} md={12}>
-            <ListGroup className='mt-3 mb-5'>
+            <ListGroup className='mt-3 mb-5' style={{ overflowY: 'auto', maxHeight: '500px' }}>
               {driveState.map((file, index) => (
                 <ListGroup.Item key={index}>
                   <ListGroup.Item

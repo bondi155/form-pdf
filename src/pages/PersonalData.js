@@ -292,10 +292,10 @@ const PersonalData = () => {
   return (
     <Container className='container-custom'>
       <Row>
-        <Col sm={6} lg={6} md={6}>
-          <h1 className='mb-2'>Consolidate Information </h1>
+        <Col xs={12} sm={12} lg={8} md={12}>
+          <h1 className='mb-2'>Consolidate Info</h1>
         </Col>
-        <Col sm={6} lg={4} md={6}>
+        <Col xs={12} sm={12} lg={4} md={12}>
           <InputGroup className='mb-3 mt-3'>
             <FormControl
               type='text'
@@ -316,7 +316,6 @@ const PersonalData = () => {
             </Button>
           </InputGroup>
         </Col>
-        <hr></hr>
       </Row>
       <InputGroup className='mb-3 mt-4'>
         <FormControl
@@ -335,7 +334,6 @@ const PersonalData = () => {
           Search
         </Button>
       </InputGroup>
-
       {email.length > 0 && suggestions.length > 0 && !match && (
         <Dropdown className='mb-3'>
           <Dropdown.Toggle variant='success' id='dropdown-basic'>

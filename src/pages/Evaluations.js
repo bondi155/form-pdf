@@ -312,15 +312,14 @@ function Evaluations() {
     <>
       <Container className='container-custom'>
         <h1>Evaluations</h1>
-        <hr></hr>
         <Row className='mt-2'>
-          <Col className='mt-3' lg={{ span: 10 }}>
+          <Col className='mt-3' xs={12} sm={10} lg={10}>
             <Form.Group controlId='formFileLg' className='mb-3'>
-              <Form.Label>Upload Consolidate Evaluations Excel</Form.Label>
+              <Form.Label>Consolidate Evaluations Info</Form.Label>
               <Form.Control type='file' size='md' onChange={saveFile} />
             </Form.Group>
           </Col>
-          <Col className='mt-5' lg={{ span: 2 }}>
+          <Col className='mt-5' xs={{offset:4}} sm={{span: 2, offset: 0}} lg={{span: 2, offset: 0}}>
             <Button variant='outline-success' onClick={uploadFile}>
               Upload
             </Button>

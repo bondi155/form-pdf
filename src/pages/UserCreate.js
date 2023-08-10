@@ -11,13 +11,13 @@ const userColumns = [
   {
     field: 'user',
     headerName: 'User Name',
-    width: 290,
+    width: 190,
     editable: true,
   },
   {
     field: 'role',
     headerName: 'Role',
-    width: 290,
+    width: 190,
     editable: true,
   },
 ];
@@ -50,11 +50,8 @@ function UserCreate() {
         role: userCreate.role,
         password: userCreate.password,
       });
-      Swal.fire(
-        'Good job!',
-        'User Created!',
-        'success'
-      )    } catch (err) {
+      Swal.fire('Good job!', 'User Created!', 'success');
+    } catch (err) {
       if (err.response.data.code === 'USER_DUPLI') {
         Swal.fire('This user name already exists, please change the user name');
       }
@@ -112,10 +109,9 @@ function UserCreate() {
   return (
     <Container className='container-custom'>
       <h1>User Create Page </h1>
-      <hr></hr>
       <form onSubmit={addNewUser}>
-        <Row>
-          <Col lg={4} sm={4}>
+        <Row className='mt-5'>
+          <Col lg={4} sm={4} md={4}>
             <Form.Group className='mb-3'>
               <Form.Control
                 type='text'
@@ -127,7 +123,7 @@ function UserCreate() {
             </Form.Group>
           </Col>
 
-          <Col lg={4} sm={4}>
+          <Col lg={4} sm={4} md={4}>
             <Form.Group className='mb-3'>
               <Form.Select
                 aria-label='role'
@@ -147,7 +143,7 @@ function UserCreate() {
             </Form.Group>
           </Col>
 
-          <Col lg={4} sm={4}>
+          <Col lg={4} sm={4} md={4}>
             <Form.Group className='mb-3'>
               <Form.Control
                 type='password'
@@ -158,7 +154,12 @@ function UserCreate() {
               />
             </Form.Group>
           </Col>
-          <Col lg={4} sm={{ span: 4, offset: 5 }} md={6}>
+          <Col
+            xs={{ span: 8, offset: 3 }}
+            lg={{ span: 4, offset: 5 }}
+            sm={{ span: 6, offset: 4 }}
+            md={{ span: 6, offset: 5 }}
+          >
             <Button className='mb-5' variant='outline-success' type='submit'>
               Create User
             </Button>
@@ -166,11 +167,16 @@ function UserCreate() {
         </Row>
       </form>
       <h2 className='center-text'>User List</h2>
+      <div className='evaluation-grid'>
+        <div className='mt-5 mb-3 center-text'>
+          <h1>User List</h1>
+        </div>
         <GridEval
           rows={listUser}
           columnsVar={userColumns}
           onDelete={handleDelete}
         />
+      </div>
     </Container>
   );
 }
