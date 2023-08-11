@@ -69,8 +69,28 @@ function deleteEvaluation__(req, res) {
   });
 }
 
+//Report card url from drive
+function reportUrl__(req, res) {
+  const id = req.params.id;
+  const urlDrive = req.body.urlDrive;
+
+  console.log(id);
+  const sqlUploadReportUrl =
+    'UPDATE evaluation_data SET report_url = ? WHERE id = ?';
+  pool.query(sqlUploadReportUrl, [urlDrive, id], (error, result) => {
+    if (error) {
+      console.log(error);
+      return res.status(500).send('Hubo un error al subir el archivo');
+    }
+    res.status(200).send('Archivo subido con éxito');
+    console.log(error);
+  });
+}
+
 //upload report card
+/*
 function reportPdf__(req, res) {
+
   if (!req.file) {
     return res.status(400).send({message:'No se encontró el archivo', code:'FILE_NOT_FOUND'});
   }
@@ -90,31 +110,29 @@ console.log(id);
     res.status(200).send('Archivo subido con éxito');
   });
 }
-
-function comments__ (req, res) {
+*/
+function comments__(req, res) {
   const id = req.body.id;
   const comment = req.body.comment;
   console.log(req.body);
-  try{
-    
-    const updateComment = 'UPDATE personal_data SET comments_pd = ? WHERE id = ?';
-    pool.query(updateComment,[comment, id], (error, result) =>{
+  try {
+    const updateComment =
+      'UPDATE personal_data SET comments_pd = ? WHERE id = ?';
+    pool.query(updateComment, [comment, id], (error, result) => {
       console.log(error);
       return res.status(200).send('Comment Updated');
-    })
-
-  }catch(error){
+    });
+  } catch (error) {
     console.log(error);
     return res.status(500).send('error', error);
   }
-
-
 }
 
 module.exports = {
   userCreate__,
   deleteEvaluation__,
   deleteUser__,
-  reportPdf__,
-  comments__
+  //reportPdf__,
+  reportUrl__,
+  comments__,
 };

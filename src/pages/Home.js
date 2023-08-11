@@ -39,7 +39,7 @@ function Home() {
   return (
     <Container className='container-custom'>
       <Row>
-        <Col sm={12} lg={8} md={12}>
+        <Col xs={{span:10, offset:1}} sm={{span:12, offset:0}} lg={{span:8, offset:0}} md={{span:12, offset:0}}>
           <h1 className='mb-2'>Google Drive Directory  <img src={images.drive} alt='driveimg' /></h1>
          
         </Col>
@@ -47,7 +47,7 @@ function Home() {
        
         </Col>
 
-        <Col sm={12} lg={12} md={12}>
+        <Col xs={12} sm={12} lg={12} md={12}>
           <InputGroup className='mb-3 mt-4'>
             <FormControl
               type='text'
@@ -79,7 +79,7 @@ function Home() {
                   <ListGroup.Item
                     key={index}
                     action
-                    href={`https://drive.google.com/file/d/${file.id}/view`}
+                    href={`https://drive.google.com/file/d/${file.id}`}
                     target='_blank'
                     rel='noopener noreferrer'
                   >

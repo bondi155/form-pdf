@@ -4,7 +4,7 @@ const multer = require('multer');
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const app = express();
-app.set('trust proxy', 1); 
+app.set('trust proxy', 1);
 const port = process.env.PORT || 5015;
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -17,7 +17,7 @@ const excelController = require('./Controllers/EvaluationsXlsx');
 //multer
 const upload = multer({ dest: 'uploads/' });
 //multer storage para el report pdf
-const storage = multer.diskStorage({
+/*const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'reports/');
   },
@@ -27,6 +27,7 @@ const storage = multer.diskStorage({
 });
 const uploadPdf = multer({ storage: storage });
 //termina multer
+*/
 const jwt = require('jsonwebtoken');
 const secretkey = process.env.JWT_SECRET;
 app.use(helmet());
@@ -78,6 +79,8 @@ app.post('/loginUsers', authenticateToken, getDataController.loginUsers__); //lo
 app.get('/getUserList', authenticateToken, getDataController.listUsers__); //get user for list
 app.post('/createUser', authenticateToken, PostDataController.userCreate__); //creation of users
 app.put('/updateComment', authenticateToken, PostDataController.comments__); //update comment personal_Data
+app.put('/reportUrl/:id', authenticateToken,PostDataController.reportUrl__);//subir url en data grid del google drive
+
 
 app.delete(
   '/deleteUser/:id',
@@ -90,24 +93,32 @@ app.delete(
   PostDataController.deleteEvaluation__
 ); //delete evaluation by id
 
-//get de drive api 
-app.get('/googleDrive', authenticateToken, async (req, res) => { 
-  
-try{
-const authDrive = await authorizeDrive();
- const files = await listFiles(authDrive, req, res);
- if(files){
-  res.status(200).json({message:'Succes getting list files from drive', code: 'SUCCESS', list:files })
- } else{
-  res.status(500).json({message:'ERROR getting data from drive', code:'ERROR_CONN_FILES', list:[]})
- }
-
-}catch(err){
-  console.log('error en googledrive', err)
-}
-
-
-})
+//get de drive api
+app.get('/googleDrive', authenticateToken, async (req, res) => {
+  try {
+    const authDrive = await authorizeDrive();
+    const files = await listFiles(authDrive, req, res);
+    if (files) {
+      res
+        .status(200)
+        .json({
+          message: 'Succes getting list files from drive',
+          code: 'SUCCESS',
+          list: files,
+        });
+    } else {
+      res
+        .status(500)
+        .json({
+          message: 'ERROR getting data from drive',
+          code: 'ERROR_CONN_FILES',
+          list: [],
+        });
+    }
+  } catch (err) {
+    console.log('error en googledrive', err);
+  }
+});
 //get sheet data with validation
 app.get('/getDataSheets', authenticateToken, async (req, res) => {
   try {
@@ -127,7 +138,6 @@ app.get('/getDataSheets', authenticateToken, async (req, res) => {
         emails: insertedEmails,
       });
     }
-    
   } catch (error) {
     console.error(error);
     res.status(500).send('Ocurrió un error al obtener los datos');
@@ -140,7 +150,10 @@ app.post(
   upload.single('file'),
   excelController.EvaluationsXlsx
 );
-  //ruta para subir reportcard a cada id especifico
+
+
+/* 
+//ruta para subir reportcard a cada id especifico
   app.use('/reports', express.static('./reports'));
 
   app.post(
@@ -149,15 +162,10 @@ app.post(
     uploadPdf.single('file'),
     PostDataController.reportPdf__
   );
+  */
 //ruta descargar report card
 app.get('/download/:filename', authenticateToken, getDataController.download__); //login
-
-
-
-//authorizeDrive().then(listFiles).catch(console.error);
-
 
 app.listen(port, () => {
   console.log('servidor funcionando en el puerto ' + port);
 });
-

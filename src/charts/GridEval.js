@@ -20,7 +20,7 @@ const theme = createTheme(
   pickersBgBG, // x-date-pickers translations
   coreBgBG // core translations
 );
-//  <BsFillTrashFill size={30} style={{ cursor: 'pointer' }} />
+//  <BsFillTrashFill size={30}   onClick={() => onDelete(params.row.id)} style={{ cursor: 'pointer' }} />
 
 function GridEval({ rows, columnsVar, onDelete }) {
   const deleteButtonColumn = {
@@ -30,14 +30,7 @@ function GridEval({ rows, columnsVar, onDelete }) {
     sortable: false,
     filterable: false,
     renderCell: (params) => (
-      <Button
-        variant='outline-danger'
-        size='sm'
-        color='secondary'
-        onClick={() => onDelete(params.row.id)}
-      >
-        x{' '}
-      </Button>
+      <BsFillTrashFill size={25} color="black" onClick={() => onDelete(params.row.id)} style={{ cursor: 'pointer' }} />
     ),
   };
   const columns = [...columnsVar, deleteButtonColumn];

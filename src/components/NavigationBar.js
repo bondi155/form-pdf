@@ -43,11 +43,14 @@ function NavigationBar({ setIslogin }) {
             <Link to='/userCreation' className='nav-link'>
               Users
             </Link>
-            <Link to='/personalData' className='nav-link'>
-              Personal data{' '}
+            <Link to='/consolidateInformation' className='nav-link'>
+              Consolidate{' '}
             </Link>
             <Link to='/evaluationData' className='nav-link'>
-              Evaluation data{' '}
+              Evaluations{' '}
+            </Link>
+            <Link to='/home' className='nav-link'>
+              Drive Directory{' '}
             </Link>
           {/*  <Link to='/formController' className='nav-link'>
               Form Controller{' '}

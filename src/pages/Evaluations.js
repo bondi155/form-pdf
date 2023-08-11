@@ -1,12 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import '../css/App.css';
-import { Container, Button, Row, Col, Form, Modal } from 'react-bootstrap';
+import {
+  Container,
+  Button,
+  Row,
+  Col,
+  Form,
+  Modal,
+  FormControl,
+  InputGroup,
+} from 'react-bootstrap';
 import axios from 'axios';
 import { API_URL } from '../config/config';
 import GridEval from '../charts/GridEval';
 import Swal from 'sweetalert2';
-import { BsFillCloudUploadFill } from 'react-icons/bs';
+import { FaPencilAlt, FaCheck, FaComments  } from 'react-icons/fa';
 
+//import { BsFillCloudUploadFill } from 'react-icons/bs';
+
+//modal comments
 function CommentModal({ comment }) {
   const [show, setShow] = useState(false);
 
@@ -15,9 +27,8 @@ function CommentModal({ comment }) {
 
   return (
     <>
-      <Button size='sm' variant="success" onClick={handleShow}>
-        Comment{' '}
-      </Button>
+   <FaComments color="grey" size={30} onClick={handleShow} style={{ cursor: 'pointer', marginLeft: '20px' }} />
+
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
@@ -33,166 +44,8 @@ function CommentModal({ comment }) {
     </>
   );
 }
-
-const evalColumns = [
-  { field: 'id', headerName: 'ID', width: 50 },
-
-  {
-    field: 'no',
-    headerName: 'No.',
-    width: 70,
-    editable: true,
-  },
-  {
-    field: 'company',
-    headerName: 'Company',
-    width: 90,
-    editable: true,
-  },
-  {
-    field: 'applicant_name',
-    headerName: 'Applicant',
-    width: 120,
-    editable: true,
-  },
-  {
-    field: 'month',
-    headerName: 'Month',
-    width: 100,
-    editable: true,
-  },
-  {
-    field: 'applicant_area',
-    headerName: 'Area',
-    width: 120,
-    editable: true,
-  },
-  {
-    field: 'test_type',
-    headerName: 'Experience',
-    width: 100,
-    editable: true,
-  },
-  {
-    field: 'no_ambassador',
-    headerName: 'No Ambassador',
-    width: 90,
-    editable: true,
-  },
-  {
-    field: 'full_name',
-    headerName: 'Name Ambassador',
-    width: 150,
-    editable: true,
-  },
-  {
-    field: 'position',
-    headerName: 'Position',
-    width: 90,
-    editable: true,
-  },
-  {
-    field: 'base',
-    headerName: 'Base',
-    width: 70,
-    editable: true,
-  },
-  {
-    field: 'company_email',
-    headerName: 'Company Email',
-    width: 150,
-    editable: true,
-  },
-  {
-    field: 'flight_hours',
-    headerName: 'Flight Hours',
-    width: 90,
-    editable: true,
-  },
-  {
-    field: 'rtari_level',
-    headerName: 'RTARI 4,5,6',
-    width: 120,
-    editable: true,
-  },
-  {
-    field: 'first_exam',
-    headerName: '1º Exam.',
-    width: 110,
-    editable: true,
-  },
-  {
-    field: 'time',
-    headerName: 'Hour',
-    width: 110,
-    editable: true,
-  },
-  {
-    field: 'exam_calif',
-    headerName: 'Calification',
-    width: 50,
-    editable: true,
-  },
-  {
-    field: 'result',
-    headerName: 'Result',
-    width: 90,
-    editable: true,
-  },
-  {
-    field: 'upload',
-    headerName: 'Upload Pdf',
-    width: 100,
-
-    renderCell: (params) => (
-      <div className='file_input'>
-        <input
-          id={`file_btn_${params.row.id}`}
-          className='file-btn'
-          type='file'
-          onChange={(e) => handlePdfUpload(e, params.row.id)}
-        />
-        <label htmlFor={`file_btn_${params.row.id}`}>
-          <BsFillCloudUploadFill size={30} style={{ cursor: 'pointer' }} />
-        </label>
-      </div>
-    ),
-  },
-  {
-    field: 'report_url',
-    headerName: 'Report',
-    width: 130,
-    renderCell: (params) => {
-      if (!params.value) {
-        return <span>No Report</span>; // O cualquier otra cosa que quieras mostrar cuando no haya una URL
-      }
-
-      const correctedUrl = `${API_URL}/${params.value.replace('\\', '/')}`;
-      //console.log(`URL: ${correctedUrl}`);
-
-      return (
-        <a href={correctedUrl} download>
-          Download Report
-        </a>
-      );
-    },
-  },
-  {
-    field: 'comments',
-    headerName: 'Comments',
-    width: 100,
-    renderCell: (params) => {
-      if (!params.row.comments) {
-        return <span>No comments</span>;
-      } else {
-        return <CommentModal comment={params.row.comments} />;
-      }
-    },
-  },
-];
-
 //subir pdf report card
-const handlePdfUpload = (e, id) => {
+/*const handlePdfUpload = (e, id) => {
   const file = e.target.files[0];
   console.log(id);
   const formData = new FormData();
@@ -209,11 +62,240 @@ const handlePdfUpload = (e, id) => {
     alert('error uploading file', err);
   }
 };
-
+*/
 function Evaluations() {
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState('temp');
   const [consulEval, setConsulEval] = useState([]);
+  const [reportUrl, setReportUrl] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingRowId, setEditingRowId] = useState(null);
+
+  const evalColumns = [
+    { field: 'id', headerName: 'ID', width: 50 },
+
+    {
+      field: 'no',
+      headerName: 'No.',
+      width: 70,
+      editable: true,
+    },
+    {
+      field: 'company',
+      headerName: 'Company',
+      width: 90,
+      editable: true,
+    },
+    {
+      field: 'applicant_name',
+      headerName: 'Applicant',
+      width: 120,
+      editable: true,
+    },
+    {
+      field: 'month',
+      headerName: 'Month',
+      width: 100,
+      editable: true,
+    },
+    {
+      field: 'applicant_area',
+      headerName: 'Area',
+      width: 120,
+      editable: true,
+    },
+    {
+      field: 'test_type',
+      headerName: 'Experience',
+      width: 100,
+      editable: true,
+    },
+    {
+      field: 'no_ambassador',
+      headerName: 'No Ambassador',
+      width: 90,
+      editable: true,
+    },
+    {
+      field: 'full_name',
+      headerName: 'Name Ambassador',
+      width: 250,
+      editable: true,
+    },
+    {
+      field: 'position',
+      headerName: 'Position',
+      width: 90,
+      editable: true,
+    },
+    {
+      field: 'base',
+      headerName: 'Base',
+      width: 70,
+      editable: true,
+    },
+    {
+      field: 'company_email',
+      headerName: 'Company Email',
+      width: 150,
+      editable: true,
+    },
+    {
+      field: 'flight_hours',
+      headerName: 'Flight Hours',
+      width: 90,
+      editable: true,
+    },
+    {
+      field: 'rtari_level',
+      headerName: 'RTARI 4,5,6',
+      width: 120,
+      editable: true,
+    },
+    {
+      field: 'first_exam',
+      headerName: '1º Exam.',
+      width: 110,
+      editable: true,
+    },
+    {
+      field: 'time',
+      headerName: 'Hour',
+      width: 110,
+      editable: true,
+    },
+    {
+      field: 'exam_calif',
+      headerName: 'Calification',
+      width: 50,
+      editable: true,
+    },
+    {
+      field: 'result',
+      headerName: 'Result',
+      width: 90,
+      editable: true,
+    },
+    /*
+    {
+      field: 'upload',
+      headerName: 'Upload Pdf',
+      width: 100,
+  
+      renderCell: (params) => (
+        <div className='file_input'>
+          <input
+            id={`file_btn_${params.row.id}`}
+            className='file-btn'
+            type='file'
+            onChange={(e) => handlePdfUpload(e, params.row.id)}
+          />
+          <label htmlFor={`file_btn_${params.row.id}`}>
+            <BsFillCloudUploadFill size={30} style={{ cursor: 'pointer' }} />
+          </label>
+        </div>
+      ),
+    },
+    */
+    {
+      field: 'report_url',
+      headerName: 'Report Card Link',
+      width: 245,
+      renderCell: (params) => {
+        const handleEditClick = () => {
+          setIsEditing(true);
+          setEditingRowId(params.row.id);
+        };
+
+        const handleSaveClick = () => {
+          updateReportUrl(params.row.id);
+          setIsEditing(false);
+          setEditingRowId(null);
+        };
+
+        // Si no hay report_url y no estamos en modo edición para esta fila.
+        if (
+          !params.row.report_url &&
+          !(isEditing && editingRowId === params.row.id)
+        ) {
+          return (
+            <InputGroup className='mb-3 mt-4'>
+              <FormControl
+                type='text'
+                defaultValue={params.row.report_url}
+                onChange={(e) => setReportUrl(e.target.value)}
+                style={{ width: '70%' }}
+              />
+
+              <FaCheck
+                color='green'
+                size={20}
+                onClick={() => updateReportUrl(params.row.id)}
+                style={{ marginLeft: '5px', cursor: 'pointer', marginTop:'0.5rem'  }}
+              />
+            </InputGroup>
+          );
+        }
+
+        // Si estamos en modo edición para esta fila.
+        else if (isEditing && editingRowId === params.row.id) {
+          return (
+            <InputGroup className='mb-3 mt-4'>
+              <FormControl
+                type='text'
+                defaultValue={params.row.report_url}
+                onChange={(e) => setReportUrl(e.target.value)}
+                style={{ width: '70%' }}
+              />
+              <FaCheck
+                color='green'
+                size={20}
+                onClick={handleSaveClick}
+                style={{ marginLeft: '5px', cursor: 'pointer', marginTop:'0.5rem' }}
+              />
+            </InputGroup>
+          );
+        }
+
+        // Si hay un report_url y no estamos en modo edición para esta fila.
+        else {
+          return (
+            <div>
+              {params.row.report_url && (
+                <div>
+                  <a
+                    href={params.row.report_url}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
+                    View Report Card
+                  </a>
+                  <FaPencilAlt
+                    color='grey'
+                    size={15}
+                    onClick={handleEditClick}
+                    style={{ marginLeft: '5px', cursor: 'pointer', marginBottom:'0.5rem'  }}
+                  />
+                </div>
+              )}
+            </div>
+          );
+        }
+      },
+    },
+    {
+      field: 'comments',
+      headerName: 'Comments',
+      width: 100,
+      renderCell: (params) => {
+        if (!params.row.comments) {
+          return <span>No comments</span>;
+        } else {
+          return <CommentModal comment={params.row.comments} />;
+        }
+      },
+    },
+  ];
 
   const saveFile = (e) => {
     if (e.target.files[0]) {
@@ -226,6 +308,7 @@ function Evaluations() {
     }
   };
 
+  //upload Excel evaluations
   const uploadFile = async (e) => {
     e.preventDefault();
 
@@ -253,6 +336,20 @@ function Evaluations() {
       );
     }
   };
+
+  //update url row
+  const updateReportUrl = async (id) => {
+    try {
+      await axios.put(`${API_URL}/reportUrl/${id}`, {
+        urlDrive: reportUrl,
+      });
+      alert('Url updated');
+    } catch (err) {
+      console.error(err);
+      alert('error in updated url ');
+    }
+  };
+
   //get eval data from db
   const getEvalData = async () => {
     try {
@@ -319,7 +416,12 @@ function Evaluations() {
               <Form.Control type='file' size='md' onChange={saveFile} />
             </Form.Group>
           </Col>
-          <Col className='mt-5' xs={{offset:4}} sm={{span: 2, offset: 0}} lg={{span: 2, offset: 0}}>
+          <Col
+            className='mt-5'
+            xs={{ offset: 4 }}
+            sm={{ span: 2, offset: 0 }}
+            lg={{ span: 2, offset: 0 }}
+          >
             <Button variant='outline-success' onClick={uploadFile}>
               Upload
             </Button>
@@ -334,6 +436,7 @@ function Evaluations() {
           rows={rows}
           columnsVar={evalColumns}
           onDelete={handleDelete}
+          onUpdateReportUrl={updateReportUrl}
         />
       </div>
     </>

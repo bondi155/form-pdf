@@ -75,7 +75,7 @@ function App() {
             }
           />
           <Route
-            path='/reportCard'
+            path='/reportCard1010101'
             element={
               <PrivateRoute islogin={islogin}>
                 <ReportCard />{' '}
@@ -83,7 +83,7 @@ function App() {
             }
           />
           <Route
-            path='/personalData'
+            path='/consolidateInformation'
             element={
               <PrivateRoute islogin={islogin}>
                 <PersonalData />{' '}

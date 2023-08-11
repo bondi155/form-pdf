@@ -166,7 +166,6 @@ function UserCreate() {
           </Col>
         </Row>
       </form>
-      <h2 className='center-text'>User List</h2>
       <div className='evaluation-grid'>
         <div className='mt-5 mb-3 center-text'>
           <h1>User List</h1>
