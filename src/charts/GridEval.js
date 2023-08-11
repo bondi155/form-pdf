@@ -58,6 +58,22 @@ function GridEval({ rows, columnsVar, onDelete }) {
             columns={columns}
             getRowId={(row) => row.id}
             initialState={{
+              columns: {
+                columnVisibilityModel: {
+                  // Asumiendo que 'id' y 'brokerId' son nombres de tus columnas
+                  id: false,
+                  no: false,
+                  month:false,
+                  applicant_area: false,
+                  applicant_name:false,
+                  no_ambassador:false,
+                  rtari_level:false,
+                  base:false,
+                  position:false,
+                  test_type: false,
+
+                },
+              },
               pagination: {
                 paginationModel: {
                   pageSize: 10,

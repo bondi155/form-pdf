@@ -72,109 +72,97 @@ function Evaluations() {
   const [editingRowId, setEditingRowId] = useState(null);
 
   const evalColumns = [
-    { field: 'id', headerName: 'ID', width: 50 },
+    { field: 'id', headerName: 'ID', width: 50 ,  hide: true},
 
     {
       field: 'no',
       headerName: 'No.',
       width: 70,
-      editable: true,
+      hide: true
     },
     {
       field: 'company',
       headerName: 'Company',
       width: 90,
-      editable: true,
     },
     {
       field: 'applicant_name',
-      headerName: 'Applicant',
+      headerName: 'Solicitor',
       width: 120,
-      editable: true,
     },
     {
       field: 'month',
       headerName: 'Month',
       width: 100,
-      editable: true,
+      hide: true
     },
     {
       field: 'applicant_area',
       headerName: 'Area',
       width: 120,
-      editable: true,
     },
     {
       field: 'test_type',
       headerName: 'Experience',
       width: 100,
-      editable: true,
     },
     {
       field: 'no_ambassador',
       headerName: 'No Ambassador',
       width: 90,
-      editable: true,
+      hide: true
     },
     {
       field: 'full_name',
-      headerName: 'Name Ambassador',
+      headerName: 'Full name',
       width: 250,
-      editable: true,
     },
     {
       field: 'position',
       headerName: 'Position',
       width: 90,
-      editable: true,
+      hide: true
     },
     {
       field: 'base',
       headerName: 'Base',
       width: 70,
-      editable: true,
     },
     {
       field: 'company_email',
       headerName: 'Company Email',
       width: 150,
-      editable: true,
     },
     {
       field: 'flight_hours',
       headerName: 'Flight Hours',
       width: 90,
-      editable: true,
     },
     {
       field: 'rtari_level',
       headerName: 'RTARI 4,5,6',
       width: 120,
-      editable: true,
+      hide: true
     },
     {
       field: 'first_exam',
-      headerName: '1º Exam.',
+      headerName: 'Date',
       width: 110,
-      editable: true,
     },
     {
       field: 'time',
-      headerName: 'Hour',
-      width: 110,
-      editable: true,
+      headerName: 'Time',
+      width: 90,
     },
     {
       field: 'exam_calif',
-      headerName: 'Calification',
+      headerName: 'Grade',
       width: 50,
-      editable: true,
     },
     {
       field: 'result',
       headerName: 'Result',
       width: 90,
-      editable: true,
     },
     /*
     {
