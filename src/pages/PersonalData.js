@@ -20,7 +20,9 @@ import volaris from '../components/img/airlines/volaris.png';
 import aeromexico from '../components/img/airlines/aeromexico.png';
 import Swal from 'sweetalert2';
 import images from '../components/Imagenes.js';
-import SpinnerComponent from '../components/Spinner.js';
+//import SpinnerComponent from '../components/Spinner.js';
+import PlaneSpinner from '../components/planeSpinner';
+
 
 const PersonalData = () => {
   const [personalData, setPersonalData] = useState([]);
@@ -355,7 +357,7 @@ const PersonalData = () => {
       )}
 
       {isloading ? (
-        <SpinnerComponent />
+        <PlaneSpinner />
       ) : (
         <Row>
           <Tabs

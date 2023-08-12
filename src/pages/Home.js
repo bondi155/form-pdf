@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, {
+useState } from 'react';
 import '../css/App.css';
 import {
-  Form,
   Container,
   Row,
   Col,
@@ -12,8 +12,9 @@ import {
 } from 'react-bootstrap';
 import axios from 'axios';
 import { API_URL } from '../config/config';
-import SpinnerComponent from '../components/Spinner';
+//import SpinnerComponent from '../components/Spinner';
 import images from '../components/Imagenes.js';
+import PlaneSpinner from '../components/planeSpinner';
 
 function Home() {
   const [searchInput, SetSearchInput] = useState('');
@@ -39,13 +40,17 @@ function Home() {
   return (
     <Container className='container-custom'>
       <Row>
-        <Col xs={{span:10, offset:1}} sm={{span:12, offset:0}} lg={{span:8, offset:0}} md={{span:12, offset:0}}>
-          <h1 className='mb-2'>Google Drive Directory  <img src={images.drive} alt='driveimg' /></h1>
-         
+        <Col
+          xs={{ span: 10, offset: 1 }}
+          sm={{ span: 12, offset: 0 }}
+          lg={{ span: 8, offset: 0 }}
+          md={{ span: 12, offset: 0 }}
+        >
+          <h1 className='mb-2'>
+            Google Drive Directory <img src={images.drive} alt='driveimg' />
+          </h1>
         </Col>
-        <Col className='mt-2' sm={12} lg={2} md={12}>
-       
-        </Col>
+        <Col className='mt-2' sm={12} lg={2} md={12}></Col>
 
         <Col xs={12} sm={12} lg={12} md={12}>
           <InputGroup className='mb-3 mt-4'>
@@ -70,10 +75,13 @@ function Home() {
         <hr />
 
         {isloading ? (
-          <SpinnerComponent />
+          <PlaneSpinner />
         ) : (
           <Col sm={12} lg={12} md={12}>
-            <ListGroup className='mt-3 mb-5' style={{ overflowY: 'auto', maxHeight: '500px' }}>
+            <ListGroup
+              className='mt-3 mb-5'
+              style={{ overflowY: 'auto', maxHeight: '500px' }}
+            >
               {driveState.map((file, index) => (
                 <ListGroup.Item key={index}>
                   <ListGroup.Item

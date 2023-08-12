@@ -7,7 +7,8 @@ import Swal from 'sweetalert2';
 import '../css/App.css';
 import { API_URL } from '../config/config';
 import axios from 'axios';
-import SpinnerComponent from '../components/Spinner.js';
+//import SpinnerComponent from '../components/Spinner.js';
+import PlaneSpinner from '../components/planeSpinner';
 
 function Login({ setIslogin }) {
   const navigate = useNavigate();
@@ -65,7 +66,7 @@ function Login({ setIslogin }) {
   return (
     <div className='App'>
       {isloading ? (
-        <SpinnerComponent />
+        <PlaneSpinner />
       ) : (
         <Form className='login-form'>
           <img src={logo} className='App-logo' alt='logo' />

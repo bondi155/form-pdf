@@ -141,6 +141,43 @@ h6 {
   background-color: #45a049;
 }
 
+/*.spinner-border {
+
+  border-right-color: #00b0e6 !important;
+}
+*/
+
+.plane-spinner {
+  position: fixed;
+  /* Fijamos la posición para que ocupe toda la pantalla */
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.9);
+  /* Fondo ligeramente opaco. Puedes cambiar esto según tus preferencias */
+  z-index: 9999;
+  /* Aseguramos que esté encima de otros elementos */
+}
+
+.plane-spinner svg {
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
 /*Termina Login*/
 
 .center-text {
