@@ -9,7 +9,7 @@ import { API_URL } from '../config/config';
 import axios from 'axios';
 //import SpinnerComponent from '../components/Spinner.js';
 import PlaneSpinner from '../components/planeSpinner';
-
+import { FaKey } from 'react-icons/fa'; 
 function Login({ setIslogin }) {
   const navigate = useNavigate();
 
@@ -65,41 +65,39 @@ function Login({ setIslogin }) {
 
   return (
     <div className='App'>
-      {isloading ? (
-        <PlaneSpinner />
-      ) : (
-        <Form className='login-form'>
-          <img src={logo} className='App-logo' alt='logo' />
-
-          <Form.Group controlId='formBasicUser'>
-            <Form.Label>User</Form.Label>
-            <Form.Control
-              type='text'
-              placeholder='User'
-              onChange={handleInputChange}
-              name='username'
-            />
-          </Form.Group>
-          <Form.Group controlId='formBasicPassword'>
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              type='password'
-              name='password'
-              placeholder='Password'
-              onChange={handleInputChange}
-            />
-          </Form.Group>
-          <Button
-            className='mt-5'
-            size='md'
-            onClick={handleClick}
-            variant='secondary'
-          >
-            Login{' '}
-          </Button>
-        </Form>
-      )}
-    </div>
+    {isloading ? (
+      <PlaneSpinner />
+    ) : (
+      <Form className='login-form'>
+        <img src={logo} className='App-logo' alt='logo' />
+  
+        <Form.Group controlId='formBasicUser'>
+          <Form.Label></Form.Label>
+          <Form.Control
+            type='text'
+            placeholder='User'
+            onChange={handleInputChange}
+            name='username'
+          />
+        </Form.Group>
+        <Form.Group controlId='formBasicPassword'>
+          <Form.Label></Form.Label>
+          <Form.Control
+            type='password'
+            name='password'
+            placeholder='Password'
+            onChange={handleInputChange}
+          />
+        </Form.Group>
+        <button
+          className='semi-circle-login-btn'
+          onClick={handleClick}
+        >
+          <FaKey className="me-1" />Sign in
+        </button>
+      </Form>
+    )}
+  </div>
   );
 }
 

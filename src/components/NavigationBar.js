@@ -5,6 +5,7 @@ import logoNav from '../components/img/logonav.png';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { FiLogOut } from 'react-icons/fi';
 
 function NavigationBar({ setIslogin }) {
   const navigate = useNavigate();
@@ -53,13 +54,25 @@ function NavigationBar({ setIslogin }) {
 
         <Navbar.Collapse className='justify-content-end'>
           <Nav>
-            <Link to='/userCreation' className='nav-link' onClick={handleLinkClick}>
+            <Link
+              to='/userCreation'
+              className='nav-link'
+              onClick={handleLinkClick}
+            >
               Users
             </Link>
-            <Link to='/consolidateInformation' className='nav-link' onClick={handleLinkClick}>
+            <Link
+              to='/consolidateInformation'
+              className='nav-link'
+              onClick={handleLinkClick}
+            >
               Consolidate
             </Link>
-            <Link to='/evaluationData' className='nav-link' onClick={handleLinkClick}>
+            <Link
+              to='/evaluationData'
+              className='nav-link'
+              onClick={handleLinkClick}
+            >
               Evaluations
             </Link>
             <Link to='/home' className='nav-link' onClick={handleLinkClick}>
@@ -71,8 +84,13 @@ function NavigationBar({ setIslogin }) {
             <Link to='/reportCard' className='nav-link'>
               Report Card
             </Link> */}
-            <Button variant='link' size='sm' onClick={handleLogout}>
-              Logout
+            <Button
+              variant='dark'
+              className='logout-button'
+              onClick={handleLogout}
+              size='sm'
+            >
+              <FiLogOut className='me-1 mb-1' />Sign out
             </Button>
             &nbsp;
           </Nav>
