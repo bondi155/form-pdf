@@ -301,7 +301,7 @@ function Evaluations() {
     e.preventDefault();
 
     if (!file) {
-      alert('Select a file please');
+    Swal.fire('Select a file please')
     }
 
     const formData = new FormData();
@@ -311,17 +311,35 @@ function Evaluations() {
       const res = await axios.post(`${API_URL}/uploadfile`, formData);
 
       if (res.status === 200 && res.data.code === 'SUCCESS') {
-        alert(`Excel file processed successfully ${res.data.message}`);
+        Swal.fire(
+          'Good job!',
+          `Excel file processed successfully ${res.data.message}`,
+          'success'
+        )
+        //alert(`Excel file processed successfully ${res.data.message}`);
       } else if (res.data.code === 'NO_PROCCESS') {
-        alert(`${res.data.error}.`);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: `${res.data.error}.`,
+        })
+       // alert(`${res.data.error}.`);
       } else if (res.status === 500 && res.data.code === 'DB_INSERT_ERR') {
-        alert(`${res.data.message}`);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: `${res.data.message}.`,
+        })
+      //  alert(`${res.data.message}`);
       }
     } catch (ex) {
       console.log(ex);
-      alert(
-        `An error occurred while processing your request. Error: ${ex.message}`
-      );
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: `An error occurred while processing your request. Error: ${ex.message}`
+      })
+     // alert( `An error occurred while processing your request. Error: ${ex.message}`);
     }
   };
 
@@ -331,10 +349,10 @@ function Evaluations() {
       await axios.put(`${API_URL}/reportUrl/${id}`, {
         urlDrive: reportUrl,
       });
-      alert('Url updated');
-    } catch (err) {
+      Swal.fire('Good job!', 'URL updated!!', 'success');
+        } catch (err) {
       console.error(err);
-      alert('error in updated url ');
+      Swal.fire(':( !', ' The URL could not be updated', 'error');
     }
   };
 
@@ -382,14 +400,18 @@ function Evaluations() {
       if (result.isConfirmed) {
         await axios.delete(`${API_URL}/deleteEvaluation/${id}`);
         setConsulEval(consulEval.filter((user) => user.id !== id));
-        Swal.fire('Deleted!', 'The user has been deleted.', 'success');
+        Swal.fire('Deleted!', 'The Evaluation Row has been deleted.', 'success');
       }
     });
     try {
     } catch (err) {
       // Aquí puedes manejar cualquier error que pueda ocurrir
       console.error(err);
-      alert('Hubo un error al eliminar al usuario');
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'There was an error deleting the evaluation row'
+      })
     }
   };
 
