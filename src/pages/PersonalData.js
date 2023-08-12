@@ -300,7 +300,7 @@ const PersonalData = () => {
             <FormControl
               type='text'
               required
-              placeholder='Tab name (Get students from Google Sheets)'
+              placeholder='Tab name (Google Sheets)'
               aria-label='Set Course'
               aria-describedby='basic-addon2'
               size='sm'
@@ -312,7 +312,7 @@ const PersonalData = () => {
               id='button-addon2'
               onClick={fetchSheetData}
             >
-              Go
+              Get
             </Button>
           </InputGroup>
         </Col>

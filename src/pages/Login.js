@@ -65,40 +65,40 @@ function Login({ setIslogin }) {
 
   return (
     <div className='App'>
-        {isloading ? (
+      {isloading ? (
         <SpinnerComponent />
       ) : (
-      <Form className='login-form'>
-        <img src={logo} className='App-logo' alt='logo' />
+        <Form className='login-form'>
+          <img src={logo} className='App-logo' alt='logo' />
 
-        <Form.Group controlId='formBasicUser'>
-          <Form.Label>Usuario</Form.Label>
-          <Form.Control
-            type='text'
-            placeholder='Ingresa tu usuario'
-            onChange={handleInputChange}
-            name='username'
-          />
-        </Form.Group>
-        <Form.Group controlId='formBasicPassword'>
-          <Form.Label>Contraseña</Form.Label>
-          <Form.Control
-            type='password'
-            name='password'
-            placeholder='Contraseña'
-            onChange={handleInputChange}
-          />
-        </Form.Group>
-        <Button
-          className='mt-5'
-          size='sm'
-          onClick={handleClick}
-          variant='success'
-        >
-          Iniciar Sesión
-        </Button>
-      </Form>
-        )}
+          <Form.Group controlId='formBasicUser'>
+            <Form.Label>User</Form.Label>
+            <Form.Control
+              type='text'
+              placeholder='User'
+              onChange={handleInputChange}
+              name='username'
+            />
+          </Form.Group>
+          <Form.Group controlId='formBasicPassword'>
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type='password'
+              name='password'
+              placeholder='Password'
+              onChange={handleInputChange}
+            />
+          </Form.Group>
+          <Button
+            className='mt-5'
+            size='md'
+            onClick={handleClick}
+            variant='secondary'
+          >
+            Login{' '}
+          </Button>
+        </Form>
+      )}
     </div>
   );
 }
