@@ -42,14 +42,17 @@ const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
-//const TOKEN_PATH = process.env.GOOGLE_TOKENS;
-//const CREDENTIALS_PATH = process.env.GOOGLE_CREDENTIALS;
+const TOKEN_PATH = process.env.GOOGLE_TOKENS;
+const CREDENTIALS_PATH = process.env.GOOGLE_CREDENTIALS;
 
+//LOCAL PARA GOOGLE APIS 
 //const TOKEN_PATH = path.join(process.cwd(), 'token_sheet.json');
 //const CREDENTIALS_PATH = path.join(process.cwd(), 'credentials_ulead.json');
 
-const TOKEN_PATH = '/etc/secrets/token_sheet.json';
-const CREDENTIALS_PATH = '/etc/secrets/credentials_ulead.json';
+//RENDER PATH CLOUD render
+
+//const TOKEN_PATH = '/etc/secrets/token_sheet.json';
+//const CREDENTIALS_PATH = '/etc/secrets/credentials_ulead.json';
 /**
  * Reads previously authorized credentials from the save file.
  *
@@ -147,11 +150,11 @@ async function checkDuplicatesAndInsert(rows, res) {
         )}) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
         await pool.promise().query(getSheetData, values);
         insertedEmails.push(personalEmail);
-        console.log('registros insertados', personalEmail);
+        //console.log('registros insertados', personalEmail);
       } else {
-        console.log(
-          `Registro duplicado encontrado: personal_email = ${personalEmail}, course = ${course}`
-        );
+        //console.log(
+         // `Registro duplicado encontrado: personal_email = ${personalEmail}, course = ${course}`
+       // );
         
          ducplicated =`Registro duplicado encontrado: personal_email = ${personalEmail}, course = ${course}`;
          duplicatedState = true;
@@ -188,9 +191,9 @@ async function updateStatusIfClosed(rows) {
               .promise()
               .query(updateStatusQuery, [personalEmail, course]);
 
-            console.log(
-              `Estado actualizado a "Closed" para el correo electrónico ${personalEmail}`
-            );
+        //    console.log(
+          //    `Estado actualizado a "Closed" para el correo electrónico ${personalEmail}`
+            //);
           }
         }
       }
@@ -238,9 +241,9 @@ async function updatePaymentAndAttendance(rows, req, res) {
 
         await pool.promise().query(updateDataQuery, valuesToUpdate);
 
-        console.log(
-          `Datos de pago o asistencia actualizados para el correo electrónico ${personalEmail}`
-        );
+      //  console.log(
+        //  `Datos de pago o asistencia actualizados para el correo electrónico ${personalEmail}`
+       // );
       }
     }
   } catch (error) {

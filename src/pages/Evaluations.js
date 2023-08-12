@@ -361,7 +361,7 @@ function Evaluations() {
     try {
       const response = await axios.get(`${API_URL}/getDataEvaluations`, {});
       setConsulEval(response.data);
-      console.log('informacion obtenida');
+      //console.log('informacion obtenida');
     } catch (err) {
       if (err.response && err.response.status === 403) {
         Swal.fire({

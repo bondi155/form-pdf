@@ -44,7 +44,7 @@ const PersonalData = () => {
       });
       if (Array.isArray(response.data)) {
         setPersonalData(response.data);
-        console.log(response.data);
+       // console.log(response.data);
         SetIsloading(false);
       } else {
         setPersonalData([]);

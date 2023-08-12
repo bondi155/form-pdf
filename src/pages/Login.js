@@ -47,11 +47,10 @@ function Login({ setIslogin }) {
       } else {
         //si pasa bien
         localStorage.setItem('jwtToken', response.data.token);
-        axios.defaults.headers.common['Authorization'] =
-          'Bearer ' + response.data.token;
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token;
+        navigate('/home', { replace: true });
         setIslogin(true);
         SetIsloading(false);
-        navigate('/home', { replace: true });
       }
     } catch (error) {
       SetIsloading(false);

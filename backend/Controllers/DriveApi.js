@@ -95,12 +95,13 @@ async function listFiles(authClient, req) {
     return;
   }
 
+/*
   console.log('Files:');
 
   files.map((file) => {
     console.log(`${file.name} (${file.id})`);
   });
-  
+  */
   return files;
 }
 

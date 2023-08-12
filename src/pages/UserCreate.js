@@ -63,7 +63,7 @@ function UserCreate() {
     try {
       const response = await axios.get(`${API_URL}/getUserList`);
       setListUser(response.data);
-      console.log(response.data);
+   //   console.log(response.data);
     } catch (err) {
       if (err.response && err.response.status === 403) {
         Swal.fire({
