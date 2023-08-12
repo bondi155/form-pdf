@@ -7,11 +7,12 @@ import Home from './pages/Home';
 import './css/App.css';
 import PersonalData from './pages/PersonalData';
 import Evaluations from './pages/Evaluations';
-import SpinnerComponent from './components/Spinner';
+//import SpinnerComponent from './components/Spinner';
 import UserCreate from './pages/UserCreate';
 import PrivateRoute from './pages/PrivateRoute';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import PlaneSpinner from './components/planeSpinner';
 function App() {
   const [islogin, setIslogin] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -25,7 +26,7 @@ function App() {
   if (!isLoaded) {
     return (
       <div className='d-flex justify-content-center align-items-center vh-100'>
-        <SpinnerComponent />
+        <PlaneSpinner />
       </div>
     );
   }
