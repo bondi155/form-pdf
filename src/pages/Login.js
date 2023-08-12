@@ -23,7 +23,8 @@ function Login({ setIslogin }) {
     });
   };
 
-  const handleClick = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
       SetIsloading(true);
       const response = await axios.post(`${API_URL}/loginUsers`, {
@@ -68,7 +69,7 @@ function Login({ setIslogin }) {
     {isloading ? (
       <PlaneSpinner />
     ) : (
-      <Form className='login-form'>
+      <Form onSubmit={handleSubmit} className='login-form'>
         <img src={logo} className='App-logo' alt='logo' />
   
         <Form.Group controlId='formBasicUser'>
@@ -89,12 +90,12 @@ function Login({ setIslogin }) {
             onChange={handleInputChange}
           />
         </Form.Group>
-        <button
+        <Button
           className='semi-circle-login-btn'
-          onClick={handleClick}
-        >
+          type='submit'
+        > 
           <FaKey className="me-1" />Sign in
-        </button>
+        </Button>
       </Form>
     )}
   </div>
