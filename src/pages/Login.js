@@ -88,7 +88,7 @@ function Login({ setIslogin }) {
             name='password'
             placeholder='Password'
             onChange={handleInputChange}
-            autoComplete="current-password"
+            autoComplete='new-password'
           />
         </Form.Group>
         <Button
