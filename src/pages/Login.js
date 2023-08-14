@@ -79,6 +79,7 @@ function Login({ setIslogin }) {
             placeholder='User'
             onChange={handleInputChange}
             name='username'
+            autoComplete="username"
           />
         </Form.Group>
         <Form.Group controlId='formBasicPassword'>
