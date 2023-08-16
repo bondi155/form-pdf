@@ -16,6 +16,11 @@ import PlaneSpinner from './components/planeSpinner';
 function App() {
   const [islogin, setIslogin] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [userCreate, setUserCreate] = useState({
+    username: '',
+    role: '',
+    password: '',
+  });
   useEffect(() => {
     // Simulando un tiempo de carga
     setTimeout(() => {
@@ -103,7 +108,7 @@ function App() {
             path='/userCreation'
             element={
               <PrivateRoute islogin={islogin}>
-                <UserCreate />{' '}
+                <UserCreate  userCreate={userCreate} setUserCreate={setUserCreate}/>{' '}
               </PrivateRoute>
             }
           />

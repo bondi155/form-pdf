@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Container, Row, Col, Button } from 'react-bootstrap';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+//import { useNavigate } from 'react-router-dom';  USUARIO CON RECOIL O SECUENCIAL , VER ESO PARA LOS ROLES
 import { API_URL } from '../config/config.js';
 import GridEval from '../charts/GridEval';
 import Swal from 'sweetalert2';
@@ -22,16 +22,12 @@ const userColumns = [
   },
 ];
 
-function UserCreate() {
-  const [userCreate, setUserCreate] = useState({
-    username: '',
-    role: '',
-    password: '',
-  });
+function UserCreate({userCreate, setUserCreate}) {
+  
 
   const [listUser, setListUser] = useState([]);
 
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
 
   const handleUserInput = (e) => {
     setUserCreate({

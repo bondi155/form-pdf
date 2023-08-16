@@ -23,7 +23,6 @@ import images from '../components/Imagenes.js';
 //import SpinnerComponent from '../components/Spinner.js';
 import PlaneSpinner from '../components/planeSpinner';
 
-
 const PersonalData = () => {
   const [personalData, setPersonalData] = useState([]);
   const [email, setEmail] = useState('');
@@ -46,7 +45,7 @@ const PersonalData = () => {
       });
       if (Array.isArray(response.data)) {
         setPersonalData(response.data);
-       // console.log(response.data);
+        // console.log(response.data);
         SetIsloading(false);
       } else {
         setPersonalData([]);
@@ -166,19 +165,20 @@ const PersonalData = () => {
     }
   };
 
-
-
   const fetchSheetData = async () => {
     try {
       SetIsloading(true);
       const response = await axios.get(`${API_URL}/getDataSheets`, {
-        params:{  
-        tabName : tabName ,
-      }
+        params: {
+          tabName: tabName,
+        },
       });
       const emails = response.data.emails;
       const textEmails = `${emails}`;
-      const emailsList = `<ul>${textEmails.split(',').map(email => `<li>${email.trim()}</li>`).join('')}</ul>`;
+      const emailsList = `<ul>${textEmails
+        .split(',')
+        .map((email) => `<li>${email.trim()}</li>`)
+        .join('')}</ul>`;
       const Textduplicated = response.data.message;
       SetIsloading(false);
 
@@ -217,11 +217,11 @@ const PersonalData = () => {
   //mapear personal data el id . luego meter el id dentro de una funcion seteando selectid, luego ese sleect id = igual a id den el axios del put
   useEffect(() => {
     if (personalDataFromEffect.length > 0) {
-        setSelectedId(personalDataFromEffect[0]?.pd_id);
+      setSelectedId(personalDataFromEffect[0]?.pd_id);
     } else if (personalData.length > 0) {
-        setSelectedId(personalData[0]?.pd_id);
+      setSelectedId(personalData[0]?.pd_id);
     }
-}, [personalData, personalDataFromEffect]);
+  }, [personalData, personalDataFromEffect]);
 
   //console.log("Selected ID:", selectedId);
 
@@ -366,10 +366,13 @@ const PersonalData = () => {
             id='tab-info'
           >
             {Object.entries(groupedData).map(([course, items], key) => (
-              <Tab eventKey={course} title={course} key={key} >
+              <Tab eventKey={course} title={course} key={key}>
                 {items.map((item, innerKey) => (
                   <Col className='mb-2' sm={12} md={12} lg={12} key={innerKey}>
-                    <Card className='data-container' onClick={() => setSelectedId(item.pd_id)}>
+                    <Card
+                      className='data-container'
+                      onClick={() => setSelectedId(item.pd_id)}
+                    >
                       <Card.Body>
                         <Card.Title>
                           {item.pd_full_name}, {item.age}{' '}
@@ -409,12 +412,31 @@ const PersonalData = () => {
                                 <ListGroup.Item action href='#link4'>
                                   Additional Information
                                 </ListGroup.Item>
-                                <ListGroup.Item action href='#link5'>
-                                  Evaluation Information
-                                </ListGroup.Item>
-                                <ListGroup.Item action href='#link6'>
-                                  Comments{' '}
-                                </ListGroup.Item>
+                                {item.ed_full_name ? (
+                                  <ListGroup.Item action href='#link5'>
+                                    Evaluation Information
+                                  </ListGroup.Item>
+                                ) : (
+                                  <p
+                                    className='ms-3 mt-2'
+                                    style={{ color: 'red' }}
+                                  >
+                                    No Evaluation
+                                  </p>
+                                )}
+                                {item.comments_pd === 'No comments' ? (
+                                    <p
+                                    className='ms-3 mt-2'
+                                    style={{ color: 'red' }}
+                                  >
+                                    No Comments
+                                  </p>
+                                
+                                ) : (
+                                  <ListGroup.Item action href='#link6'>
+                                    Comments{' '}
+                                  </ListGroup.Item>
+                                )}
                               </ListGroup>
                             </Col>
                             <Col sm={8}>
@@ -597,31 +619,6 @@ const PersonalData = () => {
                                 <Tab.Pane eventKey='#link6'>
                                   <ListGroup>
                                     <ListGroup.Item>
-                                      {item.comments_pd ? (
-                                        <strong>{item.comments_pd}</strong>
-                                      ) : (
-                                        <div>
-                                          <InputGroup className='mb-3 mt-3'>
-                                            <FormControl
-                                              placeholder='Comment'
-                                              size='sm'
-                                              type='text'
-                                              name='newComment'
-                                              onChange={(e) =>
-                                                setNewComment(e.target.value)
-                                              }
-                                            />
-                                          <Button
-                                            size='sm'
-                                            variant='success'
-                                            onClick={handleSendComment}
-                                          >
-                                            Send
-                                          </Button>
-                                          </InputGroup>
-
-                                        </div>
-                                      )}
                                       <strong>{item.comments_pd}</strong>
                                     </ListGroup.Item>
                                   </ListGroup>

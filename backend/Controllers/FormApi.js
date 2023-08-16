@@ -34,7 +34,8 @@ const COLUMN_NAMES = [
   'asist',
   'payment',
   'calif',
-  'status', // Nueva columna "status"
+  'status',
+  'comments_pd',
 ];
 
 // If modifying these scopes, delete token.json.
@@ -42,17 +43,15 @@ const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
-const TOKEN_PATH = process.env.GOOGLE_TOKENS;
-const CREDENTIALS_PATH = process.env.GOOGLE_CREDENTIALS;
 
-//LOCAL PARA GOOGLE APIS 
+//LOCAL PARA GOOGLE APIS
 //const TOKEN_PATH = path.join(process.cwd(), 'token_sheet.json');
 //const CREDENTIALS_PATH = path.join(process.cwd(), 'credentials_ulead.json');
 
 //RENDER PATH CLOUD render
 
-//const TOKEN_PATH = '/etc/secrets/token_sheet.json';
-//const CREDENTIALS_PATH = '/etc/secrets/credentials_ulead.json';
+const TOKEN_PATH = '/etc/secrets/token_sheet.json';
+const CREDENTIALS_PATH = '/etc/secrets/credentials_ulead.json';
 /**
  * Reads previously authorized credentials from the save file.
  *
@@ -119,7 +118,7 @@ async function checkDuplicatesAndInsert(rows, res) {
   try {
     let insertedEmails = [];
     let ducplicated;
-    let duplicatedState = false;      
+    let duplicatedState = false;
 
     for (const row of rows) {
       const personalEmail = row[COLUMN_NAMES.indexOf('personal_email')];
@@ -136,6 +135,15 @@ async function checkDuplicatesAndInsert(rows, res) {
           if (['asist', 'payment', 'calif'].includes(COLUMN_NAMES[index])) {
             return '0';
           }
+
+          if (COLUMN_NAMES[index] === 'comments_pd') {
+            if (value === ' ' || value === undefined) {
+              return 'No comments';
+            } else {
+              return value;
+            }
+          }
+
           if (
             COLUMN_NAMES[index] === 'status' &&
             (value === '' || value === undefined)
@@ -144,32 +152,38 @@ async function checkDuplicatesAndInsert(rows, res) {
           }
           return value !== '' && value !== undefined ? value : null;
         });
+        // console.log("COLUMN_NAMES:", COLUMN_NAMES);
+        //console.log("Values:", values);
 
+        //ACORDARSE DE AGREGAR AC EN EL LIMITE SI VAMOS A AGREGAR OTRO CAMPO PTM SIEMPRE LO MISMO JAJA
+
+        // const commentValue = row[COLUMN_NAMES.indexOf('comments_pd')];
+        //console.log('el valor de status es :',commentValue)
         const getSheetData = `INSERT INTO personal_data (${COLUMN_NAMES.join(
           ', '
-        )}) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        )}) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
         await pool.promise().query(getSheetData, values);
         insertedEmails.push(personalEmail);
         //console.log('registros insertados', personalEmail);
       } else {
         //console.log(
-         // `Registro duplicado encontrado: personal_email = ${personalEmail}, course = ${course}`
-       // );
-        
-         ducplicated =`Registro duplicado encontrado: personal_email = ${personalEmail}, course = ${course}`;
-         duplicatedState = true;
-         //console.log(duplicatedState);
+        // `Registro duplicado encontrado: personal_email = ${personalEmail}, course = ${course}`
+        // );
+
+        ducplicated = `Registro duplicado encontrado: personal_email = ${personalEmail}, course = ${course}`;
+        duplicatedState = true;
+        //console.log(duplicatedState);
       }
     }
     //    console.log(insertedEmails);
 
-    return {insertedEmails, ducplicated, duplicatedState};
+    return { insertedEmails, ducplicated, duplicatedState };
   } catch (error) {
     console.log('Error en checkDuplicatesAndInsert:', error);
   }
 }
 
-//UPDATE
+//UPDATE closed , probar
 async function updateStatusIfClosed(rows) {
   try {
     for (const row of rows) {
@@ -191,8 +205,8 @@ async function updateStatusIfClosed(rows) {
               .promise()
               .query(updateStatusQuery, [personalEmail, course]);
 
-        //    console.log(
-          //    `Estado actualizado a "Closed" para el correo electrónico ${personalEmail}`
+            //    console.log(
+            //    `Estado actualizado a "Closed" para el correo electrónico ${personalEmail}`
             //);
           }
         }
@@ -211,19 +225,22 @@ async function updatePaymentAndAttendance(rows, req, res) {
       const yColumnIndex = COLUMN_NAMES.indexOf('payment');
       const zColumnIndex = COLUMN_NAMES.indexOf('calif');
       const statusColumnIndex = COLUMN_NAMES.indexOf('status');
+      const commentColumnIndex = COLUMN_NAMES.indexOf('comments_pd');
 
       const xValue = row[xColumnIndex];
       const yValue = row[yColumnIndex];
       const zValue = row[zColumnIndex];
       const status = row[statusColumnIndex];
+      const abComments = row[commentColumnIndex];
 
       if (
         xValue !== '0' ||
         yValue !== '0' ||
         zValue !== '0' ||
+        abComments !== 'No comments' ||
         status === 'Updated'
       ) {
-        let updateDataQuery = `UPDATE personal_data SET ${COLUMN_NAMES[xColumnIndex]} = ?, ${COLUMN_NAMES[yColumnIndex]} = ?, ${COLUMN_NAMES[zColumnIndex]} = ?`;
+        let updateDataQuery = `UPDATE personal_data SET ${COLUMN_NAMES[xColumnIndex]} = ?, ${COLUMN_NAMES[yColumnIndex]} = ?, ${COLUMN_NAMES[zColumnIndex]} = ?, ${COLUMN_NAMES[commentColumnIndex]} = ? `;
 
         if (status === 'Closed') {
           updateDataQuery += `, ${COLUMN_NAMES[statusColumnIndex]} = 'Closed'`;
@@ -236,14 +253,17 @@ async function updatePaymentAndAttendance(rows, req, res) {
           xValue !== '0' && xValue !== '' ? xValue : '0',
           yValue !== '0' && yValue !== '' ? yValue : '0',
           zValue !== '0' && zValue !== '' ? zValue : '0',
+          abComments !== 'No comments' && abComments !== ''
+            ? abComments
+            : 'No comments',
           personalEmail,
         ];
 
         await pool.promise().query(updateDataQuery, valuesToUpdate);
 
-      //  console.log(
+        //  console.log(
         //  `Datos de pago o asistencia actualizados para el correo electrónico ${personalEmail}`
-       // );
+        // );
       }
     }
   } catch (error) {
@@ -258,7 +278,7 @@ async function listMajors(auth, req) {
     const sheets = google.sheets({ version: 'v4', auth });
     const res = await sheets.spreadsheets.values.get({
       spreadsheetId: '1vdaO42mWRbISh3QTcutqaTncMoTRmNxYpcyW1n6MDRI',
-      range: `${tabName}!A2:AA`,
+      range: `${tabName}!A2:AB`,
     });
 
     const rows = res.data.values;
@@ -269,12 +289,15 @@ async function listMajors(auth, req) {
       );
     }
 
-    const {insertedEmails, duplicated, duplicatedState} = await checkDuplicatesAndInsert(rows);
-
+    const result = await checkDuplicatesAndInsert(rows);
+    if (!result) {
+      throw new Error('Error during checkDuplicatesAndInsert');
+    }
+    const { insertedEmails, duplicated, duplicatedState } = result;
     await updateStatusIfClosed(rows);
     await updatePaymentAndAttendance(rows);
 
-    return {insertedEmails, duplicated, duplicatedState};
+    return { insertedEmails, duplicated, duplicatedState };
   } catch (error) {
     console.log('Error en listMajors:', error);
   }
