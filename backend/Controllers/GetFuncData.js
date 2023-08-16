@@ -77,7 +77,7 @@ function consultJoin__(req, res, name) {
         return res.send('No data found');
       }
       res.send(result);
-      console.log(result);
+    //  console.log(result);
     });
   } catch (error) {
     console.log(error);
@@ -101,7 +101,7 @@ function consultEmail__(req, res) {
 
       const name = result[0].full_name;
 
-      console.log(name);
+      //console.log(name);
 
       consultJoin__(req, res, name);
     });
@@ -128,7 +128,7 @@ function consultaData__(req, res) {
         }
 
         res.send(result);
-        console.log(result);
+      //  console.log(result);
       });
     }
   } catch (error) {

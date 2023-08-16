@@ -74,7 +74,7 @@ function reportUrl__(req, res) {
   const id = req.params.id;
   const urlDrive = req.body.urlDrive;
 
-  console.log(id);
+  //console.log(id);
   const sqlUploadReportUrl =
     'UPDATE evaluation_data SET report_url = ? WHERE id = ?';
   pool.query(sqlUploadReportUrl, [urlDrive, id], (error, result) => {
@@ -114,12 +114,12 @@ console.log(id);
 function comments__(req, res) {
   const id = req.body.id;
   const comment = req.body.comment;
-  console.log(req.body);
+  //console.log(req.body);
   try {
     const updateComment =
       'UPDATE personal_data SET comments_pd = ? WHERE id = ?';
     pool.query(updateComment, [comment, id], (error, result) => {
-      console.log(error);
+     // console.log(error);
       return res.status(200).send('Comment Updated');
     });
   } catch (error) {

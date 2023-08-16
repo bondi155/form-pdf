@@ -32,7 +32,7 @@ const PersonalData = () => {
   const [match, Setmatch] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState('');
   const [personalDataFromEffect, setPersonalDataFromEffect] = useState([]);
-  const [newComment, setNewComment] = useState('');
+ // const [newComment, setNewComment] = useState('');
   const [selectedId, setSelectedId] = useState(null);
   // traemos info para personal_data . llamamos a la api..
   const fetchPerData = async () => {
@@ -226,7 +226,8 @@ const PersonalData = () => {
   //console.log("Selected ID:", selectedId);
 
   //actualizacion de comentario para cada id
-  const handleSendComment = async () => {
+  
+  /*const handleSendComment = async () => {
     try {
       const response = await axios.put(`${API_URL}/updateComment`, {
         id: selectedId,
@@ -246,7 +247,7 @@ const PersonalData = () => {
       });
     }
   };
-
+*/
   function renderImage(empresa) {
     if (!empresa) {
       return 'No company charged in Forms';
