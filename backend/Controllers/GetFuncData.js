@@ -230,6 +230,7 @@ function loginUsers__(req, res) {
             username: result[0].username,
             role: result[0].role,
           });
+          console.log('usuario logueado prueba ');
         } else {
           res.send({ code: 'USR_INCOR' });
         }
@@ -238,6 +239,8 @@ function loginUsers__(req, res) {
       res.send({ code: 'USR_NOT_EXIST' });
     }
   });
+  console.log('usuario logueado prueba ');
+
 }
 
 //descarga de archivo
