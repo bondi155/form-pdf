@@ -74,16 +74,14 @@ function reportUrl__(req, res) {
   const id = req.params.id;
   const urlDrive = req.body.urlDrive;
 
-  //console.log(id);
   const sqlUploadReportUrl =
     'UPDATE evaluation_data SET report_url = ? WHERE id = ?';
   pool.query(sqlUploadReportUrl, [urlDrive, id], (error, result) => {
     if (error) {
       console.error('Error in sqlUploadReportUrl query..Check DB connection', error);
-      return res.status(500).send('Hubo un error al subir el archivo');
+      return res.status(500).send('Error in sqlUploadReportUrl query..Check DB connection');
     }
-    res.status(200).send('Archivo subido con éxito');
-    console.log(error);
+    res.status(200).send('Success updating Report Card URL in Evaluations');
   });
 }
 
