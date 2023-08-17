@@ -333,13 +333,12 @@ function Evaluations() {
       //  alert(`${res.data.message}`);
       }
     } catch (ex) {
-      console.log(ex);
+     // console.log(ex);
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
         text: `An error occurred while processing your request. Error: ${ex.message}`
       })
-     // alert( `An error occurred while processing your request. Error: ${ex.message}`);
     }
   };
 
@@ -370,7 +369,7 @@ function Evaluations() {
           text: 'Token expire, please login again',
         });
       } else {
-        console.log(err);
+        console.error(err);
         Swal.fire('Ooops', 'Unable to get data', 'error');
       }
     }
