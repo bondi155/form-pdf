@@ -69,7 +69,7 @@ function consultJoin__(req, res, name) {
   try {
     pool.query(sqlGetPerDataByName, name, (err, result) => {
       if (err) {
-        console.log(err);
+        console.error('Error executing sqlGetPerDataByName query..Check DB connection', err);
         return res.status(500).send('Error to get personal data trought Name');
       }
 
@@ -80,7 +80,7 @@ function consultJoin__(req, res, name) {
     //  console.log(result);
     });
   } catch (error) {
-    console.log(error);
+    console.error('Error in consultJoin__ function ',error);
   }
 }
 //si se busca por email
@@ -91,7 +91,7 @@ function consultEmail__(req, res) {
       'SELECT * FROM personal_data WHERE personal_email = ?';
     pool.query(sqlGetPerDataByEmail, email, (err, result) => {
       if (err) {
-        console.log(err);
+        console.error('Error in query sqlGetPerDataByEmail...Check DB connection', err);
         return res.status(500).send('Error to get personal data by email');
       }
 
@@ -106,7 +106,7 @@ function consultEmail__(req, res) {
       consultJoin__(req, res, name);
     });
   } catch (err) {
-    console.log(err);
+    console.error('Error in ConsultEmail function', err);
   }
 }
 //ejecucion con condicion de funciones
@@ -119,7 +119,7 @@ function consultaData__(req, res) {
     } else {
       pool.query(sqlGetPerDataByName, email, (err, result) => {
         if (err) {
-          console.log(err);
+          console.error('error in consuldata query execution...Check DB connection',err);
           return res.status(500).send('Error to get personal data');
         }
 
@@ -132,7 +132,7 @@ function consultaData__(req, res) {
       });
     }
   } catch (error) {
-    console.log(error);
+    console.error('Error in general function execution consultData', error);
   }
 }
 
@@ -150,14 +150,14 @@ function autocompleteName(req, res) {
 
     pool.query(sqlGetPerDataByNameLike, email, (err, result) => {
       if (err) {
-        console.log(err);
+        console.error('Error in suggestion query like%', err);
         return res
           .status(500)
           .send('Error to get personal data for autocomplete');
       }
 
       if (result.length === 0) {
-        return res.send('No data found');
+        return res.send('No data found for suggestions');
       }
 
       const suggestions = result.map((item) => ({
@@ -168,7 +168,7 @@ function autocompleteName(req, res) {
       res.send(suggestions);
     });
   } catch (error) {
-    console.log(error);
+    console.error('Suggestion fuction execution error', error);
   }
 }
 //evaluation data select
@@ -177,7 +177,7 @@ function consultaEvalData__(req, res) {
 
   pool.query(sqlGetEvalData, (err, result) => {
     if (err) {
-      console.log(err);
+      console.error('Error executing query sqlGetEvalData..Check DB connection', err);
       return res.status(500).send('Error to get Evaluation data');
     }
     res.send(result);
@@ -189,7 +189,7 @@ function listUsers__(req, res) {
   const sqlGetusuarios = 'SELECT * FROM users ';
   pool.query(sqlGetusuarios, (error, result) => {
     if (error) {
-      console.log(error);
+      console.error('Error in query listUsers...Check DB connection', error);
     } else {
       const userList = result.map((row) => ({
         id: row.id,
@@ -210,7 +210,7 @@ function loginUsers__(req, res) {
 
   pool.query(selectLogin, [username], (err, result) => {
     if (err) {
-      console.log('Error al realizar la conexion bd para bcrypt password');
+      console.error('Error in connection to DB to check bcrypt password', err);
       res
         .status(500)
         .send('Error al realizar la conexion bd para bcrypt password');
@@ -218,7 +218,7 @@ function loginUsers__(req, res) {
     if (result.length > 0) {
       bcrypt.compare(password, result[0].password, (err, response) => {
         if (err) {
-          console.log(err);
+          console.error(err);
           res.status(500).send('Error to compare encrypt password');
         } else if (response) {
           const token = jwt.sign({ id: result[0].id }, secretkey, {
@@ -247,7 +247,7 @@ function download__(req, res) {
     const filepath = path.join(__dirname, 'reports', filename);
     res.download(filepath);
   } catch (error) {
-    console.log(error);
+    console.error('Error downloading report...', error);
   }
 }
 

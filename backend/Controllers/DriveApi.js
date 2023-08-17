@@ -1,8 +1,8 @@
 const fs = require('fs').promises;
 const path = require('path');
 const process = require('process');
-const {authenticate} = require('@google-cloud/local-auth');
-const {google} = require('googleapis');
+const { authenticate } = require('@google-cloud/local-auth');
+const { google } = require('googleapis');
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly']; //si dice no authorizado , cambiar nombre de token.json y se generara otro que pedira login en google
@@ -10,7 +10,7 @@ const SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly']; //si
 // created automatically when the authorization flow completes for the first
 // time.
 
-//LOCAL PARA GOOGLE APIS 
+//LOCAL PARA GOOGLE APIS
 //const TOKEN_PATH = path.join(process.cwd(), 'token.json');
 //const CREDENTIALS_PATH = path.join(process.cwd(), 'credentials_ulead.json');
 
@@ -28,6 +28,7 @@ async function loadSavedCredentialsIfExist() {
     const credentials = JSON.parse(content);
     return google.auth.fromJSON(credentials);
   } catch (err) {
+    console.error('Error in loadSavedCredentialsIfExist Drive Api',err)
     return null;
   }
 }
@@ -64,12 +65,13 @@ async function authorizeDrive() {
     scopes: SCOPES,
     keyfilePath: CREDENTIALS_PATH,
   });
+
   if (client.credentials) {
     await saveCredentials(client);
   }
+
   return client;
 }
-
 
 /**
  * Lists the names and IDs of up to 10 files.
@@ -80,22 +82,20 @@ async function authorizeDrive() {
 
 async function listFiles(authClient, req) {
   const searchInput = req.query.searchInput ?? '';
-  const drive = google.drive({version: 'v3', auth: authClient});
+  const drive = google.drive({ version: 'v3', auth: authClient });
   const res = await drive.files.list({
     pageSize: 150,
     fields: 'nextPageToken, files(id, name)',
-    q: `name contains '${searchInput}'` 
+    q: `name contains '${searchInput}'`,
   });
   const files = res.data.files;
-
-
 
   if (files.length === 0) {
     console.log('No files found.');
     return;
   }
 
-/*
+  /*
   console.log('Files:');
 
   files.map((file) => {
@@ -105,10 +105,7 @@ async function listFiles(authClient, req) {
   return files;
 }
 
-
 module.exports = {
   listFiles,
-  authorizeDrive
-
-
-}
+  authorizeDrive,
+};

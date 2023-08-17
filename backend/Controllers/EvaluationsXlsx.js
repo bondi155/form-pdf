@@ -44,14 +44,14 @@ async function readExcelFile(file) {
     }
 
     if (!data  || data.length === 0){
-      console.log('Problema al insertar valores , verificar si estan los campos del A al P y en el orden del archivo consolidad');
+      console.log(' There was a problem maping the cells from Excel file...Check the file and try Again');
     } else {
-      console.log(file.originalname, 'Datos recolectados del archivo Excel con éxito');   
+      console.log(file.originalname, 'Succes proccessing Uploaded Excel file ...Waiting for insert in DB...');   
     }
 
     return data;
   } catch (error) {
-    console.error('Error al procesar el archivo Excel:', error);
+    console.error('There was a error processing the upload Excel file (evaluations)', error);
     throw error;
   }
 }
@@ -60,12 +60,12 @@ function executeQuery(res, fileName, data) {
 
   pool.query(evaluationQuery, [data], (err, result) => {
     if (err) {
-      console.error(err);
+      console.error('Error in evaluationQuery query..Check DB connection', err);
       return res
         .status(500)
         .send({code: 'DB_INSERT_ERR', message: 'There is a Error in INSERT Query or Database'});
     } else {
-      console.log('procesado correctamente en base de datos ');
+      console.log('Succes inserting data from Excel evaluation file!');
       return res
       .status(200)
       .json({ code: 'SUCCESS', message: `${fileName} and information updated in DB.` });
@@ -80,7 +80,7 @@ async function EvaluationsXlsx(req, res) {
     const data = await readExcelFile(file);
     executeQuery(res, file.originalname, data);
   } catch (error) {
-    console.error('Error al procesar el archivo Excel:', error);
+    console.error('There was a error proccesing Excel file :', error);
     res
       .status(500)
       .json({ code: 'NO_PROCCESS', error: 'Error to insert data. Check columns (A to P values)' });

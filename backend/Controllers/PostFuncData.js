@@ -10,7 +10,7 @@ function userCreate__(req, res) {
 
   bcrypt.hash(password, saltRounds, (err, hash) => {
     if (err) {
-      console.log(err);
+      console.error('error in brypt.hash inside userCreate function',err);
     }
 
     const sqlCreateUser =
@@ -18,7 +18,7 @@ function userCreate__(req, res) {
 
     pool.query(sqlCreateUser, [username, role, hash], (error, result) => {
       if (error) {
-        console.log(error.code);
+        console.error('Error in sqlCreateUser query..Check DB connection', error.code);
 
         if (error.code === 'ER_DUP_ENTRY') {
           res.status(500).json({
@@ -41,7 +41,7 @@ function deleteUser__(req, res) {
 
   pool.query(sqlDeleteUser, [id], (error, result) => {
     if (error) {
-      console.log(error);
+      console.error('Error in sqlDeleteUser query..Check DB connection', error);
       res
         .status(500)
         .json({ message: 'An error occurred while deleting the user' });
@@ -55,11 +55,11 @@ function deleteUser__(req, res) {
 function deleteEvaluation__(req, res) {
   const id = req.params.id;
 
-  const sqlDeleteUser = 'DELETE FROM evaluation_data WHERE id = ?';
+  const sqlDeleteEval = 'DELETE FROM evaluation_data WHERE id = ?';
 
-  pool.query(sqlDeleteUser, [id], (error, result) => {
+  pool.query(sqlDeleteEval, [id], (error, result) => {
     if (error) {
-      console.log(error);
+      console.error('Error in sqlDeleteEval query..Check DB connection', error);
       res
         .status(500)
         .json({ message: 'An error occurred while deleting a evaluation row' });
@@ -79,7 +79,7 @@ function reportUrl__(req, res) {
     'UPDATE evaluation_data SET report_url = ? WHERE id = ?';
   pool.query(sqlUploadReportUrl, [urlDrive, id], (error, result) => {
     if (error) {
-      console.log(error);
+      console.error('Error in sqlUploadReportUrl query..Check DB connection', error);
       return res.status(500).send('Hubo un error al subir el archivo');
     }
     res.status(200).send('Archivo subido con éxito');
@@ -111,6 +111,7 @@ console.log(id);
   });
 }
 */
+
 function comments__(req, res) {
   const id = req.body.id;
   const comment = req.body.comment;

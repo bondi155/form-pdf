@@ -63,7 +63,7 @@ async function loadSavedCredentialsIfExist() {
     const credentials = JSON.parse(content);
     return google.auth.fromJSON(credentials);
   } catch (err) {
-    console.log(err);
+    console.error('Error in loadSavedCredentialsIfExist check credentials Google Forms APi', err);
     return null;
   }
 }
@@ -166,20 +166,20 @@ async function checkDuplicatesAndInsert(rows, res) {
         insertedEmails.push(personalEmail);
         //console.log('registros insertados', personalEmail);
       } else {
-        //console.log(
-        // `Registro duplicado encontrado: personal_email = ${personalEmail}, course = ${course}`
-        // );
+        console.log(
+        `Registro duplicado encontrados: personal_email = ${personalEmail}, course = ${course}`
+         );
 
         ducplicated = `Registro duplicado encontrado: personal_email = ${personalEmail}, course = ${course}`;
         duplicatedState = true;
         //console.log(duplicatedState);
       }
     }
-    //    console.log(insertedEmails);
+       console.log('registros insertados', insertedEmails);
 
     return { insertedEmails, ducplicated, duplicatedState };
   } catch (error) {
-    console.log('Error en checkDuplicatesAndInsert:', error);
+    console.error('Error en checkDuplicatesAndInsert:', error);
   }
 }
 
@@ -213,7 +213,7 @@ async function updateStatusIfClosed(rows) {
       }
     }
   } catch (error) {
-    console.log('Error en updateStatusIfClosed:', error);
+    console.error('Error en updateStatusIfClosed:', error);
   }
 }
 
@@ -267,7 +267,7 @@ async function updatePaymentAndAttendance(rows, req, res) {
       }
     }
   } catch (error) {
-    console.log('Error en updatePaymentAndAttendance:', error);
+    console.error('Error en updatePaymentAndAttendance:', error);
   }
 }
 
@@ -299,7 +299,7 @@ async function listMajors(auth, req) {
 
     return { insertedEmails, duplicated, duplicatedState };
   } catch (error) {
-    console.log('Error en listMajors:', error);
+    console.error('Error en listMajors Forms:', error);
   }
 }
 

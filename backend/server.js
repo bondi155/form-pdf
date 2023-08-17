@@ -79,8 +79,7 @@ app.post('/loginUsers', authenticateToken, getDataController.loginUsers__); //lo
 app.get('/getUserList', authenticateToken, getDataController.listUsers__); //get user for list
 app.post('/createUser', authenticateToken, PostDataController.userCreate__); //creation of users
 app.put('/updateComment', authenticateToken, PostDataController.comments__); //update comment personal_Data
-app.put('/reportUrl/:id', authenticateToken,PostDataController.reportUrl__);//subir url en data grid del google drive
-
+app.put('/reportUrl/:id', authenticateToken, PostDataController.reportUrl__); //subir url en data grid del google drive
 
 app.delete(
   '/deleteUser/:id',
@@ -98,25 +97,25 @@ app.get('/googleDrive', authenticateToken, async (req, res) => {
   try {
     const authDrive = await authorizeDrive();
     const files = await listFiles(authDrive, req, res);
-    if (files) {
-      res
-        .status(200)
-        .json({
-          message: 'Succes getting list files from drive',
-          code: 'SUCCESS',
-          list: files,
-        });
+    if (files && files.length > 0) {
+      const messageRes = {
+        message: 'Succes getting list files from Google Drive Api',
+      };
+      res.status(200).json({
+        messageRes,
+        code: 'SUCCESS',
+        list: files,
+      });
+      console.log(messageRes);
     } else {
-      res
-        .status(500)
-        .json({
-          message: 'ERROR getting data from drive',
-          code: 'ERROR_CONN_FILES',
-          list: [],
-        });
+      res.status(500).json({
+        message: 'ERROR getting data from drive',
+        code: 'ERROR_CONN_FILES',
+        list: [],
+      });
     }
   } catch (err) {
-    console.log('error en googledrive', err);
+    console.error('error in Google Drive Api Comunication', err);
   }
 });
 //get sheet data with validation
@@ -139,8 +138,8 @@ app.get('/getDataSheets', authenticateToken, async (req, res) => {
       });
     }
   } catch (error) {
-    console.error(error);
-    res.status(500).send('Ocurrió un error al obtener los datos');
+    console.error('Error in google sheets Api',error);
+    res.status(500).send('Error getting data from Google Sheets Api', error);
   }
 });
 // Ruta para el manejo del archivo Excel
@@ -150,7 +149,6 @@ app.post(
   upload.single('file'),
   excelController.EvaluationsXlsx
 );
-
 
 /* 
 //ruta para subir reportcard a cada id especifico
