@@ -170,6 +170,8 @@ function UserCreate({userCreate, setUserCreate}) {
           rows={listUser}
           columnsVar={userColumns}
           onDelete={handleDelete}
+          fileNameVar='UserList'
+          showDeleteColumn={true}
         />
       </div>
     </Container>

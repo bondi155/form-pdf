@@ -75,7 +75,9 @@ app.get(
   getDataController.consultaEvalData__
 ); //get evaluation data in data-grid
 app.get('/suggestNames', authenticateToken, getDataController.autocompleteName); //suggest list of names
+app.get('/examData', authenticateToken, getDataController.getExamData__); //info graficos 
 app.post('/loginUsers', authenticateToken, getDataController.loginUsers__); //login
+app.get('/companyEval', authenticateToken, getDataController.EvalCompany__); //get evaluation by company
 app.get('/getUserList', authenticateToken, getDataController.listUsers__); //get user for list
 app.post('/createUser', authenticateToken, PostDataController.userCreate__); //creation of users
 app.put('/updateComment', authenticateToken, PostDataController.comments__); //update comment personal_Data
@@ -95,11 +97,13 @@ app.delete(
 //get de drive api
 app.get('/googleDrive', authenticateToken, async (req, res) => {
   try {
+    const searchInput = req.query.searchInput ?? '';
     const authDrive = await authorizeDrive();
     const files = await listFiles(authDrive, req, res);
     if (files && files.length > 0) {
       const messageRes = {
-        message: 'Succes getting list files from Google Drive Api',
+        message: 'Success getting list files from Google Drive Api',
+        searchInput,
       };
       res.status(200).json({
         messageRes,
@@ -138,7 +142,7 @@ app.get('/getDataSheets', authenticateToken, async (req, res) => {
       });
     }
   } catch (error) {
-    console.error('Error in google sheets Api',error);
+    console.error('Error in google sheets Api', error);
     res.status(500).send('Error getting data from Google Sheets Api', error);
   }
 });
@@ -162,7 +166,7 @@ app.post(
   );
   */
 //ruta descargar report card
-app.get('/download/:filename', authenticateToken, getDataController.download__); //login
+app.get('/download/:filename', authenticateToken, getDataController.download__); //download file cancell
 
 app.listen(port, () => {
   console.log('servidor funcionando en el puerto ' + port);

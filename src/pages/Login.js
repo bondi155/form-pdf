@@ -10,10 +10,10 @@ import axios from 'axios';
 //import SpinnerComponent from '../components/Spinner.js';
 import PlaneSpinner from '../components/planeSpinner';
 import { FaKey } from 'react-icons/fa'; 
-function Login({ setIslogin }) {
+function Login({ setIslogin, form, setForm }) {
   const navigate = useNavigate();
 
-  const [form, setForm] = useState({ username: '', role: '', password: '' });
+  //const [form, setForm] = useState({ username: '', role: '', password: '' });
   const [isloading, SetIsloading] = useState(false);
 
   const handleInputChange = (event) => {

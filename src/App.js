@@ -13,9 +13,12 @@ import PrivateRoute from './pages/PrivateRoute';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import PlaneSpinner from './components/planeSpinner';
+import ConsultAirline from './pages/ConsultAirline';
+import DriveSearch from './pages/DriveSearch';
 function App() {
   const [islogin, setIslogin] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [form, setForm] = useState({ username: '', role: '', password: '' });
   const [userCreate, setUserCreate] = useState({
     username: '',
     role: '',
@@ -66,7 +69,7 @@ function App() {
         <Route path='/' element={<Navigate replace to='/login' />} />
         <Route
           path='/login'
-          element={<Login islogin={islogin} setIslogin={setIslogin} />}
+          element={<Login form={form} setForm={setForm} islogin={islogin} setIslogin={setIslogin} />}
         />
         <Route path='/*' element={<Navigate replace to='/login' />} />
         <Route
@@ -75,10 +78,20 @@ function App() {
           <Route
             path='/home'
             element={
-              <PrivateRoute islogin={islogin}>
+              <PrivateRoute form={form} islogin={islogin}>
                 <Home />
               </PrivateRoute>
             }
+            
+          />
+          <Route
+            path='/GoogleDriveSeach'
+            element={
+              <PrivateRoute islogin={islogin}>
+                <DriveSearch />
+              </PrivateRoute>
+            }
+            
           />
           <Route
             path='/reportCard1010101'
@@ -109,6 +122,14 @@ function App() {
             element={
               <PrivateRoute islogin={islogin}>
                 <UserCreate  userCreate={userCreate} setUserCreate={setUserCreate}/>{' '}
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path='/consultAirlineGrid'
+            element={
+              <PrivateRoute islogin={islogin}>
+                <ConsultAirline form={form} islogin={islogin} setIslogin={setIslogin}/>{' '}
               </PrivateRoute>
             }
           />

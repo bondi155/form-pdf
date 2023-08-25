@@ -75,8 +75,15 @@ function NavigationBar({ setIslogin }) {
             >
               Evaluations
             </Link>
-            <Link to='/home' className='nav-link' onClick={handleLinkClick}>
+            <Link to='/GoogleDriveSeach' className='nav-link' onClick={handleLinkClick}>
               Drive Directory
+            </Link>
+            <Link
+              to='/consultAirlineGrid'
+              className='nav-link'
+              onClick={handleLinkClick}
+            >
+              Consult Airline
             </Link>
             {/* <Link to='/formController' className='nav-link'>
               Form Controller
@@ -90,7 +97,8 @@ function NavigationBar({ setIslogin }) {
               onClick={handleLogout}
               size='sm'
             >
-              <FiLogOut className='me-1 mb-1' />Sign out
+              <FiLogOut className='me-1 mb-1' />
+              Sign out
             </Button>
             &nbsp;
           </Nav>

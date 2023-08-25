@@ -444,8 +444,10 @@ function Evaluations() {
         <GridEval
           rows={rows}
           columnsVar={evalColumns}
+          fileNameVar='EvaluationListComplete'
           onDelete={handleDelete}
           onUpdateReportUrl={updateReportUrl}
+          showDeleteColumn={true}
         />
       </div>
     </>

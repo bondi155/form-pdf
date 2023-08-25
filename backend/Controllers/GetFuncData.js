@@ -253,6 +253,50 @@ function download__(req, res) {
   }
 }
 
+//get para aerolineas segun usuario
+function EvalCompany__(req, res) {
+  const username  = req.query.domainName ?? '';
+
+  const sqlGetEvalCompany = 'SELECT * FROM evaluation_data WHERE LOWER(company) = LOWER(?)';
+
+  pool.query(sqlGetEvalCompany, username, (err, result) => {
+    if (err) {
+      console.error('Error executing query sqlGetEvalData..Check DB connection', err);
+      return res.status(500).send('Error to get Evaluation data');
+    }
+    res.send(result);
+  });
+}
+
+
+//get para dashboard home graficos 
+const getExamData__ = async () => {
+  try {
+      // Obtener el total de exam_calif
+      const totalCalifResult = await pool.query('SELECT COUNT(*) AS total_calif FROM evaluation_data');
+      const totalCalif = totalCalifResult[0].total_calif;
+      
+      // Obtener el desglose de calificaciones
+      const breakdownResult = await pool.query('SELECT exam_calif, COUNT(*) AS count FROM evaluation_data GROUP BY exam_calif');
+
+      // Construir un objeto para el desglose
+      let breakdown = {};
+      breakdownResult.forEach(row => {
+          breakdown[row.exam_calif] = row.count;
+      });
+      console.log(breakdown);
+      // Devolver la data
+      return {
+          total: totalCalif,
+          breakdown: breakdown
+      };
+
+  } catch (error) {
+      console.error("Error fetching exam data:", error);
+      throw new Error("Internal Server Error");
+  }
+}
+
 module.exports = {
   consultaData__,
   consultaEvalData__,
@@ -261,4 +305,6 @@ module.exports = {
   loginUsers__,
   listUsers__,
   download__,
+  EvalCompany__,
+  getExamData__
 };
