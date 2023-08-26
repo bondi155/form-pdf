@@ -78,8 +78,8 @@ function App() {
           <Route
             path='/home'
             element={
-              <PrivateRoute form={form} islogin={islogin}>
-                <Home />
+              <PrivateRoute islogin={islogin}>
+                <Home  form={form} />
               </PrivateRoute>
             }
             

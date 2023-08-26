@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import GridEval from '../charts/GridEval';
-import { Container } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
 import { API_URL } from '../config/config';
+import images from '../components/Imagenes';
 
 const evalCompanyCol = [
   { field: 'id', headerName: 'ID', width: 50, hide: true },
@@ -132,12 +133,12 @@ function ConsultAirline({ form }) {
     try {
       const response = await axios.get(`${API_URL}/companyEval`, {
         params: {
-         domainName,
+          domainName,
         },
       });
       console.log(response.data);
       setCompanyEval(response.data);
-      if(companyEval.length < 0){
+      if (companyEval.length < 0) {
         alert('no hay array para estado');
       }
     } catch (error) {
@@ -148,7 +149,6 @@ function ConsultAirline({ form }) {
 
   useEffect(() => {
     GetEvalCompany();
-    console.log(companyEval);
     //no es afectada por variables externas , solo el usuario que se reiniciaria en cada login
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -161,17 +161,24 @@ function ConsultAirline({ form }) {
 
   return (
     <>
-    <Container className='container-custom'>
-      <h1>Consulta Evaluaciones Pilotos - {form.username}</h1>
-
-      
-    </Container>
-    <GridEval
-    rows={rows}
-    columnsVar={evalCompanyCol}
-    fileNameVar='EvaluationsCompany'
-  />
-  </>
+      <Container className='container-custom'>
+        <Row>
+          <h1 className='text-center'>
+            Consulta de Evaluaciones
+            {domainName === 'tsm' ? (
+              <img src={images.tsm} width='30%' alt='tsm' />
+            ) : domainName === 'volaris' ? (
+              <img src={images.volaris} alt='volaris' width='30%' />
+            ) : null}{' '}
+          </h1>
+        </Row>
+      </Container>
+      <GridEval
+        rows={rows}
+        columnsVar={evalCompanyCol}
+        fileNameVar='EvaluationsCompany'
+      />
+    </>
   );
 }
 

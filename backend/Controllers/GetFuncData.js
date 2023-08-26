@@ -69,7 +69,10 @@ function consultJoin__(req, res, name) {
   try {
     pool.query(sqlGetPerDataByName, name, (err, result) => {
       if (err) {
-        console.error('Error executing sqlGetPerDataByName query..Check DB connection', err);
+        console.error(
+          'Error executing sqlGetPerDataByName query..Check DB connection',
+          err
+        );
         return res.status(500).send('Error to get personal data trought Name');
       }
 
@@ -77,10 +80,10 @@ function consultJoin__(req, res, name) {
         return res.send('No data found');
       }
       res.send(result);
-    //  console.log(result);
+      //  console.log(result);
     });
   } catch (error) {
-    console.error('Error in consultJoin__ function ',error);
+    console.error('Error in consultJoin__ function ', error);
   }
 }
 //si se busca por email
@@ -91,7 +94,10 @@ function consultEmail__(req, res) {
       'SELECT * FROM personal_data WHERE personal_email = ?';
     pool.query(sqlGetPerDataByEmail, email, (err, result) => {
       if (err) {
-        console.error('Error in query sqlGetPerDataByEmail...Check DB connection', err);
+        console.error(
+          'Error in query sqlGetPerDataByEmail...Check DB connection',
+          err
+        );
         return res.status(500).send('Error to get personal data by email');
       }
 
@@ -119,7 +125,10 @@ function consultaData__(req, res) {
     } else {
       pool.query(sqlGetPerDataByName, email, (err, result) => {
         if (err) {
-          console.error('error in consuldata query execution...Check DB connection',err);
+          console.error(
+            'error in consuldata query execution...Check DB connection',
+            err
+          );
           return res.status(500).send('Error to get personal data');
         }
 
@@ -128,7 +137,7 @@ function consultaData__(req, res) {
         }
 
         res.send(result);
-      //  console.log(result);
+        //  console.log(result);
       });
     }
   } catch (error) {
@@ -177,7 +186,10 @@ function consultaEvalData__(req, res) {
 
   pool.query(sqlGetEvalData, (err, result) => {
     if (err) {
-      console.error('Error executing query sqlGetEvalData..Check DB connection', err);
+      console.error(
+        'Error executing query sqlGetEvalData..Check DB connection',
+        err
+      );
       return res.status(500).send('Error to get Evaluation data');
     }
     res.send(result);
@@ -230,7 +242,7 @@ function loginUsers__(req, res) {
             username: result[0].username,
             role: result[0].role,
           });
-          console.log('Loggin user...', username );
+          console.log('Loggin user...', username);
         } else {
           res.send({ code: 'USR_INCOR' });
         }
@@ -239,7 +251,6 @@ function loginUsers__(req, res) {
       res.send({ code: 'USR_NOT_EXIST' });
     }
   });
-
 }
 
 //descarga de archivo
@@ -255,47 +266,60 @@ function download__(req, res) {
 
 //get para aerolineas segun usuario
 function EvalCompany__(req, res) {
-  const username  = req.query.domainName ?? '';
+  const username = req.query.domainName ?? '';
 
-  const sqlGetEvalCompany = 'SELECT * FROM evaluation_data WHERE LOWER(company) = LOWER(?)';
+  const sqlGetEvalCompany =
+    'SELECT * FROM evaluation_data WHERE LOWER(company) = LOWER(?)';
 
   pool.query(sqlGetEvalCompany, username, (err, result) => {
     if (err) {
-      console.error('Error executing query sqlGetEvalData..Check DB connection', err);
+      console.error(
+        'Error executing query sqlGetEvalData..Check DB connection',
+        err
+      );
       return res.status(500).send('Error to get Evaluation data');
     }
     res.send(result);
   });
 }
 
+//get para dashboard home graficos
+function getExamData__(req, res) {
+  const company = req.query.domainName ?? '';
+  const sqlGetTotalCalif = 'SELECT COUNT(*) AS total_calif FROM evaluation_data WHERE LOWER(company) = LOWER(?)';
+  const sqlGetGroupCalif = 'SELECT exam_calif, COUNT(*) AS count FROM evaluation_data WHERE LOWER(company) = LOWER(?) GROUP BY exam_calif';
 
-//get para dashboard home graficos 
-const getExamData__ = async () => {
-  try {
-      // Obtener el total de exam_calif
-      const totalCalifResult = await pool.query('SELECT COUNT(*) AS total_calif FROM evaluation_data');
-      const totalCalif = totalCalifResult[0].total_calif;
-      
-      // Obtener el desglose de calificaciones
-      const breakdownResult = await pool.query('SELECT exam_calif, COUNT(*) AS count FROM evaluation_data GROUP BY exam_calif');
+  // Obtener el total de exam_calif
+  pool.query(sqlGetTotalCalif, company, (err, totalCalifResult) => {
+    if (err) {
+      console.error('Error fetching total exam data:', err);
+      return res.status(500).send('Internal Server Error when fetching total exam data.');
+    }
+
+    const totalCalif = totalCalifResult[0].total_calif;
+
+    // Obtener el desglose de calificaciones
+    pool.query(sqlGetGroupCalif, company, (err, breakdownResult) => {
+      if (err) {
+        console.error('Error fetching breakdown exam data:', err);
+        return res.status(500).send('Internal Server Error when fetching breakdown exam data.');
+      }
 
       // Construir un objeto para el desglose
       let breakdown = {};
-      breakdownResult.forEach(row => {
-          breakdown[row.exam_calif] = row.count;
+      breakdownResult.forEach((row) => {
+        breakdown[row.exam_calif] = row.count;
       });
-      console.log(breakdown);
-      // Devolver la data
-      return {
-          total: totalCalif,
-          breakdown: breakdown
-      };
 
-  } catch (error) {
-      console.error("Error fetching exam data:", error);
-      throw new Error("Internal Server Error");
-  }
+      // Devolver la data
+      res.json({
+        total: totalCalif,
+        breakdown: breakdown,
+      });
+    });
+  });
 }
+
 
 module.exports = {
   consultaData__,
@@ -306,5 +330,5 @@ module.exports = {
   listUsers__,
   download__,
   EvalCompany__,
-  getExamData__
+  getExamData__,
 };
