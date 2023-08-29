@@ -5,7 +5,7 @@ import imagenc from './img/calif/c.png';
 import imagend from './img/calif/d.png';
 import driveimg from './img/drive.png';
 import tsm from './img/airlines/tsm.png';
-import volaris from'./img/airlines/aeromexico.png'
+import volaris from'./img/airlines/volaris.png'
 
 
 const images = {

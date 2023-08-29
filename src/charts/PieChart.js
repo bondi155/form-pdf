@@ -1,33 +1,48 @@
 import React from 'react';
 import ReactApexChart from 'react-apexcharts';
+import { Card } from 'react-bootstrap';
 
-function PieChart({seriesValues, labelsValue, colorsValue}) {
+function PieChart({
+  seriesValues,
+  labelsValue,
+  colorsValue,
+  width,
+  chartTitle,
+  className
+}) {
   const options = {
     labels: labelsValue,
-    colors : colorsValue,
-    responsive: [{
-      breakpoint: 480,
-      options: {
-        chart: {
-          width: 200
+    colors: colorsValue,
+    responsive: [
+      {
+        breakpoint: 480,
+        options: {
+          chart: {
+            width: 200,
+          },
+          legend: {
+            position: 'bottom',
+          },
         },
-        legend: {
-          position: 'bottom',
-          
-        },
-      }
-    }]
+      },
+    ],
   };
 
   const series = seriesValues;
-
+  const size = width;
+  const title = chartTitle;
   return (
-    <ReactApexChart 
-      options={options} 
-      series={series} 
-      type="pie" 
-      width={380} 
-    />
+  <Card className={`mb-3 ${className}`}>
+          <Card.Header>{title}</Card.Header>
+      <Card.Body>
+        <ReactApexChart
+          options={options}
+          series={series}
+          type='pie'
+          width={size}
+        />
+      </Card.Body>
+    </Card>
   );
 }
 

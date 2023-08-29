@@ -34,7 +34,7 @@
 
 .container-custom {
   max-width: 65%;
-  margin-top: 8rem;
+  margin-top: 6rem;
   width: 100%;
 }
 
@@ -290,4 +290,38 @@ h1 {
 
 h2 {
   animation: fadeIn 1.5s ease-in;
+}
+
+.pie-chart-card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 350px;
+  transition: transform 0.2s;
+}
+
+.pie-chart-card:hover {
+  transform: translateY(-5px);
+}
+
+.pie-chart-card-large:hover {
+  transform: translateY(-5px);
+}
+
+.chartsCont {
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.pie-chart-card-large {
+  height: 465px;
+  /* Puedes ajustar según tus necesidades */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: transform 0.2s;
+
+  /* Esto centrará el contenido verticalmente */
 }

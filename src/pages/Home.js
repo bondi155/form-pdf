@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import '../css/App.css';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Card, CardGroup } from 'react-bootstrap';
 import axios from 'axios';
 import { API_URL } from '../config/config';
-import PieChart from '../charts/PieChart';
 import { FaUserCircle } from 'react-icons/fa';
+import PieChart from '../charts/PieChart';
 
 const colorsNumeric = [
   '#0000FF', // 1 - Azul
@@ -95,44 +95,84 @@ function Home({ form }) {
       alphabeticBreakdown[key] = value;
     }
   });
+  //valores del array , los otros son los labels
   const numericValues = Object.values(numericBreakdown);
   const alphabeticValues = Object.values(alphabeticBreakdown);
 
   //const valor = [44, 55, 13, 43, 22, 44, 55, 13, 43, 22, 44, 55, 13, 43, 22, 77];
+
   return (
     <Container className='container-custom'>
       <Row>
-        <Col
-          xs={{ span: 10, offset: 1 }}
-          sm={{ span: 12, offset: 0 }}
-          lg={{ span: 8, offset: 0 }}
-          md={{ span: 12, offset: 0 }}
-        >
-       <h1 className='mb-5'>Hola{' '}<FaUserCircle /> {form.username}
-</h1>
-        </Col>
         {error ? (
-          <div>Error: {error}</div>
+          <div>Hubo un problema cargando los graficos..error: {error}</div>
         ) : (
           <div>
-            <h2 className='mb-5'>
-              Total de Calificaciones en Evaluaciones: {totalCalif}
-            </h2>
+            <Col
+              xs={{ span: 10, offset: 1 }}
+              sm={{ span: 12, offset: 0 }}
+              lg={{ span: 12, offset: 0 }}
+              md={{ span: 12, offset: 0 }}
+            >
+              {' '}
+              <Card className='mb-1' border='dark'>
+                <Card.Header>
+                  {' '}
+                  Bienvenido <FaUserCircle /> {form.username}
+                </Card.Header>
+                <Card.Body>
+                  <Card.Title>
+                    {' '}
+                    Total de Evaluaciones en {domainName} :
+                  </Card.Title>
+                  <Card.Text>
+                    <strong> {totalCalif}</strong>
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
             <Row>
-              <Col xs={12} lg={6} sm={12} md={12}>
-                <PieChart
-                  labelsValue={labelsNumerics}
-                  seriesValues={numericValues}
-                  colorsValue={colorsNumeric}
-                />
-              </Col>
-              <Col xs={12} lg={6} sm={12} md={12}>
-                <PieChart
-                  labelsValue={labelsAlphabets}
-                  seriesValues={alphabeticValues}
-                  colorsValue={colorsAlphabetic}
-                />
-              </Col>
+              {numericValues && numericValues.length > 0 ? (
+                <>
+                  <Row className='chartsCont'>
+                    <Col xs={12} lg={6} sm={12} md={6}>
+                      <PieChart
+                        className='pie-chart-card'
+                        title='Calificaciones Numéricas'
+                        labelsValue={labelsNumerics}
+                        seriesValues={numericValues}
+                        colorsValue={colorsNumeric}
+                        width={380}
+                        chartTitle={'Sin Experiencia'}
+                      />
+                    </Col>
+                    <Col xs={12} lg={6} sm={12} md={6}>
+                      <PieChart
+                        className='pie-chart-card'
+                        title='Calificaciones Alfabéticas'
+                        labelsValue={labelsAlphabets}
+                        seriesValues={alphabeticValues}
+                        colorsValue={colorsAlphabetic}
+                        width={380}
+                        chartTitle={'Con Experiencia'}
+                      />
+                    </Col>
+                  </Row>
+                </>
+              ) : (
+                <Row className='chartsCont'>
+                  <Col xs={12} lg={{ span: 8, offset: 1 }} sm={12} md={12}>
+                    <PieChart
+                      className='pie-chart-card-large'
+                      labelsValue={labelsAlphabets}
+                      seriesValues={alphabeticValues}
+                      colorsValue={colorsAlphabetic}
+                      width={500}
+                      chartTitle={'Con Experiencia'}
+                    />
+                  </Col>
+                </Row>
+              )}
             </Row>
             {/*  <ul>
               {Object.entries(breakdown).map(([key, value]) => (
