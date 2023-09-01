@@ -38,7 +38,6 @@ function App() {
       </div>
     );
   }
-
   // quita al usuario luego de la expiracion del token
   axios.interceptors.response.use(
     function (response) {

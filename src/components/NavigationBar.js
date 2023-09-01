@@ -26,7 +26,7 @@ function NavigationBar({ setIslogin, form }) {
   const handleToggleClick = () => {
     setNavOpen((prevOpen) => !prevOpen);
   };
-
+  console.log("Role:", form.role);
   return (
     <>
       <Navbar

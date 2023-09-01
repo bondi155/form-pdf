@@ -50,6 +50,10 @@ function Login({ setIslogin, form, setForm }) {
         //si pasa bien
         localStorage.setItem('jwtToken', response.data.token);
         axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token;
+        setForm({
+          ...form,
+          role: response.data.role,  // Aquí se actualiza el role del usuario
+        });
         navigate('/home', { replace: true });
         setIslogin(true);
         SetIsloading(false);
