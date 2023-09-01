@@ -73,7 +73,7 @@ function App() {
         />
         <Route path='/*' element={<Navigate replace to='/login' />} />
         <Route
-          element={<NavigationBar islogin={islogin} setIslogin={setIslogin} />}
+          element={<NavigationBar form={form} islogin={islogin} setIslogin={setIslogin} />}
         >
           <Route
             path='/home'

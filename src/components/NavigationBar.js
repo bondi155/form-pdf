@@ -7,9 +7,9 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FiLogOut } from 'react-icons/fi';
 
-function NavigationBar({ setIslogin }) {
+function NavigationBar({ setIslogin, form }) {
   const navigate = useNavigate();
-
+  
   const handleLogout = () => {
     localStorage.removeItem('jwtToken');
     axios.defaults.headers.common['Authorization'] = '';
@@ -40,6 +40,7 @@ function NavigationBar({ setIslogin }) {
       >
         <Link to='/home' className='nav-link'>
           <Navbar.Brand className='font-weight-bold text-muted'>
+            
             <img
               src={logoNav}
               width='68'
@@ -52,32 +53,36 @@ function NavigationBar({ setIslogin }) {
 
         <Navbar.Toggle onClick={handleToggleClick} />
 
-        <Navbar.Collapse className='justify-content-end'>
+   <Navbar.Collapse className='justify-content-end'>
           <Nav>
-            <Link
-              to='/userCreation'
-              className='nav-link'
-              onClick={handleLinkClick}
-            >
-              Users
-            </Link>
-            <Link
-              to='/consolidateInformation'
-              className='nav-link'
-              onClick={handleLinkClick}
-            >
-              Consolidate
-            </Link>
-            <Link
-              to='/evaluationData'
-              className='nav-link'
-              onClick={handleLinkClick}
-            >
-              Evaluations
-            </Link>
-            <Link to='/GoogleDriveSeach' className='nav-link' onClick={handleLinkClick}>
-              Drive Directory
-            </Link>
+            {form.role === 'admin' && (
+              <>
+                <Link
+                  to='/userCreation'
+                  className='nav-link'
+                  onClick={handleLinkClick}
+                >
+                  Users
+                </Link>
+                <Link
+                  to='/consolidateInformation'
+                  className='nav-link'
+                  onClick={handleLinkClick}
+                >
+                  Consolidate
+                </Link>
+                <Link
+                  to='/evaluationData'
+                  className='nav-link'
+                  onClick={handleLinkClick}
+                >
+                  Evaluations
+                </Link>
+                <Link to='/GoogleDriveSeach' className='nav-link' onClick={handleLinkClick}>
+                  Drive Directory
+                </Link>
+              </>
+            )}
             <Link
               to='/consultAirlineGrid'
               className='nav-link'
@@ -85,12 +90,6 @@ function NavigationBar({ setIslogin }) {
             >
               Consult Airline
             </Link>
-            {/* <Link to='/formController' className='nav-link'>
-              Form Controller
-            </Link>
-            <Link to='/reportCard' className='nav-link'>
-              Report Card
-            </Link> */}
             <Button
               variant='dark'
               className='logout-button'

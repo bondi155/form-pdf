@@ -288,8 +288,7 @@ function getExamData__(req, res) {
   const company = req.query.domainName ?? '';
   const sqlGetTotalCalif = 'SELECT COUNT(*) AS total_calif FROM evaluation_data WHERE LOWER(company) = LOWER(?)';
   const sqlGetGroupCalif = 'SELECT exam_calif, COUNT(*) AS count FROM evaluation_data WHERE LOWER(company) = LOWER(?) GROUP BY exam_calif';
-
-  // Obtener el total de exam_calif
+ // Obtener el total de exam_calif
   pool.query(sqlGetTotalCalif, company, (err, totalCalifResult) => {
     if (err) {
       console.error('Error fetching total exam data:', err);
@@ -298,7 +297,7 @@ function getExamData__(req, res) {
 
     const totalCalif = totalCalifResult[0].total_calif;
 
-    // Obtener el desglose de calificaciones
+    // Obtener el desglose de calificaciones de usuarios company
     pool.query(sqlGetGroupCalif, company, (err, breakdownResult) => {
       if (err) {
         console.error('Error fetching breakdown exam data:', err);
@@ -320,6 +319,22 @@ function getExamData__(req, res) {
   });
 }
 
+function getAllCompanies__(req, res) {
+  const sqlGetAllCompanies = 'SELECT DISTINCT company FROM evaluation_data';
+  pool.query(sqlGetAllCompanies, (err, companies) => {
+      if (err) {
+          console.error('Error fetching all companies:', err);
+          return res.status(500).send('Internal Server Error when fetching companies.');
+      }
+      
+      
+      res.json(companies);
+
+      console.log(companies);
+
+  });
+}
+
 
 module.exports = {
   consultaData__,
@@ -331,4 +346,5 @@ module.exports = {
   download__,
   EvalCompany__,
   getExamData__,
+  getAllCompanies__
 };

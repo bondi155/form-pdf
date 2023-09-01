@@ -75,6 +75,7 @@ app.get(
   getDataController.consultaEvalData__
 ); //get evaluation data in data-grid
 app.get('/suggestNames', authenticateToken, getDataController.autocompleteName); //suggest list of names
+app.get('/getCompanies', authenticateToken, getDataController.getAllCompanies__); //all companies for admin
 app.get('/examData', authenticateToken, getDataController.getExamData__); //info graficos 
 app.post('/loginUsers', authenticateToken, getDataController.loginUsers__); //login
 app.get('/companyEval', authenticateToken, getDataController.EvalCompany__); //get evaluation by company
