@@ -170,7 +170,7 @@ function Home({ form }) {
                 <Card.Header className='d-flex align-items-center'>
                   <FaUserCircle size={40} style={{ marginRight: '16px' }} />{' '}
                   <div>
-                    <h4>Bienvenido, {form.username}{form.role}</h4>
+                    <h4>Bienvenido, {form.username}</h4>
                     <small>Última evaluación: <strong>1 Septiembre</strong></small>
                   </div>
                 </Card.Header>
