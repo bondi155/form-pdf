@@ -149,7 +149,9 @@ function Home({ form }) {
               </h2>
               {/* Opcional: agregar aquí barra de progreso o gráfico */}
               <div>
+              <Link to='/evaluationData'>
                 <Button variant='primary'>Ver Evaluations UleadAir</Button>
+            </Link>
               </div>
             </Card.Body>
           </Card>

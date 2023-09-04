@@ -83,6 +83,7 @@ function NavigationBar({ setIslogin, form }) {
                 </Link>
               </>
             )}
+             {form.role === 'company' && (
             <Link
               to='/consultAirlineGrid'
               className='nav-link'
@@ -90,6 +91,7 @@ function NavigationBar({ setIslogin, form }) {
             >
               Consult Airline
             </Link>
+            )}
             <Button
               variant='dark'
               className='logout-button'
