@@ -39,6 +39,7 @@ function Home({ form }) {
 
   const labelsNumerics = ['1', '2', '3', '4', '5', '6', '7'];
   const labelsAlphabets = ['A', 'B', 'B+', 'B-', 'C', 'C+', 'C-', 'D', 'NP'];
+  const labelsAlphabetsTsm = ['A', 'B', 'B+','C', 'D'];
 
   useEffect(() => {
     const fetchExamData = async () => {
@@ -221,7 +222,7 @@ function Home({ form }) {
                   <Col xs={12} lg={{ span: 8, offset: 1 }} sm={12} md={12}>
                     <PieChart
                       className='pie-chart-card-large'
-                      labelsValue={labelsAlphabets}
+                      labelsValue={labelsAlphabetsTsm}
                       seriesValues={alphabeticValues}
                       colorsValue={colorsAlphabetic}
                       width={500}
