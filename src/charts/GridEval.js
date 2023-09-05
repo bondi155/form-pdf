@@ -75,7 +75,6 @@ function GridEval({ rows, columnsVar, onDelete, fileNameVar, showDeleteColumn = 
                 rtari_level: false,
                 base: false,
                 position: false,
-                test_type: false,
                 no: false,
               },
             },

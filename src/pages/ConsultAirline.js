@@ -65,7 +65,7 @@ const evalCompanyCol = [
   {
     field: 'company_email',
     headerName: 'Company Email',
-    width: 150,
+    width: 210,
   },
   {
     field: 'flight_hours',
