@@ -38,7 +38,7 @@ function Home({ form }) {
   const domainName = domainParts[0];
 
   const labelsNumerics = ['1', '2', '3', '4', '5', '6', '7'];
-  const labelsAlphabets = ['A', 'B', 'B+', 'B-', 'C', 'C+', 'C-', 'D', 'NP'];
+  const labelsAlphabets = ['A', 'B', 'B+', 'B-', 'C', 'C+'];
   const labelsAlphabetsTsm = ['A', 'B', 'B+','C', 'D'];
 
   useEffect(() => {
@@ -65,8 +65,6 @@ function Home({ form }) {
     fetchExamData();
   }, [domainName]);
 
-
-  
   const order = [
     '1',
     '2',
@@ -108,12 +106,8 @@ function Home({ form }) {
   const numericValues = Object.values(numericBreakdown);
   const alphabeticValues = Object.values(alphabeticBreakdown);
 
-  
   //const valor = [44, 55, 13, 43, 22, 44, 55, 13, 43, 22, 44, 55, 13, 43, 22, 77]
   
-
-
-
   return (
     <Container className='container-custom'>
       <Row>
@@ -137,7 +131,7 @@ function Home({ form }) {
               <div>
                 <h4>Bienvenido Administrador {form.username}</h4>
                 <small>Como administrador tendras accesso a los datos de todas las empresas: </small>
-                <br />
+                <br/>
                 <small>Última evaluación: <strong>1 Septiembre</strong></small>
 
               </div>
@@ -178,7 +172,7 @@ function Home({ form }) {
                   </div>
                 </Card.Header>
                 <Card.Body>
-                  <h5>Total de Evaluaciones en {domainName}:</h5>
+                  <h5>Total de Evaluaciones en {domainName} <strong>2023</strong>:</h5>
                   <h2>
                     <strong> {totalCalif}</strong>
                   </h2>
@@ -203,7 +197,7 @@ function Home({ form }) {
                         seriesValues={numericValues}
                         colorsValue={colorsNumeric}
                         width={380}
-                        chartTitle={'Sin Experiencia'}
+                        chartTitle={'Sin Experiencia 2023'}
                       />
                     </Col>
                     <Col xs={12} lg={6} sm={12} md={6}>
@@ -214,7 +208,7 @@ function Home({ form }) {
                         seriesValues={alphabeticValues}
                         colorsValue={colorsAlphabetic}
                         width={380}
-                        chartTitle={'Con Experiencia'}
+                        chartTitle={'Con Experiencia 2023'}
                       />
                     </Col>
                   </Row>
@@ -228,7 +222,7 @@ function Home({ form }) {
                       seriesValues={alphabeticValues}
                       colorsValue={colorsAlphabetic}
                       width={500}
-                      chartTitle={'Con Experiencia'}
+                      chartTitle={'Con Experiencia 2023'}
                     />
                   </Col>
                 </Row>

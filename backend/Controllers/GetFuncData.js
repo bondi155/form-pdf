@@ -269,7 +269,7 @@ function EvalCompany__(req, res) {
   const username = req.query.domainName ?? '';
 
   const sqlGetEvalCompany =
-    'SELECT * FROM evaluation_data WHERE LOWER(company) = LOWER(?)';
+    `SELECT * FROM evaluation_data WHERE LOWER(company) = LOWER(?) AND first_exam LIKE '%23'`;
 
   pool.query(sqlGetEvalCompany, username, (err, result) => {
     if (err) {
@@ -286,8 +286,8 @@ function EvalCompany__(req, res) {
 //get para dashboard home graficos
 function getExamData__(req, res) {
   const company = req.query.domainName ?? '';
-  const sqlGetTotalCalif = 'SELECT COUNT(*) AS total_calif FROM evaluation_data WHERE LOWER(company) = LOWER(?)';
-  const sqlGetGroupCalif = 'SELECT exam_calif, COUNT(*) AS count FROM evaluation_data WHERE LOWER(company) = LOWER(?) GROUP BY exam_calif';
+  const sqlGetTotalCalif = `SELECT COUNT(*) AS total_calif FROM evaluation_data WHERE first_exam LIKE '%23' AND LOWER(company) = LOWER(?)`;
+  const sqlGetGroupCalif = `SELECT exam_calif, COUNT(*) AS count FROM evaluation_data WHERE LOWER(company) = LOWER(?) AND first_exam LIKE '%23' GROUP BY exam_calif`;
  // Obtener el total de exam_calif
   pool.query(sqlGetTotalCalif, company, (err, totalCalifResult) => {
     if (err) {
@@ -326,15 +326,13 @@ function getAllCompanies__(req, res) {
           console.error('Error fetching all companies:', err);
           return res.status(500).send('Internal Server Error when fetching companies.');
       }
-      
-      
+
       res.json(companies);
 
       console.log(companies);
 
   });
 }
-
 
 module.exports = {
   consultaData__,
