@@ -55,29 +55,47 @@ async function readExcelFile(file) {
     throw error;
   }
 }
-function executeQuery(res, fileName, data) {
-  const evaluationQuery = `
-  INSERT INTO evaluation_data 
-    (no, company, applicant_name, month, applicant_area, test_type, no_ambassador, full_name, position, base, company_email, flight_hours, rtari_level, first_exam, time, exam_calif, result, comments)
-  VALUES ?
-  ON DUPLICATE KEY UPDATE 
-    comments=VALUES(comments);
-`;
 
-  pool.query(evaluationQuery, [data], (err, result) => {
-    if (err) {
-      console.error('Error in evaluationQuery query..Check DB connection', err);
-      return res
-        .status(500)
-        .send({code: 'DB_INSERT_ERR', message: 'There is a Error in INSERT Query or Database'});
-    } else {
-      console.log('Succes inserting data from Excel evaluation file!');
-      return res
-      .status(200)
-      .json({ code: 'SUCCESS', message: `${fileName} and information updated in DB.` });
-    }
-  });
+async function checkIfNoExists(no) {
+  const checkDupl = 'SELECT COUNT(*) as count FROM evaluation_data WHERE no = ?';
+  try {
+      const [rows] = await pool.promise().query(checkDupl, [no]);
+      return rows[0].count > 0;
+  } catch (err) {
+      throw err;
+  }
 }
+
+async function executeQuery(res, fileName, data) {
+  try {
+    for (const row of data) {
+      const exists = await checkIfNoExists(row[0]); // row[0] es el valor de 'no'
+      if (exists) {
+        // Si el número ya existe, actualiza los campos
+        const updateQuery = `
+          UPDATE evaluation_data 
+          SET comments = ?, exam_calif = ?, result = ?
+          WHERE no = ?;
+        `;
+        await pool.promise().query(updateQuery, [row[17], row[15], row[16], row[0]]);
+      } else {
+        // Si el número no existe, inserta el nuevo registro
+        const insertQuery = `
+          INSERT INTO evaluation_data 
+            (no, company, applicant_name, month, applicant_area, test_type, no_ambassador, full_name, position, base, company_email, flight_hours, rtari_level, first_exam, time, exam_calif, result, comments)
+          VALUES ?;
+        `;
+        await pool.promise().query(insertQuery, [[row]]);
+      }
+    }
+    console.log('Succes processing data from Excel evaluation file!');
+    return res.status(200).json({ code: 'SUCCESS', message: `${fileName} and information processed in DB.` });
+  } catch (error) {
+    console.error('Error processing data', error);
+    return res.status(500).send({code: 'DB_ERR', message: 'Error processing data'});
+  }
+}
+
 
 async function EvaluationsXlsx(req, res) {
   const file = req.file;
