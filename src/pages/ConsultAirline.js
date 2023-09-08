@@ -12,16 +12,19 @@ function ConsultAirline({ form }) {
   const domainParts = form.username.split('@')[1].split('.');
   const domainName = domainParts[0];
 
-  const [companyEval, setCompanyEval] = useState([]);
+  const [companyEval, setCompanyEval] = useState([]); 
 
   const columnVisibility = domainName === 'tsm' 
   ? {
       test_type: false, // Ocultar la columna 'Experience' si es TSM
       no_ambassador: true, // Mostrar la columna 'No Ambassador' si es TSM
+      flight_hours : false
     } 
   : {
       test_type: true, // Mostrar la columna 'Experience' si no es TSM
       no_ambassador: false, // Ocultar la columna 'No Ambassador' si no es TSM
+      flight_hours : true
+
     };
 
   const evalCompanyCol = [
@@ -46,7 +49,7 @@ function ConsultAirline({ form }) {
     {
       field: 'month',
       headerName: 'Month',
-      width: 100,
+      width: 50,
       hide: true,
     },
     {
@@ -63,7 +66,7 @@ function ConsultAirline({ form }) {
     {
       field: 'no_ambassador',
       headerName: domainName === 'tsm' ? 'Cellphone' : 'No Ambassador',
-      width: 90,
+      width: 120,
     },
     {
       field: 'full_name',

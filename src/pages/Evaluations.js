@@ -99,7 +99,7 @@ function Evaluations() {
     {
       field: 'month',
       headerName: 'Month',
-      width: 100,
+      width: 50,
       hide: true,
     },
     {
