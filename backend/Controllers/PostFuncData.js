@@ -10,7 +10,7 @@ function userCreate__(req, res) {
 
   bcrypt.hash(password, saltRounds, (err, hash) => {
     if (err) {
-      console.error('error in brypt.hash inside userCreate function',err);
+      console.error('error in brypt.hash inside userCreate function', err);
     }
 
     const sqlCreateUser =
@@ -18,7 +18,10 @@ function userCreate__(req, res) {
 
     pool.query(sqlCreateUser, [username, role, hash], (error, result) => {
       if (error) {
-        console.error('Error in sqlCreateUser query..Check DB connection', error.code);
+        console.error(
+          'Error in sqlCreateUser query..Check DB connection',
+          error.code
+        );
 
         if (error.code === 'ER_DUP_ENTRY') {
           res.status(500).json({
@@ -78,8 +81,13 @@ function reportUrl__(req, res) {
     'UPDATE evaluation_data SET report_url = ? WHERE id = ?';
   pool.query(sqlUploadReportUrl, [urlDrive, id], (error, result) => {
     if (error) {
-      console.error('Error in sqlUploadReportUrl query..Check DB connection', error);
-      return res.status(500).send('Error in sqlUploadReportUrl query..Check DB connection');
+      console.error(
+        'Error in sqlUploadReportUrl query..Check DB connection',
+        error
+      );
+      return res
+        .status(500)
+        .send('Error in sqlUploadReportUrl query..Check DB connection');
     }
     res.status(200).send('Success updating Report Card URL in Evaluations');
   });
@@ -118,7 +126,7 @@ function comments__(req, res) {
     const updateComment =
       'UPDATE personal_data SET comments_pd = ? WHERE id = ?';
     pool.query(updateComment, [comment, id], (error, result) => {
-     // console.log(error);
+      // console.log(error);
       return res.status(200).send('Comment Updated');
     });
   } catch (error) {
@@ -127,11 +135,33 @@ function comments__(req, res) {
   }
 }
 
+function editCalif__(req, res) {
+  const id = req.body.id;
+const newCalif = req.body.newValue;
+
+  console.log('valor de variables', newCalif);
+  console.log(req.body);
+
+
+  const editCalifQuery = `UPDATE evaluation_data SET exam_calif = ? WHERE id = ?`;
+  pool.query(editCalifQuery, [newCalif, id], (error, result) => {
+    if (error) {
+      console.log(error);
+      return res.status(500).json({ message: 'error', error });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(400).json({ message: 'No rows updated. Check the ID.' });
+    }
+    return res.status(200).json({ message: 'Calification Updated' });
+  });
+}
+
 module.exports = {
   userCreate__,
   deleteEvaluation__,
   deleteUser__,
   //reportPdf__,
+  editCalif__,
   reportUrl__,
   comments__,
 };

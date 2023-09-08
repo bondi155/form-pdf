@@ -14,7 +14,7 @@ import axios from 'axios';
 import { API_URL } from '../config/config';
 import GridEval from '../charts/GridEval';
 import Swal from 'sweetalert2';
-import { FaPencilAlt, FaCheck, FaComments  } from 'react-icons/fa';
+import { FaPencilAlt, FaCheck, FaComments } from 'react-icons/fa';
 
 //import { BsFillCloudUploadFill } from 'react-icons/bs';
 
@@ -27,8 +27,12 @@ function CommentModal({ comment }) {
 
   return (
     <>
-   <FaComments color="grey" size={30} onClick={handleShow} style={{ cursor: 'pointer', marginLeft: '20px' }} />
-
+      <FaComments
+        color='grey'
+        size={30}
+        onClick={handleShow}
+        style={{ cursor: 'pointer', marginLeft: '20px' }}
+      />
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
@@ -70,15 +74,17 @@ function Evaluations() {
   const [reportUrl, setReportUrl] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [editingRowId, setEditingRowId] = useState(null);
+  const [isEditingCalif, setIsEditingCalif] = useState(false);
+  const [editingCalifRowId, setEditingCalifRowId] = useState(null);
 
   const evalColumns = [
-    { field: 'id', headerName: 'ID', width: 50 ,  hide: true},
+    { field: 'id', headerName: 'ID', width: 50, hide: true },
 
     {
       field: 'no',
       headerName: 'No.',
       width: 70,
-      hide: true
+      hide: true,
     },
     {
       field: 'company',
@@ -94,7 +100,7 @@ function Evaluations() {
       field: 'month',
       headerName: 'Month',
       width: 100,
-      hide: true
+      hide: true,
     },
     {
       field: 'applicant_area',
@@ -110,7 +116,7 @@ function Evaluations() {
       field: 'no_ambassador',
       headerName: 'No Ambassador',
       width: 90,
-      hide: true
+      hide: true,
     },
     {
       field: 'full_name',
@@ -121,7 +127,7 @@ function Evaluations() {
       field: 'position',
       headerName: 'Position',
       width: 90,
-      hide: true
+      hide: true,
     },
     {
       field: 'base',
@@ -142,7 +148,7 @@ function Evaluations() {
       field: 'rtari_level',
       headerName: 'RTARI 4,5,6',
       width: 120,
-      hide: true
+      hide: true,
     },
     {
       field: 'first_exam',
@@ -157,8 +163,57 @@ function Evaluations() {
     {
       field: 'exam_calif',
       headerName: 'Grade',
-      width: 50,
+      width: 80,
+      renderCell: (params) => {
+        const handleEditCalifClick = () => {
+          setIsEditingCalif(true);
+          setEditingCalifRowId(params.row.id);
+        };
+
+        const handleSaveCalifClick = () => {
+          updateCalif(params.row.id, params.row.exam_calif);
+          setIsEditingCalif(false);
+          setEditingCalifRowId(null);
+        };
+
+        if (isEditingCalif && editingCalifRowId === params.row.id) {
+          return (
+            <div>
+              <InputGroup className='mb-3 mt-4'>
+                <FormControl
+                  type='text'
+                  size='sm'
+                  defaultValue={params.row.exam_calif}
+                  onChange={(e) => {
+                    params.row.exam_calif = e.target.value; // Actualizamos el valor en la fila
+                  }}
+                />
+                <FaCheck
+                  className='mb-3 mt-3'
+                  color='green'
+                  size={20}
+                  onClick={handleSaveCalifClick}
+                  style={{ marginLeft: '5px', cursor: 'pointer' }}
+                />
+              </InputGroup>
+            </div>
+          );
+        } else {
+          return (
+            <div>
+              {params.row.exam_calif}
+              <FaPencilAlt
+                color='grey'
+                size={15}
+                onClick={handleEditCalifClick}
+                style={{ marginLeft: '5px', cursor: 'pointer' }}
+              />
+            </div>
+          );
+        }
+      },
     },
+
     {
       field: 'result',
       headerName: 'Result',
@@ -219,7 +274,11 @@ function Evaluations() {
                 color='green'
                 size={20}
                 onClick={() => updateReportUrl(params.row.id)}
-                style={{ marginLeft: '5px', cursor: 'pointer', marginTop:'0.5rem'  }}
+                style={{
+                  marginLeft: '5px',
+                  cursor: 'pointer',
+                  marginTop: '0.5rem',
+                }}
               />
             </InputGroup>
           );
@@ -239,7 +298,11 @@ function Evaluations() {
                 color='green'
                 size={20}
                 onClick={handleSaveClick}
-                style={{ marginLeft: '5px', cursor: 'pointer', marginTop:'0.5rem' }}
+                style={{
+                  marginLeft: '5px',
+                  cursor: 'pointer',
+                  marginTop: '0.5rem',
+                }}
               />
             </InputGroup>
           );
@@ -262,7 +325,11 @@ function Evaluations() {
                     color='grey'
                     size={15}
                     onClick={handleEditClick}
-                    style={{ marginLeft: '5px', cursor: 'pointer', marginBottom:'0.5rem'  }}
+                    style={{
+                      marginLeft: '5px',
+                      cursor: 'pointer',
+                      marginBottom: '0.5rem',
+                    }}
                   />
                 </div>
               )}
@@ -301,7 +368,7 @@ function Evaluations() {
     e.preventDefault();
 
     if (!file) {
-    Swal.fire('Select a file please')
+      Swal.fire('Select a file please');
     }
 
     const formData = new FormData();
@@ -315,30 +382,30 @@ function Evaluations() {
           'Good job!',
           `Excel file processed successfully ${res.data.message}`,
           'success'
-        )
+        );
         //alert(`Excel file processed successfully ${res.data.message}`);
       } else if (res.data.code === 'NO_PROCCESS') {
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
           text: `${res.data.error}.`,
-        })
-       // alert(`${res.data.error}.`);
+        });
+        // alert(`${res.data.error}.`);
       } else if (res.status === 500 && res.data.code === 'DB_INSERT_ERR') {
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
           text: `${res.data.message}.`,
-        })
-      //  alert(`${res.data.message}`);
+        });
+        //  alert(`${res.data.message}`);
       }
     } catch (ex) {
-     // console.log(ex);
+      // console.log(ex);
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: `An error occurred while processing your request. Error: ${ex.message}`
-      })
+        text: `An error occurred while processing your request. Error: ${ex.message}`,
+      });
     }
   };
 
@@ -349,7 +416,7 @@ function Evaluations() {
         urlDrive: reportUrl,
       });
       Swal.fire('Good job!', 'URL updated!!', 'success');
-        } catch (err) {
+    } catch (err) {
       console.error(err);
       Swal.fire(':( !', ' The URL could not be updated', 'error');
     }
@@ -399,7 +466,11 @@ function Evaluations() {
       if (result.isConfirmed) {
         await axios.delete(`${API_URL}/deleteEvaluation/${id}`);
         setConsulEval(consulEval.filter((user) => user.id !== id));
-        Swal.fire('Deleted!', 'The Evaluation Row has been deleted.', 'success');
+        Swal.fire(
+          'Deleted!',
+          'The Evaluation Row has been deleted.',
+          'success'
+        );
       }
     });
     try {
@@ -409,8 +480,25 @@ function Evaluations() {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'There was an error deleting the evaluation row'
-      })
+        text: 'There was an error deleting the evaluation row',
+      });
+    }
+  };
+
+  
+
+  const updateCalif = async (id, newCalif) => {
+    try {
+      await axios.put(`${API_URL}/editCalif`, {
+        id: id,
+        newValue: newCalif,
+      });
+      Swal.fire(
+        'Good job!', 'Calification updated!!', 'success'
+      );
+    } catch (err) {
+      console.error(err);
+      Swal.fire(':( !', ' The Calification could not be updated', 'error');
     }
   };
 

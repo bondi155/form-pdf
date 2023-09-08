@@ -80,9 +80,11 @@ app.get('/examData', authenticateToken, getDataController.getExamData__); //info
 app.post('/loginUsers', authenticateToken, getDataController.loginUsers__); //login
 app.get('/companyEval', authenticateToken, getDataController.EvalCompany__); //get evaluation by company
 app.get('/getUserList', authenticateToken, getDataController.listUsers__); //get user for list
-app.post('/createUser', authenticateToken, PostDataController.userCreate__); //creation of users
+//post y put functions
+app.put('/editCalif', authenticateToken, PostDataController.editCalif__); //Edit Calification in data grid evaluation page (admin)
 app.put('/updateComment', authenticateToken, PostDataController.comments__); //update comment personal_Data
 app.put('/reportUrl/:id', authenticateToken, PostDataController.reportUrl__); //subir url en data grid del google drive
+app.post('/createUser', authenticateToken, PostDataController.userCreate__); //creation of users
 
 app.delete(
   '/deleteUser/:id',
