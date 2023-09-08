@@ -11,7 +11,7 @@ const evalCompanyCol = [
   {
     field: 'no',
     headerName: 'No.',
-    width: 70,
+    width: 100,
     hide: true,
   },
   {
