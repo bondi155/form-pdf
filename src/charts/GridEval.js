@@ -28,7 +28,7 @@ function CustomToolbar({ fileNameVar }) {
   );
 }
 
-function GridEval({ rows, columnsVar, onDelete, fileNameVar, showDeleteColumn = false }) {
+function GridEval({ rows, columnsVar, onDelete, fileNameVar, showDeleteColumn = false, columnVisibility }) {
   let columns = [...columnsVar];
   if (showDeleteColumn) {
     const deleteButtonColumn = {
@@ -68,10 +68,10 @@ function GridEval({ rows, columnsVar, onDelete, fileNameVar, showDeleteColumn = 
           initialState={{
             columns: {
               columnVisibilityModel: {
+                ...columnVisibility,
                 id: false,
                 applicant_area: false,
                 applicant_name: false,
-                no_ambassador: false,
                 rtari_level: false,
                 base: false,
                 position: false,
