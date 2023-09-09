@@ -77,7 +77,7 @@ async function executeQuery(res, fileName, data) {
           SET comments = ?, exam_calif = ?, result = ?, time = ?, first_exam = ?
           WHERE no = ?;
         `;
-        await pool.promise().query(updateQuery, [row[17], row[15], row[16], row[0]]);
+        await pool.promise().query(updateQuery, [row[17], row[15], row[16], row[14], row[13], row[0]]);
       } else {
         // Si el número no existe, inserta el nuevo registro
         const insertQuery = `
