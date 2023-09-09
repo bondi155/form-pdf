@@ -74,7 +74,7 @@ async function executeQuery(res, fileName, data) {
         // Si el número ya existe, actualiza los campos
         const updateQuery = `
           UPDATE evaluation_data 
-          SET comments = ?, exam_calif = ?, result = ?
+          SET comments = ?, exam_calif = ?, result = ?, time = ?, first_exam = ?
           WHERE no = ?;
         `;
         await pool.promise().query(updateQuery, [row[17], row[15], row[16], row[0]]);
