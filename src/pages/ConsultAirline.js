@@ -167,7 +167,7 @@ function ConsultAirline({ form }) {
           domainName,
         },
       });
-      console.log(response.data);
+    //  console.log(response.data);
       setCompanyEval(response.data);
       if (companyEval.length < 0) {
         alert('no hay array para estado');
@@ -197,7 +197,7 @@ function ConsultAirline({ form }) {
           <h1 className='text-center mt-4'>
             Consulta de Evaluaciones{' '}
             {domainName === 'tsm' ? (
-              <img src={images.tsm} width='22%' alt='tsm' />
+              <img src={images.tsm} width='25%' alt='tsm' />
             ) : domainName === 'volaris' ? (
               <img src={images.volaris} alt='volaris' width='15%' />
             ) : null}{' '}
