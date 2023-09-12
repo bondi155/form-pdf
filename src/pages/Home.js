@@ -198,6 +198,7 @@ function Home({ form }) {
                   <Row className='chartsCont'>
                     <Col xs={11} lg={5} sm={11} md={11}>
                       <PieChart
+                         key="numericChart"
                         className='pie-chart-card'
                         title='Calificaciones Numéricas'
                         labelsValue={labelsNumerics}
@@ -209,6 +210,7 @@ function Home({ form }) {
                     </Col>
                     <Col xs={11} lg={5} sm={11} md={11}>
                       <PieChart
+                        key="alphabeticChart"
                         className='pie-chart-card'
                         title='Calificaciones Alfabéticas'
                         labelsValue={labelsAlphabets}
@@ -224,6 +226,7 @@ function Home({ form }) {
                 <Row className='chartsCont'>
                   <Col xs={11} lg={5} sm={10} md={10}>
                     <PieChart
+                      key="alphabeticChartSolo"
                       className='pie-chart-card-large'
                       labelsValue={labelsAlphabetsTsm}
                       seriesValues={alphabeticValues}
