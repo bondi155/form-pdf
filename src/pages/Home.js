@@ -32,31 +32,30 @@ function Home({ form }) {
   const [totalCalif, setTotalCalif] = useState(0);
   const [breakdown, setBreakdown] = useState({});
   const [error, setError] = useState(null); //pongo el error en un state para mostrarlo en pantalla
-  const [companiesRow, SetCompaniesRow] = useState([]); 
+  const [companiesRow, SetCompaniesRow] = useState([]);
 
   const domainParts = form.username.split('@')[1].split('.');
   const domainName = domainParts[0];
 
   const labelsNumerics = ['1', '2', '3', '4', '5', '6', '7'];
   const labelsAlphabets = ['A', 'B', 'B+', 'B-', 'C', 'C+'];
-  const labelsAlphabetsTsm = ['A', 'B', 'B+','C', 'D'];
+  const labelsAlphabetsTsm = ['A', 'B', 'B+', 'C', 'D'];
 
   useEffect(() => {
     const fetchExamData = async () => {
       try {
-        if (domainName === 'admin'){
-          const companiesRes = await axios.get(`${API_URL}/getCompanies`,{
-           });
-           SetCompaniesRow(companiesRes.data);
-          } else { 
-        const response = await axios.get(`${API_URL}/examData`, {
-          params: {
-            domainName,
-          },
-        });
-        setTotalCalif(response.data.total);
-        setBreakdown(response.data.breakdown);
-      }
+        if (domainName === 'admin') {
+          const companiesRes = await axios.get(`${API_URL}/getCompanies`, {});
+          SetCompaniesRow(companiesRes.data);
+        } else {
+          const response = await axios.get(`${API_URL}/examData`, {
+            params: {
+              domainName,
+            },
+          });
+          setTotalCalif(response.data.total);
+          setBreakdown(response.data.breakdown);
+        }
       } catch (err) {
         setError(err.message || 'Ocurrió un error al obtener los datos.');
       }
@@ -107,7 +106,7 @@ function Home({ form }) {
   const alphabeticValues = Object.values(alphabeticBreakdown);
 
   //const valor = [44, 55, 13, 43, 22, 44, 55, 13, 43, 22, 44, 55, 13, 43, 22, 77]
-  
+
   return (
     <Container className='container-custom'>
       <Row>
@@ -115,72 +114,80 @@ function Home({ form }) {
           <div>Hubo un problema cargando los graficos..error: {error}</div>
         ) : domainName === 'admin' ? (
           <Col
-          xs={{ span: 10, offset: 1 }}
-          sm={{ span: 12, offset: 0 }}
-          lg={{ span: 12, offset: 0 }}
-          md={{ span: 12, offset: 0 }}
-        >
-          {' '}
-          <Card
-            className='mb-3'
-            border='dark'
-            style={{ boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' }}
+            xs={{ span: 10, offset: 1 }}
+            sm={{ span: 12, offset: 0 }}
+            lg={{ span: 12, offset: 0 }}
+            md={{ span: 12, offset: 0 }}
           >
-            <Card.Header className='d-flex align-items-center'>
-              <FaUserCircle size={40} style={{ marginRight: '16px' }} />{' '}
-              <div>
-                <h4>Bienvenido Administrador {form.username}</h4>
-                <small>Como administrador tendras accesso a los datos de todas las empresas: </small>
-                <br/>
-                <small>Última evaluación: <strong>1 Septiembre</strong></small>
-
-              </div>
-            </Card.Header>
-            <Card.Body>
-              <h5>Total de Evaluaciones en {domainName}:</h5>
-              <h2>
-                <strong> {totalCalif}</strong>
-              </h2>
-              {/* Opcional: agregar aquí barra de progreso o gráfico */}
-              <div>
-              <Link to='/evaluationData'>
-                <Button variant='primary'>Ver Evaluations UleadAir</Button>
-            </Link>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
+            {' '}
+            <Card
+              className='mb-3'
+              style={{ boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' }}
+            >
+              <Card.Header className='d-flex align-items-center'>
+                <Row className='w-100'>
+                  <Col xs={12} sm={12} md={12} lg={12}>
+                    <FaUserCircle className='mb-2' size={35} />
+                    <h4>Bienvenido Administrador <strong>{form.username}</strong></h4>
+                    <small>
+                      Como administrador tendras accesso a los datos de todas
+                      las empresas:{' '}
+                    </small>
+                    <p>
+                      Última evaluación: <strong>Septiembre</strong>
+                    </p>
+                  </Col>
+                </Row>
+              </Card.Header>
+              <Card.Body>
+                <h5>Total de Evaluaciones en {domainName}:</h5>
+                <h2>
+                  <strong> {totalCalif}</strong>
+                </h2>
+                {/* Opcional: agregar aquí barra de progreso o gráfico */}
+                <div>
+                  <Link to='/evaluationData'>
+                    <Button variant='primary'>Ver Evaluations UleadAir</Button>
+                  </Link>
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
         ) : (
           <div>
             <Col
               xs={{ span: 10, offset: 1 }}
-              sm={{ span: 12, offset: 0 }}
+              sm={{ span: 11, offset: 0 }}
               lg={{ span: 12, offset: 0 }}
               md={{ span: 12, offset: 0 }}
             >
               {' '}
               <Card
                 className='mb-3'
-                border='dark'
                 style={{ boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' }}
               >
-                <Card.Header className='d-flex align-items-center'>
-                  <FaUserCircle size={40} style={{ marginRight: '16px' }} />{' '}
-                  <div>
-                    <h4>Bienvenido, {form.username}</h4>
-                    <small>Última evaluación: <strong>1 Septiembre</strong></small>
-                  </div>
+                <Card.Header >
+                  <Row >
+                    <Col xs={12} sm={12} md={12} lg={12}>
+                      <FaUserCircle className='mb-2' size={35} />
+                      <h4>Bienvenido, <strong>{form.username}</strong></h4>
+                      <p>
+                        Última evaluación: <strong>Septiembre</strong>
+                      </p>
+                    </Col>
+                  </Row>
                 </Card.Header>
                 <Card.Body>
-                  <h5>Total de Evaluaciones en {domainName} <strong>2023</strong>:</h5>
+                  <h5>
+                    Total de Evaluaciones en {domainName} <strong>2023</strong>:
+                  </h5>
                   <h2>
-                    <strong> {totalCalif}</strong>
+                    <strong>{totalCalif}</strong>
                   </h2>
-                  {/* Opcional: agregar aquí barra de progreso o gráfico */}
                   <div>
-                  <Link to='/consultAirlineGrid'>
-                <Button variant='primary'>Ver detalles</Button>
-            </Link>
+                    <Link to='/consultAirlineGrid'>
+                      <Button variant='primary'>Ver detalles</Button>
+                    </Link>
                   </div>
                 </Card.Body>
               </Card>
@@ -189,25 +196,25 @@ function Home({ form }) {
               {numericValues && numericValues.length > 0 ? (
                 <>
                   <Row className='chartsCont'>
-                    <Col xs={12} lg={6} sm={12} md={6}>
+                    <Col xs={11} lg={5} sm={11} md={11}>
                       <PieChart
                         className='pie-chart-card'
                         title='Calificaciones Numéricas'
                         labelsValue={labelsNumerics}
                         seriesValues={numericValues}
                         colorsValue={colorsNumeric}
-                        width={380}
+                        width={360}
                         chartTitle={'Sin Experiencia 2023'}
                       />
                     </Col>
-                    <Col xs={12} lg={6} sm={12} md={6}>
+                    <Col xs={11} lg={5} sm={11} md={11}>
                       <PieChart
                         className='pie-chart-card'
                         title='Calificaciones Alfabéticas'
                         labelsValue={labelsAlphabets}
                         seriesValues={alphabeticValues}
                         colorsValue={colorsAlphabetic}
-                        width={380}
+                        width={360}
                         chartTitle={'Con Experiencia 2023'}
                       />
                     </Col>
@@ -215,13 +222,13 @@ function Home({ form }) {
                 </>
               ) : (
                 <Row className='chartsCont'>
-                  <Col xs={12} lg={{ span: 8, offset: 1 }} sm={12} md={12}>
+                  <Col xs={11} lg={5} sm={10} md={10}>
                     <PieChart
                       className='pie-chart-card-large'
                       labelsValue={labelsAlphabetsTsm}
                       seriesValues={alphabeticValues}
                       colorsValue={colorsAlphabetic}
-                      width={500}
+                      width={350}
                       chartTitle={'Con Experiencia 2023'}
                     />
                   </Col>

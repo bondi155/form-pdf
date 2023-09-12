@@ -269,7 +269,12 @@ function EvalCompany__(req, res) {
   const username = req.query.domainName ?? '';
 
   const sqlGetEvalCompany =
-    `SELECT * FROM evaluation_data WHERE LOWER(company) = LOWER(?) AND first_exam LIKE '%23'`;
+    `SELECT * 
+    FROM evaluation_data 
+    WHERE LOWER(company) = LOWER(?) 
+    AND first_exam LIKE '%23' 
+    ORDER BY id DESC;
+    `;
 
   pool.query(sqlGetEvalCompany, username, (err, result) => {
     if (err) {

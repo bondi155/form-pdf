@@ -38,6 +38,12 @@
   width: 100%;
 }
 
+.container-custom-company {
+  max-width: 65%;
+  margin-top: 2rem;
+  width: 100%;
+}
+
 .App-pdf-table {
   background-color: #b7cce4;
 }
@@ -272,6 +278,7 @@ body {
   /* Gris claro, por ejemplo */
 }
 
+/* Card home y graficos */
 h1 {
   text-shadow: 2px 2px 4px #aaa;
   animation: fadeIn 1s ease-in;
@@ -312,11 +319,9 @@ h2 {
 .chartsCont {
   justify-content: center;
   align-items: center;
-  margin-top: 20px;
 }
 
 .pie-chart-card-large {
-  height: 465px;
   /* Puedes ajustar según tus necesidades */
   display: flex;
   flex-direction: column;
@@ -325,3 +330,38 @@ h2 {
 
   /* Esto centrará el contenido verticalmente */
 }
+
+
+/* Estilo para pantallas con un ancho máximo de 768px (típicamente tablets y móviles) */
+@media (max-width: 380px) {
+  .pie-chart-card-large {
+    height: 200px;
+    /* Ajusta este valor según tus necesidades para dispositivos más pequeños */
+  }
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.user-info-icon {
+  margin-right: 10px;
+  /* Ajusta el espacio entre el ícono y el texto */
+}
+
+@media (max-width: 576px) {
+
+  /* Ajustes para pantallas de tamaño móvil */
+  .user-info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .user-info-icon {
+    margin-right: 0;
+    margin-bottom: 5px;
+  }
+}
+
+/* Termina Card home y graficos */

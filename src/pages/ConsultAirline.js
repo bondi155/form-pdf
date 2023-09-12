@@ -6,7 +6,6 @@ import { API_URL } from '../config/config';
 import images from '../components/Imagenes';
 
 
-
 function ConsultAirline({ form }) {
   
   const domainParts = form.username.split('@')[1].split('.');
@@ -18,18 +17,31 @@ function ConsultAirline({ form }) {
   ? {
       test_type: false, // Ocultar la columna 'Experience' si es TSM
       no_ambassador: true, // Mostrar la columna 'No Ambassador' si es TSM
-      flight_hours : false
-    } 
+      flight_hours : false,
+      company : false,
+      base: false,
+      applicant_area:false
+    } : domainName === 'volaris' ? {
+      test_type: true, // Mostrar la columna 'Experience' si no es TSM
+      no_ambassador: true, // Ocultar la columna 'No Ambassador' si no es TSM
+      flight_hours : false,
+      company: false,
+      no:false
+    }
   : {
       test_type: true, // Mostrar la columna 'Experience' si no es TSM
       no_ambassador: false, // Ocultar la columna 'No Ambassador' si no es TSM
-      flight_hours : true
+      flight_hours : false
 
     };
 
-  const evalCompanyCol = [
-    { field: 'id', headerName: 'ID', width: 50, hide: true },
-  
+    const noAmbassadorColumn = {
+      field: 'no_ambassador',
+      headerName: domainName === 'tsm' ? 'Celular' : 'No Embajador',
+      width: 120,
+    };
+    
+  const evalCompanyCol = [  
     {
       field: 'no',
       headerName: 'No.',
@@ -38,44 +50,39 @@ function ConsultAirline({ form }) {
     },
     {
       field: 'company',
-      headerName: 'Company',
+      headerName: 'Compañia',
       width: 90,
     },
     {
       field: 'applicant_name',
-      headerName: 'Solicitor',
+      headerName: 'Solicitante',
       width: 120,
     },
     {
       field: 'month',
-      headerName: 'Month',
+      headerName: 'Mes',
       width: 50,
       hide: true,
     },
     {
       field: 'applicant_area',
       headerName: 'Area',
-      width: 120,
+      width: 140,
     },
     {
       field: 'test_type',
-      headerName: 'Experience',
-      width: 100,
+      headerName: 'Tipo de Prueba',
+      width: 130,
      
     },
     {
-      field: 'no_ambassador',
-      headerName: domainName === 'tsm' ? 'Cellphone' : 'No Ambassador',
-      width: 120,
-    },
-    {
       field: 'full_name',
-      headerName: 'Full name',
+      headerName: 'Nombre Completo',
       width: 250,
     },
     {
       field: 'position',
-      headerName: 'Position',
+      headerName: 'Posición',
       width: 90,
       hide: true,
     },
@@ -86,12 +93,12 @@ function ConsultAirline({ form }) {
     },
     {
       field: 'company_email',
-      headerName: 'Company Email',
+      headerName: 'Correo de empresa',
       width: 210,
     },
     {
       field: 'flight_hours',
-      headerName: 'Flight Hours',
+      headerName: 'Horas de Vuelo',
       width: 90,
     },
     {
@@ -102,22 +109,22 @@ function ConsultAirline({ form }) {
     },
     {
       field: 'first_exam',
-      headerName: 'Date',
+      headerName: 'Fecha',
       width: 110,
     },
     {
       field: 'time',
-      headerName: 'Time',
-      width: 90,
+      headerName: 'Hora',
+      width: 120,
     },
     {
       field: 'exam_calif',
-      headerName: 'Grade',
+      headerName: 'Calif.',
       width: 50,
     },
     {
       field: 'result',
-      headerName: 'Result',
+      headerName: 'Resultado',
       width: 90,
     },
     {
@@ -144,6 +151,14 @@ function ConsultAirline({ form }) {
       },
     },
   ];
+
+  if(domainName === 'volaris') {
+    evalCompanyCol.unshift(noAmbassadorColumn);
+} else {
+    // Puedes insertar la columna 'no_ambassador' en la posición que desees.
+    // Por ejemplo, para insertarla en la sexta posición:
+    evalCompanyCol.splice(5, 0, noAmbassadorColumn);
+}
 
   const GetEvalCompany = async () => {
     try {
@@ -177,14 +192,14 @@ function ConsultAirline({ form }) {
 
   return (
     <>
-      <Container className='container-custom'>
+      <Container className='container-custom-company'>
         <Row>
-          <h1 className='text-center'>
+          <h1 className='text-center mt-4'>
             Consulta de Evaluaciones{' '}
             {domainName === 'tsm' ? (
-              <img src={images.tsm} width='20%' alt='tsm' />
+              <img src={images.tsm} width='22%' alt='tsm' />
             ) : domainName === 'volaris' ? (
-              <img src={images.volaris} alt='volaris' width='20%' />
+              <img src={images.volaris} alt='volaris' width='15%' />
             ) : null}{' '}
           </h1>
         </Row>

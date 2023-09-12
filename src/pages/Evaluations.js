@@ -83,7 +83,7 @@ function Evaluations() {
     {
       field: 'no',
       headerName: 'No.',
-      width: 70,
+      width: 90,
       hide: true,
     },
     {

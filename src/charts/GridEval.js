@@ -1,16 +1,24 @@
 import React from 'react';
 import 'react-data-grid/lib/styles.css';
 import Box from '@mui/material/Box';
-import { DataGrid, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarExport, GridToolbarDensitySelector, GridToolbarFilterButton } from '@mui/x-data-grid';
+import { esES as coreBgBG } from '@mui/material/locale';
+import { DataGrid, esES, GridToolbarContainer, GridToolbarColumnsButton, GridToolbarExport, GridToolbarDensitySelector, GridToolbarFilterButton } from '@mui/x-data-grid';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import '../css/App.css';
 import { BsFillTrashFill } from 'react-icons/bs';
+import { esES as pickersBgBG } from '@mui/x-date-pickers/locales';
 
-const theme = createTheme({
-  palette: {
-    primary: { main: '#000000' },
+const theme = createTheme(
+  {
+    palette: {
+      primary: { main: '#000000' },
+    },
   },
-});
+  esES, // x-data-grid translations
+  pickersBgBG, // x-date-pickers translations
+  coreBgBG // core translations
+);
+
 
 function CustomToolbar({ fileNameVar }) {
   return (
@@ -50,7 +58,7 @@ function GridEval({ rows, columnsVar, onDelete, fileNameVar, showDeleteColumn = 
         flexGrow: 1,
         height: 600,
         width: '100%',
-        mt: 5,
+       mt: 0,
         pb: 5,
         alignGrids: 'center',
         px: 5,
@@ -70,10 +78,8 @@ function GridEval({ rows, columnsVar, onDelete, fileNameVar, showDeleteColumn = 
               columnVisibilityModel: {
                 ...columnVisibility,
                 id: false,
-                applicant_area: false,
                 applicant_name: false,
                 rtari_level: false,
-                base: false,
                 position: false,
               },
             },
