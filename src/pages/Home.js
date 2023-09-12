@@ -127,8 +127,8 @@ function Home({ form }) {
               <Card.Header className='d-flex align-items-center'>
                 <Row className='w-100'>
                   <Col xs={12} sm={12} md={12} lg={12}>
-                    <FaUserCircle className='mb-2' size={35} />
-                    <h4>Bienvenido Administrador <strong>{form.username}</strong></h4>
+                  
+                    <h4><FaUserCircle className='mb-2' size={35} /> Bienvenido Administrador <strong>{form.username}</strong></h4>
                     <small>
                       Como administrador tendras accesso a los datos de todas
                       las empresas:{' '}
@@ -156,10 +156,10 @@ function Home({ form }) {
         ) : (
           <div>
             <Col
-              xs={{ span: 10, offset: 1 }}
-              sm={{ span: 11, offset: 0 }}
-              lg={{ span: 12, offset: 0 }}
-              md={{ span: 12, offset: 0 }}
+              xs={11}
+              sm={11}
+              lg={12}
+              md={{span:11, offset:-1 }}
             >
               {' '}
               <Card
@@ -169,8 +169,7 @@ function Home({ form }) {
                 <Card.Header >
                   <Row >
                     <Col xs={12} sm={12} md={12} lg={12}>
-                      <FaUserCircle className='mb-2' size={35} />
-                      <h4>Bienvenido, <strong>{form.username}</strong></h4>
+                      <h4><FaUserCircle className='mb-2' size={35} /> Bienvenido <strong>{form.username}</strong></h4>
                       <p>
                         Última evaluación: <strong>Septiembre</strong>
                       </p>
@@ -192,11 +191,12 @@ function Home({ form }) {
                 </Card.Body>
               </Card>
             </Col>
+            
             <Row>
               {numericValues && numericValues.length > 0 ? (
                 <>
                   <Row className='chartsCont'>
-                    <Col xs={11} lg={5} sm={11} md={11}>
+                    <Col xs={12} lg={5} sm={12} md={10}>
                       <PieChart
                          key="numericChart"
                         className='pie-chart-card'
@@ -208,7 +208,7 @@ function Home({ form }) {
                         chartTitle={'Sin Experiencia 2023'}
                       />
                     </Col>
-                    <Col xs={11} lg={5} sm={11} md={11}>
+                    <Col xs={12} lg={5} sm={12} md={10}>
                       <PieChart
                         key="alphabeticChart"
                         className='pie-chart-card'
@@ -224,7 +224,7 @@ function Home({ form }) {
                 </>
               ) : (
                 <Row className='chartsCont'>
-                  <Col xs={11} lg={5} sm={10} md={10}>
+                  <Col xs={12} lg={5} sm={11} md={10}>
                     <PieChart
                       key="alphabeticChartSolo"
                       className='pie-chart-card-large'

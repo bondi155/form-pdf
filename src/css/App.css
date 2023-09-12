@@ -152,11 +152,7 @@ h6 {
   background-color: #45a049;
 }
 
-/*.spinner-border {
 
-  border-right-color: #00b0e6 !important;
-}
-*/
 /*Boton Login*/
 
 .semi-circle-login-btn {
@@ -224,7 +220,6 @@ h6 {
 /*Termina Spinner plane*/
 
 /*Button logout*/
-
 .logout-button {
   border: 2px solid rgba(255, 255, 255, 0.5);
   /* Borde semitransparente blanco */
@@ -304,7 +299,7 @@ h2 {
   background-color: white;
   border-radius: 8px;
   overflow: hidden;
-  height: 350px;
+  height: 320px;
   transition: transform 0.2s;
 }
 
@@ -322,21 +317,17 @@ h2 {
 }
 
 .pie-chart-card-large {
-  /* Puedes ajustar según tus necesidades */
   display: flex;
   flex-direction: column;
   justify-content: center;
   transition: transform 0.2s;
-
-  /* Esto centrará el contenido verticalmente */
 }
 
 
 /* Estilo para pantallas con un ancho máximo de 768px (típicamente tablets y móviles) */
-@media (max-width: 380px) {
-  .pie-chart-card-large {
+@media (max-width: 420px) {
+  .pie-chart-card {
     height: 200px;
-    /* Ajusta este valor según tus necesidades para dispositivos más pequeños */
   }
 }
 
@@ -347,7 +338,6 @@ h2 {
 
 .user-info-icon {
   margin-right: 10px;
-  /* Ajusta el espacio entre el ícono y el texto */
 }
 
 @media (max-width: 576px) {

@@ -194,7 +194,7 @@ function ConsultAirline({ form }) {
     <>
       <Container className='container-custom-company'>
         <Row>
-          <h1 className='text-center mt-4'>
+          <h1 className='text-center mt-5'>
             Consulta de Evaluaciones{' '}
             {domainName === 'tsm' ? (
               <img src={images.tsm} width='25%' alt='tsm' />

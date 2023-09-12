@@ -104,7 +104,7 @@ function App() {
             path='/consolidateInformation'
             element={
               <PrivateRoute islogin={islogin}>
-                <PersonalData />{' '}
+                <PersonalData form={form}/>{' '}
               </PrivateRoute>
             }
           />
