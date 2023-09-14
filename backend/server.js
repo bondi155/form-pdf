@@ -74,12 +74,13 @@ app.get(
   authenticateToken,
   getDataController.consultaEvalData__
 ); //get evaluation data in data-grid
-app.get('/suggestNames', authenticateToken, getDataController.autocompleteName); //suggest list of names
-app.get('/getCompanies', authenticateToken, getDataController.getAllCompanies__); //all companies for admin
-app.get('/examData', authenticateToken, getDataController.getExamData__); //info graficos 
-app.post('/loginUsers', authenticateToken, getDataController.loginUsers__); //login
-app.get('/companyEval', authenticateToken, getDataController.EvalCompany__); //get evaluation by company
-app.get('/getUserList', authenticateToken, getDataController.listUsers__); //get user for list
+app.get('/suggestNames', authenticateToken, getDataController.autocompleteName);//suggest list of names
+app.get('/getCompanies', authenticateToken, getDataController.getAllCompanies__);//all companies for admin
+app.get('/examData', authenticateToken, getDataController.getExamData__);//info graficos 
+app.post('/loginUsers', authenticateToken, getDataController.loginUsers__);//login
+app.get('/companyEval', authenticateToken, getDataController.EvalCompany__);//get evaluation by company
+app.get('/getUserList', authenticateToken, getDataController.listUsers__);//get user for list
+app.get('/listLastEvals', authenticateToken, getDataController.listLastEvals__);//get last 10 evaluations
 //post y put functions
 app.put('/editCalif', authenticateToken, PostDataController.editCalif__); //Edit Calification in data grid evaluation page (admin)
 app.put('/updateComment', authenticateToken, PostDataController.comments__); //update comment personal_Data

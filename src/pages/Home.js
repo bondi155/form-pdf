@@ -6,7 +6,7 @@ import { API_URL } from '../config/config';
 import { FaUserCircle } from 'react-icons/fa';
 import PieChart from '../charts/PieChart';
 import { Link } from 'react-router-dom';
-
+import ListEval from '../components/ListEval';
 const colorsNumeric = [
   '#0000FF', // 1 - Azul
   '#4B0082', // 2 - Índigo
@@ -127,8 +127,10 @@ function Home({ form }) {
               <Card.Header className='d-flex align-items-center'>
                 <Row className='w-100'>
                   <Col xs={12} sm={12} md={12} lg={12}>
-                  
-                    <h4><FaUserCircle className='mb-2' size={35} /> Bienvenido Administrador <strong>{form.username}</strong></h4>
+                    <h4>
+                      <FaUserCircle className='mb-2' size={35} /> Bienvenido
+                      Administrador <strong>{form.username}</strong>
+                    </h4>
                     <small>
                       Como administrador tendras accesso a los datos de todas
                       las empresas:{' '}
@@ -155,21 +157,19 @@ function Home({ form }) {
           </Col>
         ) : (
           <div>
-            <Col
-              xs={11}
-              sm={11}
-              lg={12}
-              md={{span:11, offset:-1 }}
-            >
+            <Col xs={11} sm={11} lg={12} md={{ span: 11, offset: -1 }}>
               {' '}
               <Card
                 className='mb-3'
                 style={{ boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' }}
               >
-                <Card.Header >
-                  <Row >
+                <Card.Header>
+                  <Row>
                     <Col xs={12} sm={12} md={12} lg={12}>
-                      <h4><FaUserCircle className='mb-2' size={35} /> Bienvenido <strong>{form.username}</strong></h4>
+                      <h4>
+                        <FaUserCircle className='mb-2' size={35} /> Bienvenido{' '}
+                        <strong>{form.username}</strong>
+                      </h4>
                       <p>
                         Última evaluación: <strong>Septiembre</strong>
                       </p>
@@ -183,22 +183,24 @@ function Home({ form }) {
                   <h2>
                     <strong>{totalCalif}</strong>
                   </h2>
+                  {/* 
                   <div>
                     <Link to='/consultAirlineGrid'>
                       <Button variant='primary'>Ver detalles</Button>
                     </Link>
                   </div>
+                  */}
                 </Card.Body>
               </Card>
             </Col>
-            
+
             <Row>
               {numericValues && numericValues.length > 0 ? (
                 <>
                   <Row className='chartsCont'>
                     <Col xs={12} lg={5} sm={12} md={10}>
                       <PieChart
-                         key="numericChart"
+                        key='numericChart'
                         className='pie-chart-card'
                         title='Calificaciones Numéricas'
                         labelsValue={labelsNumerics}
@@ -210,7 +212,7 @@ function Home({ form }) {
                     </Col>
                     <Col xs={12} lg={5} sm={12} md={10}>
                       <PieChart
-                        key="alphabeticChart"
+                        key='alphabeticChart'
                         className='pie-chart-card'
                         title='Calificaciones Alfabéticas'
                         labelsValue={labelsAlphabets}
@@ -226,7 +228,7 @@ function Home({ form }) {
                 <Row className='chartsCont'>
                   <Col xs={12} lg={5} sm={11} md={10}>
                     <PieChart
-                      key="alphabeticChartSolo"
+                      key='alphabeticChartSolo'
                       className='pie-chart-card-large'
                       labelsValue={labelsAlphabetsTsm}
                       seriesValues={alphabeticValues}
@@ -244,8 +246,9 @@ function Home({ form }) {
                   {key}: {value}
                 </li>
               ))}
-            </ul>
+            </ul>s
             */}
+            <ListEval form={form} titulotd1={domainName === 'tsm' ? 'No.': 'No. Embajador'} titulotd2={domainName ==='tsm' ? 'Celular' : 'T.Prueba' }/>
           </div>
         )}
       </Row>

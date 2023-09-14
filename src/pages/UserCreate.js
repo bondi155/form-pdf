@@ -69,7 +69,7 @@ function UserCreate({userCreate, setUserCreate}) {
         });
       } else {
         Swal.fire('Ooops', 'Unable to get data', 'error');
-        console.log('Error', err);
+       // console.log('Error', err);
       }
     }
   };

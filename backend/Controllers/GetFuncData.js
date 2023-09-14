@@ -64,7 +64,7 @@ pd.rtari_level, pd.rtari_expires, pd.english_status, pd.hours_english,
 pd.level_english, pd.other_career, pd.contact, pd.option_pay, pd.date_form, pd.start_date, 
 pd.end_date, pd.asist, pd.payment, pd.calif, pd.status
 `;
-//join del nombre
+//join del nombre   este hace el query por el nombre que le pasamos en la funcion principal .
 function consultJoin__(req, res, name) {
   try {
     pool.query(sqlGetPerDataByName, name, (err, result) => {
@@ -86,6 +86,7 @@ function consultJoin__(req, res, name) {
     console.error('Error in consultJoin__ function ', error);
   }
 }
+
 //si se busca por email
 function consultEmail__(req, res) {
   try {
@@ -111,14 +112,17 @@ function consultEmail__(req, res) {
 
       consultJoin__(req, res, name);
     });
+    
   } catch (err) {
     console.error('Error in ConsultEmail function', err);
   }
 }
+
 //ejecucion con condicion de funciones
 function consultaData__(req, res) {
   try {
     const email = req.query.email ?? '';
+    const company = req.query.domainName
 
     if (email.includes('@')) {
       consultEmail__(req, res);
@@ -339,6 +343,27 @@ function getAllCompanies__(req, res) {
   });
 }
 
+function listLastEvals__ (req, res) {
+  const username = req.query.domainName ?? '';
+
+  const sqlGetLastEvals =
+    `SELECT * 
+    FROM evaluation_data 
+    WHERE LOWER(company) = LOWER(?) 
+    ORDER BY id DESC LIMIT 10
+    `;
+   pool.query(sqlGetLastEvals, username, (err, result) => {
+    if (err) {
+      console.error(
+        'Error executing query sqlGetEvalData..Check DB connection',
+        err
+      );
+      return res.status(500).send('Error to get Evaluation data');
+    }
+    res.send(result);
+  });
+}
+
 module.exports = {
   consultaData__,
   consultaEvalData__,
@@ -349,5 +374,6 @@ module.exports = {
   download__,
   EvalCompany__,
   getExamData__,
-  getAllCompanies__
+  getAllCompanies__,
+  listLastEvals__
 };
