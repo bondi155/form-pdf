@@ -267,7 +267,7 @@ function autocompleteName(req, res) {
 }
 //evaluation data select
 function consultaEvalData__(req, res) {
-  const sqlGetEvalData = 'SELECT * FROM evaluation_data';
+  const sqlGetEvalData = 'SELECT * FROM evaluation_data ORDER BY id DESC;'
 
   pool.query(sqlGetEvalData, (err, result) => {
     if (err) {
