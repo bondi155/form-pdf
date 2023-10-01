@@ -18,12 +18,17 @@ import {
 import Percentage from '../charts/Percentage';
 import volaris from '../components/img/airlines/volaris.png';
 import aeromexico from '../components/img/airlines/aeromexico.png';
+import tsm from '../components/img/airlines/tsm.png';
 import Swal from 'sweetalert2';
 import images from '../components/Imagenes.js';
 //import SpinnerComponent from '../components/Spinner.js';
 import PlaneSpinner from '../components/planeSpinner';
 
-const PersonalData = () => {
+const PersonalData = ({ form }) => {
+  const domainParts = form.username.split('@')[1].split('.');
+  const domainName = domainParts[0];
+  const role = form.role;
+
   const [personalData, setPersonalData] = useState([]);
   const [email, setEmail] = useState('');
   const [tabName, SetTabName] = useState('');
@@ -32,7 +37,7 @@ const PersonalData = () => {
   const [match, Setmatch] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState('');
   const [personalDataFromEffect, setPersonalDataFromEffect] = useState([]);
- // const [newComment, setNewComment] = useState('');
+  // const [newComment, setNewComment] = useState('');
   const [selectedId, setSelectedId] = useState(null);
   // traemos info para personal_data . llamamos a la api..
   const fetchPerData = async () => {
@@ -41,6 +46,7 @@ const PersonalData = () => {
       const response = await axios.get(`${API_URL}/getPersonalData`, {
         params: {
           email,
+          domainName,
         },
       });
       if (Array.isArray(response.data)) {
@@ -70,6 +76,7 @@ const PersonalData = () => {
       const result = await axios.get(`${API_URL}/getPersonalData`, {
         params: {
           email: selectedEmail,
+          domainName: domainName,
         },
       });
 
@@ -82,7 +89,7 @@ const PersonalData = () => {
     if (selectedEmail !== '') {
       fetchPerDataFromEffect(selectedEmail);
     }
-  }, [selectedEmail]);
+  }, [selectedEmail, domainName]);
 
   //boton de search, variable suggestion si hace un match con algun elemento de la lista directamente muestra el dato
   const handleSearch = async () => {
@@ -94,7 +101,7 @@ const PersonalData = () => {
           icon: 'info',
           title: 'Search term must have a value',
           showConfirmButton: false,
-          timer: 1000,
+          timer: 1500,
         });
       } else if (email.includes('@')) {
         Setmatch(true);
@@ -115,7 +122,7 @@ const PersonalData = () => {
             icon: 'info',
             title: 'No suggestions available',
             showConfirmButton: false,
-            timer: 1000,
+            timer: 1500,
           });
         }
       }
@@ -142,7 +149,7 @@ const PersonalData = () => {
     if (email.length > 0) {
       try {
         const response = await axios.get(`${API_URL}/suggestNames`, {
-          params: { email },
+          params: { email, domainName },
         });
 
         if (Array.isArray(response.data)) {
@@ -226,7 +233,7 @@ const PersonalData = () => {
   //console.log("Selected ID:", selectedId);
 
   //actualizacion de comentario para cada id
-  
+
   /*const handleSendComment = async () => {
     try {
       const response = await axios.put(`${API_URL}/updateComment`, {
@@ -257,8 +264,8 @@ const PersonalData = () => {
       return <img src={volaris} width='7%' alt='Volaris' />;
     } else if (empresa.toLowerCase() === 'aeromexico') {
       return <img src={aeromexico} alt='Aeromexico' width='70%' />;
-    } else if (empresa === 'sansa') {
-      return <img src='/path/to/empresa2-image.jpg' alt='Empresa 2' />;
+    } else if (empresa === 'TSM') {
+      return <img src={tsm} alt='TSM' width='17%' />;
     }
   }
 
@@ -296,8 +303,9 @@ const PersonalData = () => {
     <Container className='container-custom'>
       <Row>
         <Col xs={12} sm={12} lg={8} md={12}>
-          <h1 className='mb-2'>Consolidate Info</h1>
+          <h1 className='mb-2'>Consolidate Info ({role})</h1>
         </Col>
+        {domainName === 'admin' && ( 
         <Col xs={12} sm={12} lg={4} md={12}>
           <InputGroup className='mb-3 mt-3'>
             <FormControl
@@ -319,6 +327,7 @@ const PersonalData = () => {
             </Button>
           </InputGroup>
         </Col>
+        )}
       </Row>
       <InputGroup className='mb-3 mt-4'>
         <FormControl
@@ -426,13 +435,12 @@ const PersonalData = () => {
                                   </p>
                                 )}
                                 {item.comments_pd === 'No comments' ? (
-                                    <p
+                                  <p
                                     className='ms-3 mt-2'
                                     style={{ color: 'red' }}
                                   >
                                     No Comments
                                   </p>
-                                
                                 ) : (
                                   <ListGroup.Item action href='#link6'>
                                     Comments{' '}
@@ -518,6 +526,10 @@ const PersonalData = () => {
                                     <ListGroup.Item>
                                       Company Email:{' '}
                                       <strong>{item.company_email}</strong>
+                                    </ListGroup.Item>
+                                    <ListGroup.Item>
+                                      Company :{' '}
+                                      <strong>{item.pd_company}</strong>
                                     </ListGroup.Item>
                                   </ListGroup>
                                 </Tab.Pane>{' '}

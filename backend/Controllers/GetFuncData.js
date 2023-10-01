@@ -7,7 +7,11 @@ const jwt = require('jsonwebtoken');
 const secretkey = process.env.JWT_SECRET;
 const path = require('path');
 
-const sqlGetPerDataByName = `
+//agregar if where nombre
+//join del nombre  este hace el query por el nombre que le pasamos en la funcion principal .
+function consultJoin__(req, res, name) {
+  const company = req.query.domainName ?? '';
+  let sqlQuery = `
 SELECT 
   pd.id AS pd_id, 
   pd.full_name AS pd_full_name, 
@@ -56,18 +60,34 @@ SELECT
   GROUP_CONCAT(ed.position) AS ed_position
 FROM personal_data pd
 LEFT JOIN evaluation_data ed ON pd.full_name = ed.full_name
-WHERE pd.full_name = ?
-GROUP BY pd.id, pd.full_name, pd.personal_email, pd.cellphone, pd.age, 
-pd.country, pd.course, pd.flight_hours, pd.flight_status, pd.experience, 
-pd.type_airc, pd.company, pd.company_email, 
-pd.rtari_level, pd.rtari_expires, pd.english_status, pd.hours_english, 
-pd.level_english, pd.other_career, pd.contact, pd.option_pay, pd.date_form, pd.start_date, 
+WHERE pd.full_name = ?`;
+
+  let companyValue;
+
+  if (company.toLowerCase() === 'tsm') {
+    companyValue = company.toUpperCase();
+  } else {
+    companyValue =
+      company.charAt(0).toUpperCase() + company.slice(1).toLowerCase();
+  }
+
+  let queryName = [name];
+  if (company !== 'admin') {
+    sqlQuery += ' AND pd.company = ?';
+    queryName.push(companyValue);
+  }
+
+  sqlQuery += `
+GROUP BY pd.id, pd.full_name, pd.personal_email, pd.cellphone, pd.age,
+pd.country, pd.course, pd.flight_hours, pd.flight_status, pd.experience,
+pd.type_airc, pd.company, pd.company_email,
+pd.rtari_level, pd.rtari_expires, pd.english_status, pd.hours_english,
+pd.level_english, pd.other_career, pd.contact, pd.option_pay, pd.date_form, pd.start_date,
 pd.end_date, pd.asist, pd.payment, pd.calif, pd.status
 `;
-//join del nombre   este hace el query por el nombre que le pasamos en la funcion principal .
-function consultJoin__(req, res, name) {
+
   try {
-    pool.query(sqlGetPerDataByName, name, (err, result) => {
+    pool.query(sqlQuery, queryName, (err, result) => {
       if (err) {
         console.error(
           'Error executing sqlGetPerDataByName query..Check DB connection',
@@ -87,13 +107,32 @@ function consultJoin__(req, res, name) {
   }
 }
 
-//si se busca por email
-function consultEmail__(req, res) {
+function consultEmailComp__(req, res) {
   try {
+    const company = req.query.domainName ?? '';
     const email = req.query.email ?? '';
-    const sqlGetPerDataByEmail =
-      'SELECT * FROM personal_data WHERE personal_email = ?';
-    pool.query(sqlGetPerDataByEmail, email, (err, result) => {
+    //transformo el volaris o tsm , en minuscula del usuario en Volaris o TSM
+
+    let companyValue;
+
+    if (company.toLowerCase() === 'tsm') {
+      companyValue = company.toUpperCase();
+    } else {
+      companyValue =
+        company.charAt(0).toUpperCase() + company.slice(1).toLowerCase();
+    }
+
+    let sqlGetPerDataByCompEmail =
+      'SELECT * FROM personal_data WHERE company_email = ?';
+
+    let queryParamsEmail = [email];
+    if (company !== 'admin') {
+      sqlGetPerDataByCompEmail += ' AND company = ?';
+      queryParamsEmail.push(companyValue);
+    }
+    console.log('query de email', sqlGetPerDataByCompEmail, queryParamsEmail);
+
+    pool.query(sqlGetPerDataByCompEmail, queryParamsEmail, (err, result) => {
       if (err) {
         console.error(
           'Error in query sqlGetPerDataByEmail...Check DB connection',
@@ -105,63 +144,105 @@ function consultEmail__(req, res) {
       if (result.length === 0) {
         return res.send('No data found');
       }
-
       const name = result[0].full_name;
-
-      //console.log(name);
-
-      consultJoin__(req, res, name);
+      consultJoin__(req, res, name); //en verdad se ejecuta esta funcion pero con el nombre que sacamos del email
     });
-    
+  } catch (err) {
+    console.error('Error in ConsultEmail function', err);
+  }
+}
+//agregar where company
+//si se busca por email
+function consultEmail__(req, res) {
+  try {
+    const company = req.query.domainName ?? '';
+    const email = req.query.email ?? '';
+    //transformo el volaris o tsm , en minuscula del usuario en Volaris o TSM
+
+    let companyValue;
+
+    if (company.toLowerCase() === 'tsm') {
+      companyValue = company.toUpperCase();
+    } else {
+      companyValue =
+        company.charAt(0).toUpperCase() + company.slice(1).toLowerCase();
+    }
+
+    let sqlGetPerDataByEmail =
+      'SELECT * FROM personal_data WHERE personal_email = ?';
+
+    let queryParamsEmail = [email];
+    if (company !== 'admin') {
+      sqlGetPerDataByEmail += ' AND company = ?';
+      queryParamsEmail.push(companyValue);
+    }
+   // console.log('query de email', sqlGetPerDataByEmail, queryParamsEmail);
+
+    pool.query(sqlGetPerDataByEmail, queryParamsEmail, (err, result) => {
+      if (err) {
+        console.error(
+          'Error in query sqlGetPerDataByEmail...Check DB connection',
+          err
+        );
+        return res.status(500).send('Error to get personal data by email');
+      }
+
+      if (result.length === 0) {
+        return res.send('No data found');
+      }
+      const name = result[0].full_name;
+      consultJoin__(req, res, name); //en verdad se ejecuta esta funcion pero con el nombre que sacamos del email
+    });
   } catch (err) {
     console.error('Error in ConsultEmail function', err);
   }
 }
 
 //ejecucion con condicion de funciones
+//aca vamos a agregar la funcion de company email
 function consultaData__(req, res) {
   try {
     const email = req.query.email ?? '';
-    const company = req.query.domainName
-
+    //const company = req.query.domainName
     if (email.includes('@')) {
       consultEmail__(req, res);
     } else {
-      pool.query(sqlGetPerDataByName, email, (err, result) => {
-        if (err) {
-          console.error(
-            'error in consuldata query execution...Check DB connection',
-            err
-          );
-          return res.status(500).send('Error to get personal data');
-        }
-
-        if (result.length === 0) {
-          return res.send('No data found');
-        }
-
-        res.send(result);
-        //  console.log(result);
-      });
+      consultJoin__(req, res, email);
     }
   } catch (error) {
     console.error('Error in general function execution consultData', error);
   }
 }
 
-// Aquí se modifica la consulta SQL para que busque coincidencias parciales
-const sqlGetPerDataByNameLike = `
-  SELECT DISTINCT pd.full_name AS pd_full_name, pd.personal_email AS pd_personal_email
-  FROM personal_data pd
-  WHERE pd.full_name LIKE ?
-`;
 // Aquí se crea el endpoint adicional para el autocompletado
 function autocompleteName(req, res) {
   try {
     // se toma la entrada del usuario y se añade el comodín % al inicio y al final
     const email = `%${req.query.email ?? ''}%`;
+    const company = req.query.domainName ?? '';
 
-    pool.query(sqlGetPerDataByNameLike, email, (err, result) => {
+    let companyValue;
+
+    if (company.toLowerCase() === 'tsm') {
+      companyValue = company.toUpperCase();
+    } else {
+      companyValue =
+        company.charAt(0).toUpperCase() + company.slice(1).toLowerCase();
+    }
+    let sqlLikeName = `
+    SELECT DISTINCT pd.full_name AS pd_full_name, pd.personal_email AS pd_personal_email
+    FROM personal_data pd
+    WHERE pd.full_name LIKE ?
+  `;
+    // Aquí se modifica la consulta SQL para que busque coincidencias parciales
+    let queryName = [email];
+    if (company !== 'admin') {
+      sqlLikeName += ' AND pd.company = ?';
+      queryName.push(companyValue);
+    }
+    console.log(sqlLikeName, queryName, companyValue);
+
+    pool.query(sqlLikeName, queryName, (err, result) => {
       if (err) {
         console.error('Error in suggestion query like%', err);
         return res
@@ -272,8 +353,7 @@ function download__(req, res) {
 function EvalCompany__(req, res) {
   const username = req.query.domainName ?? '';
 
-  const sqlGetEvalCompany =
-    `SELECT * 
+  const sqlGetEvalCompany = `SELECT * 
     FROM evaluation_data 
     WHERE LOWER(company) = LOWER(?) 
     AND first_exam LIKE '%23' 
@@ -297,11 +377,13 @@ function getExamData__(req, res) {
   const company = req.query.domainName ?? '';
   const sqlGetTotalCalif = `SELECT COUNT(*) AS total_calif FROM evaluation_data WHERE first_exam LIKE '%23' AND LOWER(company) = LOWER(?)`;
   const sqlGetGroupCalif = `SELECT exam_calif, COUNT(*) AS count FROM evaluation_data WHERE LOWER(company) = LOWER(?) AND first_exam LIKE '%23' GROUP BY exam_calif`;
- // Obtener el total de exam_calif
+  // Obtener el total de exam_calif
   pool.query(sqlGetTotalCalif, company, (err, totalCalifResult) => {
     if (err) {
       console.error('Error fetching total exam data:', err);
-      return res.status(500).send('Internal Server Error when fetching total exam data.');
+      return res
+        .status(500)
+        .send('Internal Server Error when fetching total exam data.');
     }
 
     const totalCalif = totalCalifResult[0].total_calif;
@@ -310,7 +392,9 @@ function getExamData__(req, res) {
     pool.query(sqlGetGroupCalif, company, (err, breakdownResult) => {
       if (err) {
         console.error('Error fetching breakdown exam data:', err);
-        return res.status(500).send('Internal Server Error when fetching breakdown exam data.');
+        return res
+          .status(500)
+          .send('Internal Server Error when fetching breakdown exam data.');
       }
 
       // Construir un objeto para el desglose
@@ -329,30 +413,30 @@ function getExamData__(req, res) {
 }
 
 function getAllCompanies__(req, res) {
-  const sqlGetAllCompanies = 'SELECT DISTINCT company FROM evaluation_data';
+  const sqlGetAllCompanies = 'SELECT company, COUNT(id) as total_ids FROM evaluation_data GROUP BY company';
   pool.query(sqlGetAllCompanies, (err, companies) => {
-      if (err) {
-          console.error('Error fetching all companies:', err);
-          return res.status(500).send('Internal Server Error when fetching companies.');
-      }
+    if (err) {
+      console.error('Error fetching all companies:', err);
+      return res
+        .status(500)
+        .send('Internal Server Error when fetching companies.');
+    }
 
-      res.json(companies);
+    res.json(companies);
 
-      console.log(companies);
-
+    console.log(companies);
   });
 }
 
-function listLastEvals__ (req, res) {
+function listLastEvals__(req, res) {
   const username = req.query.domainName ?? '';
 
-  const sqlGetLastEvals =
-    `SELECT * 
+  const sqlGetLastEvals = `SELECT * 
     FROM evaluation_data 
     WHERE LOWER(company) = LOWER(?) 
     ORDER BY id DESC LIMIT 10
     `;
-   pool.query(sqlGetLastEvals, username, (err, result) => {
+  pool.query(sqlGetLastEvals, username, (err, result) => {
     if (err) {
       console.error(
         'Error executing query sqlGetEvalData..Check DB connection',
@@ -368,6 +452,7 @@ module.exports = {
   consultaData__,
   consultaEvalData__,
   consultEmail__,
+  consultEmailComp__,
   autocompleteName,
   loginUsers__,
   listUsers__,
@@ -375,5 +460,5 @@ module.exports = {
   EvalCompany__,
   getExamData__,
   getAllCompanies__,
-  listLastEvals__
+  listLastEvals__,
 };

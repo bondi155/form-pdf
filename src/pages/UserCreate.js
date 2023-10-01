@@ -7,17 +7,16 @@ import GridEval from '../charts/GridEval';
 import Swal from 'sweetalert2';
 const userColumns = [
   { field: 'id', headerName: 'ID', width: 150 },
-
   {
     field: 'user',
-    headerName: 'User Name',
-    width: 190,
+    headerName: 'Usuario',
+    width: 300,
     editable: true,
   },
   {
     field: 'role',
-    headerName: 'Role',
-    width: 190,
+    headerName: 'Rol del usuario',
+    width: 300,
     editable: true,
   },
 ];
@@ -103,6 +102,7 @@ function UserCreate({userCreate, setUserCreate}) {
   };
 
   return (
+    <>
     <Container className='container-custom'>
       <h1>User Create Page </h1>
       <form onSubmit={addNewUser}>
@@ -118,7 +118,6 @@ function UserCreate({userCreate, setUserCreate}) {
               />
             </Form.Group>
           </Col>
-
           <Col lg={4} sm={4} md={4}>
             <Form.Group className='mb-3'>
               <Form.Select
@@ -138,7 +137,6 @@ function UserCreate({userCreate, setUserCreate}) {
               </Form.Select>
             </Form.Group>
           </Col>
-
           <Col lg={4} sm={4} md={4}>
             <Form.Group className='mb-3'>
               <Form.Control
@@ -162,6 +160,7 @@ function UserCreate({userCreate, setUserCreate}) {
           </Col>
         </Row>
       </form>
+      </Container>
       <div className='evaluation-grid'>
         <div className='mt-5 mb-3 center-text'>
           <h1>User List</h1>
@@ -174,7 +173,7 @@ function UserCreate({userCreate, setUserCreate}) {
           showDeleteColumn={true}
         />
       </div>
-    </Container>
+       </>
   );
 }
 

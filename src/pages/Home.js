@@ -33,24 +33,24 @@ function Home({ form }) {
   const [breakdown, setBreakdown] = useState({});
   const [error, setError] = useState(null); //pongo el error en un state para mostrarlo en pantalla
   const [companiesRow, SetCompaniesRow] = useState([]);
-
   const domainParts = form.username.split('@')[1].split('.');
   const domainName = domainParts[0];
+  const [currentDomain, setCurrentDomain] = useState(domainName);
 
-  const labelsNumerics = ['1', '2', '3', '4', '5', '6', '7'];
+  const labelsNumerics = ['1', '2', '3', '4', '5']; //, '6', '7'
   const labelsAlphabets = ['A', 'B', 'B+', 'B-', 'C', 'C+'];
   const labelsAlphabetsTsm = ['A', 'B', 'B+', 'C', 'D'];
 
   useEffect(() => {
     const fetchExamData = async () => {
       try {
-        if (domainName === 'admin') {
+        if (form.role === 'admin' && currentDomain === 'admin') {
           const companiesRes = await axios.get(`${API_URL}/getCompanies`, {});
           SetCompaniesRow(companiesRes.data);
         } else {
           const response = await axios.get(`${API_URL}/examData`, {
             params: {
-              domainName,
+              domainName: currentDomain,
             },
           });
           setTotalCalif(response.data.total);
@@ -60,9 +60,10 @@ function Home({ form }) {
         setError(err.message || 'Ocurrió un error al obtener los datos.');
       }
     };
-
     fetchExamData();
-  }, [domainName]);
+  }, [currentDomain, form.role]);
+  
+  //console.log(companiesRow);
 
   const order = [
     '1',
@@ -89,7 +90,7 @@ function Home({ form }) {
       orderedBreakdown[key] = breakdown[key];
     }
   });
-
+//console.log(currentDomain);
   // Dividir el objeto orderedBreakdown en numéricos y alfabéticos
   const numericBreakdown = {};
   const alphabeticBreakdown = {};
@@ -112,9 +113,10 @@ function Home({ form }) {
       <Row>
         {error ? (
           <div>Hubo un problema cargando los graficos..error: {error}</div>
-        ) : domainName === 'admin' ? (
+        ) : form.role === 'admin' ? (
+          //pantalla para Administrador
           <Col
-            xs={{ span: 10, offset: 1 }}
+            xs={{ span: 12, offset: 0 }}
             sm={{ span: 12, offset: 0 }}
             lg={{ span: 12, offset: 0 }}
             md={{ span: 12, offset: 0 }}
@@ -133,29 +135,91 @@ function Home({ form }) {
                     </h4>
                     <small>
                       Como administrador tendras accesso a los datos de todas
-                      las empresas:{' '}
+                      las empresas.{' '}
                     </small>
                     <p>
-                      Última evaluación: <strong>Septiembre</strong>
+                      Última evaluación: <strong>Octubre</strong>
                     </p>
+                    <div className='mt-2 mb-2'>
+                      <Link to='/evaluationData'>
+                        <Button size='sm' variant='success'>
+                          Ver Evaluations UleadAir
+                        </Button>
+                      </Link>
+                    </div>
                   </Col>
                 </Row>
               </Card.Header>
               <Card.Body>
-                <h5>Total de Evaluaciones en {domainName}:</h5>
-                <h2>
-                  <strong> {totalCalif}</strong>
-                </h2>
+                <h3>Empresas en Uleadair:</h3>
+                <Row>
+                  {companiesRow.map((admin, key) => {
+                    return (
+                      <Col key={key} lg={1} md={2} className='mb-2 mt-2'>
+                        <Button
+                          size='sm'
+                          variant='outline-dark'
+                          onClick={() => setCurrentDomain(admin.company)}
+                        >
+                          {admin.company}
+                        </Button>
+                      </Col>
+                    );
+                  })}
+                </Row>
+                Evaluaciones de {currentDomain} desde 01/23:<strong> {totalCalif}</strong>
                 {/* Opcional: agregar aquí barra de progreso o gráfico */}
-                <div>
-                  <Link to='/evaluationData'>
-                    <Button variant='primary'>Ver Evaluations UleadAir</Button>
-                  </Link>
-                </div>
               </Card.Body>
             </Card>
+            <Row>
+              {numericValues && numericValues.length > 0 ? (
+                <>
+                  <Row className='chartsCont'>
+                    <Col xs={12} lg={5} sm={12} md={10}>
+                      <PieChart
+                        key='numericChart'
+                        className='pie-chart-card'
+                        title='Calificaciones Numéricas'
+                        labelsValue={labelsNumerics}
+                        seriesValues={numericValues}
+                        colorsValue={colorsNumeric}
+                        width={360}
+                        chartTitle={'Sin Experiencia 2023'}
+                      />
+                    </Col>
+                    <Col xs={12} lg={5} sm={12} md={10}>
+                      <PieChart
+                        key='alphabeticChart'
+                        className='pie-chart-card'
+                        title='Calificaciones Alfabéticas'
+                        labelsValue={labelsAlphabets}
+                        seriesValues={alphabeticValues}
+                        colorsValue={colorsAlphabetic}
+                        width={360}
+                        chartTitle={'Con Experiencia 2023'}
+                      />
+                    </Col>
+                  </Row>
+                </>
+              ) : alphabeticValues && alphabeticValues.length > 0 && (
+                <Row className='chartsCont'>
+                  <Col xs={12} lg={5} sm={11} md={10}>
+                    <PieChart
+                      key='alphabeticChartSolo'
+                      className='pie-chart-card-large'
+                      labelsValue={labelsAlphabetsTsm}
+                      seriesValues={alphabeticValues}
+                      colorsValue={colorsAlphabetic}
+                      width={350}
+                      chartTitle={'Con Experiencia 2023'}
+                    />
+                  </Col>
+                </Row>
+              )}
+            </Row>
           </Col>
         ) : (
+          //pantalla para clientes
           <div>
             <Col xs={11} sm={11} lg={12} md={{ span: 11, offset: -1 }}>
               {' '}
@@ -193,7 +257,6 @@ function Home({ form }) {
                 </Card.Body>
               </Card>
             </Col>
-
             <Row>
               {numericValues && numericValues.length > 0 ? (
                 <>
@@ -248,7 +311,11 @@ function Home({ form }) {
               ))}
             </ul>s
             */}
-            <ListEval form={form} titulotd1={domainName === 'tsm' ? 'No.': 'No. Embajador'} titulotd2={domainName ==='tsm' ? 'Celular' : 'T.Prueba' }/>
+            <ListEval
+              form={form}
+              titulotd1={domainName === 'tsm' ? 'No.' : 'No. Embajador'}
+              titulotd2={domainName === 'tsm' ? 'Celular' : 'T.Prueba'}
+            />
           </div>
         )}
       </Row>

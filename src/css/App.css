@@ -356,7 +356,6 @@ h2 {
 
 
 /* Termina Card home y graficos */
-.table-list {}
 
 .container-table-list {
   display: flex;
@@ -366,6 +365,20 @@ h2 {
 
 @media (max-width: 821px) {
   .table-list {
-    width: 90vw;
+    width: 9lu0vw;
   }
+}
+
+.companies-cards {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.company-card {
+  width: 150px;
+  padding: 10px;
+  margin: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
 }

@@ -83,6 +83,13 @@ function NavigationBar({ setIslogin, form }) {
               </>
             )}
              {form.role === 'company' && (
+              <>  {/*  <Link
+              to='/consolidateInformation'
+              className='nav-link'
+              onClick={handleLinkClick}
+            >
+              Consolidate
+            </Link>*/}
             <Link
               to='/consultAirlineGrid'
               className='nav-link'
@@ -90,6 +97,7 @@ function NavigationBar({ setIslogin, form }) {
             >
               Consult Airline
             </Link>
+            </>
             )}
             <Button
               variant='dark'

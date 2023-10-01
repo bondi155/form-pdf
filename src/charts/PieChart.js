@@ -8,7 +8,7 @@ function PieChart({
   colorsValue,
   width,
   chartTitle,
-  className
+  className,
 }) {
   const options = {
     labels: labelsValue,
@@ -32,17 +32,17 @@ function PieChart({
   const size = width;
   const title = chartTitle;
   return (
-  <Card className={`mb-3 ${className}`}>
+        <Card className={`mb-3 ${className}`}>
           <Card.Header>{title}</Card.Header>
-      <Card.Body>
-        <ReactApexChart
-          options={options}
-          series={series}
-          type='pie'
-          width={size}
-        />
-      </Card.Body>
-    </Card>
+          <Card.Body>
+            <ReactApexChart
+              options={options}
+              series={series}
+              type='pie'
+              width={size}
+            />
+          </Card.Body>
+        </Card>
   );
 }
 
