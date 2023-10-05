@@ -51,8 +51,8 @@ function ListEval({ form, titulotd1, titulotd2 }) {
           </Link>
         </h2>
         <div style={{ display: 'flex', justifyContent: 'center' }}> 
-        <TableContainer component={Paper} sx={{ width: '100%', maxWidth: '100%'}}>
-          <Table sx={{ minWidth: 850, maxWidth: 1000 }} aria-label='simple table'>
+        <TableContainer component={Paper} >
+          <Table  aria-label='simple table'>
             <TableHead>
               <TableRow>
                 <TableCell sx={{ width: 90 }}>{titulotd1}</TableCell>

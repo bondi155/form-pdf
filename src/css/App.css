@@ -33,10 +33,18 @@
 }
 
 .container-custom {
-  max-width: 65%;
+  max-width: 70%;
   margin-top: 6rem;
   width: 100%;
 }
+
+@media (max-width: 413px) {
+  .container-custom {
+    max-width: 100%;
+    margin-top: 6rem;
+  }
+}
+
 
 .container-custom-company {
   max-width: 65%;

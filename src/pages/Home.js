@@ -108,25 +108,19 @@ function Home({ form }) {
   //const valor = [44, 55, 13, 43, 22, 44, 55, 13, 43, 22, 44, 55, 13, 43, 22, 77]
 
   return (
-    <Container className='container-custom'>
-      <Row>
+    <>
+      <Container className='container-custom'>
         {error ? (
           <div>Hubo un problema cargando los graficos..error: {error}</div>
         ) : form.role === 'admin' ? (
           //pantalla para Administrador
-          <Col
-            xs={{ span: 12, offset: 0 }}
-            sm={{ span: 12, offset: 0 }}
-            lg={{ span: 12, offset: 0 }}
-            md={{ span: 12, offset: 0 }}
-          >
+          <div>
             {' '}
             <Card
               className='mb-3'
               style={{ boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' }}
             >
               <Card.Header className='d-flex align-items-center'>
-                <Row className='w-100'>
                   <Col xs={12} sm={12} md={12} lg={12}>
                     <h4>
                       <FaUserCircle className='mb-2' size={35} /> Bienvenido
@@ -147,11 +141,9 @@ function Home({ form }) {
                       </Link>
                     </div>
                   </Col>
-                </Row>
               </Card.Header>
               <Card.Body>
                 <h3>Empresas en Uleadair:</h3>
-                <Row>
                   {companiesRow.map((admin, key) => {
                     return (
                       <Col key={key} lg={1} md={2} className='mb-2 mt-2'>
@@ -165,87 +157,77 @@ function Home({ form }) {
                       </Col>
                     );
                   })}
-                </Row>
                 Evaluaciones de {currentDomain} desde 01/23:
                 <strong> {totalCalif}</strong>
               </Card.Body>
             </Card>
-            <Row>
-              {numericValues && numericValues.length > 0 ? (
-                <>
-                  <Row className='chartsCont'>
-                    <Col xs={12} lg={5} sm={12} md={10}>
-                      <PieChart
-                        key='numericChart'
-                        className='pie-chart-card'
-                        title='Calificaciones Numéricas'
-                        labelsValue={labelsNumerics}
-                        seriesValues={numericValues}
-                        colorsValue={colorsNumeric}
-                        width={360}
-                        chartTitle={'Sin Experiencia desde 01/2023'}
-                      />
-                    </Col>
-                    <Col xs={12} lg={5} sm={12} md={10}>
-                      <PieChart
-                        key='alphabeticChart'
-                        className='pie-chart-card'
-                        title='Calificaciones Alfabéticas'
-                        labelsValue={labelsAlphabets}
-                        seriesValues={alphabeticValues}
-                        colorsValue={colorsAlphabetic}
-                        width={360}
-                        chartTitle={'Con Experiencia desde 01/2023'}
-                      />
-                    </Col>
-                  </Row>
-                </>
-              ) : (
-                alphabeticValues &&
-                alphabeticValues.length > 0 && (
-                  <Row className='chartsCont'>
-                    <Col xs={12} lg={5} sm={11} md={10}>
-                      <PieChart
-                        key='alphabeticChartSolo'
-                        className='pie-chart-card-large'
-                        labelsValue={labelsAlphabetsTsm}
-                        seriesValues={alphabeticValues}
-                        colorsValue={colorsAlphabetic}
-                        width={350}
-                        chartTitle={'Con Experiencia desde 01/2023'}
-                      />
-                    </Col>
-                  </Row>
-                )
-              )}
-            </Row>
-          </Col>
+            {numericValues && numericValues.length > 0 ? (
+              <>
+                <Row className='chartsCont'>
+                  <Col xs={12} lg={5} sm={12} md={10}>
+                    <PieChart
+                      key='numericChart'
+                      className='pie-chart-card'
+                      title='Calificaciones Numéricas'
+                      labelsValue={labelsNumerics}
+                      seriesValues={numericValues}
+                      colorsValue={colorsNumeric}
+                      width={360}
+                      chartTitle={'Sin Exp. desde 01/2023'}
+                    />
+                  </Col>
+                  <Col xs={12} lg={5} sm={12} md={10}>
+                    <PieChart
+                      key='alphabeticChart'
+                      className='pie-chart-card'
+                      title='Calificaciones Alfabéticas'
+                      labelsValue={labelsAlphabets}
+                      seriesValues={alphabeticValues}
+                      colorsValue={colorsAlphabetic}
+                      width={360}
+                      chartTitle={'Con Exp. desde 01/2023'}
+                    />
+                  </Col>
+                </Row>
+              </>
+            ) : (
+              alphabeticValues &&
+              alphabeticValues.length > 0 && (
+                <Row className='chartsCont'>
+                  <Col xs={12} lg={5} sm={12} md={10}>
+                    <PieChart
+                      key='alphabeticChartSolo'
+                      className='pie-chart-card-large'
+                      labelsValue={labelsAlphabetsTsm}
+                      seriesValues={alphabeticValues}
+                      colorsValue={colorsAlphabetic}
+                      width={350}
+                      chartTitle={'Con Exp. desde 01/2023'}
+                    />
+                  </Col>
+                </Row>
+              )
+            )}
+          </div>
         ) : (
           //pantalla para clientes
-          <Col
-            xs={{ span: 12, offset: 0 }}
-            sm={{ span: 12, offset: 0 }}
-            lg={{ span: 12, offset: 0 }}
-            md={{ span: 12, offset: 0 }}
-          >
+          <div>
             {' '}
             <Card
               className='mb-3'
               style={{ boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' }}
             >
               <Card.Header className='d-flex align-items-center'>
-                <Row className='w-100'>
                   <Col xs={12} sm={12} md={12} lg={12}>
                     <h4>
-                      <FaUserCircle className='mb-2' size={35} />{' '}
-                      Bienvenido <strong> {form.username}</strong>
+                      <FaUserCircle className='mb-2' size={35} /> Bienvenido{' '}
+                      <strong> {form.username}</strong>
                     </h4>
                     <p>
                       Última evaluación: <strong>Octubre</strong>
                     </p>
                     <div className='mt-2 mb-2'></div>
                   </Col>
-                </Row>
               </Card.Header>
               <Card.Body>
                 <h5>
@@ -257,11 +239,10 @@ function Home({ form }) {
                 </h2>
               </Card.Body>
             </Card>
-            <Row>
               {numericValues && numericValues.length > 0 ? (
                 <>
                   <Row className='chartsCont'>
-                    <Col xs={12} lg={5} sm={12} md={10}>
+                    <Col xs={12} lg={5} sm={11} md={10}>
                       <PieChart
                         key='numericChart'
                         className='pie-chart-card'
@@ -270,7 +251,7 @@ function Home({ form }) {
                         seriesValues={numericValues}
                         colorsValue={colorsNumeric}
                         width={360}
-                        chartTitle={'Sin Experiencia desde 01/2023'}
+                        chartTitle={'Sin Exp desde 01/2023'}
                       />
                     </Col>
                     <Col xs={12} lg={5} sm={12} md={10}>
@@ -290,31 +271,36 @@ function Home({ form }) {
               ) : (
                 alphabeticValues &&
                 alphabeticValues.length > 0 && (
-                  <Row className='chartsCont'>
-                    <Col xs={12} lg={5} sm={11} md={10}>
+                  <div className='d-flex justify-content-center'>
+                    <Col xs={12} lg={5} sm={12} md={10}>
                       <PieChart
                         key='alphabeticChartSolo'
                         className='pie-chart-card-large'
                         labelsValue={labelsAlphabetsTsm}
                         seriesValues={alphabeticValues}
                         colorsValue={colorsAlphabetic}
-                        width={350}
-                        chartTitle={'Con Experiencia desde 01/2023'}
+                        width={360}
+                        chartTitle={'Con Exp. desde 01/2023'}
                       />
                     </Col>
-                  </Row>
+                  </div>
                 )
               )}
-              <ListEval
+          </div>
+        )}
+      </Container>
+      {domainName !== 'admin' && (
+        <div className='d-flex justify-content-center'>
+          <Container>
+            <ListEval
               form={form}
               titulotd1={domainName === 'tsm' ? 'No. ' : 'No. Embajador'}
               titulotd2={domainName === 'tsm' ? 'Celular' : 'T.Prueba'}
             />
-            </Row>
-          </Col>
-        )}
-      </Row>
-    </Container>
+          </Container>
+        </div>
+      )}
+    </>
   );
 }
 

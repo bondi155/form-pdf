@@ -34,7 +34,7 @@ function PieChart({
   return (
         <Card className={`mb-3 ${className}`}>
           <Card.Header>{title}</Card.Header>
-          <Card.Body>
+          <Card.Body style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <ReactApexChart
               options={options}
               series={series}
