@@ -173,7 +173,7 @@ function Home({ form }) {
                       seriesValues={numericValues}
                       colorsValue={colorsNumeric}
                       width={360}
-                      chartTitle={'Sin Exp. desde 01/2023'}
+                      chartTitle={'Sin Experiencia desde 01/2023'}
                     />
                   </Col>
                   <Col xs={12} lg={5} sm={12} md={10}>
@@ -185,7 +185,7 @@ function Home({ form }) {
                       seriesValues={alphabeticValues}
                       colorsValue={colorsAlphabetic}
                       width={360}
-                      chartTitle={'Con Exp. desde 01/2023'}
+                      chartTitle={'Con Experiencia desde 01/2023'}
                     />
                   </Col>
                 </Row>
@@ -202,7 +202,7 @@ function Home({ form }) {
                       seriesValues={alphabeticValues}
                       colorsValue={colorsAlphabetic}
                       width={350}
-                      chartTitle={'Con Exp. desde 01/2023'}
+                      chartTitle={'Con Experiencia desde 01/2023'}
                     />
                   </Col>
                 </Row>
@@ -251,7 +251,7 @@ function Home({ form }) {
                         seriesValues={numericValues}
                         colorsValue={colorsNumeric}
                         width={360}
-                        chartTitle={'Sin Exp desde 01/2023'}
+                        chartTitle={'Sin Experiencia desde 01/2023'}
                       />
                     </Col>
                     <Col xs={12} lg={5} sm={12} md={10}>
@@ -280,7 +280,7 @@ function Home({ form }) {
                         seriesValues={alphabeticValues}
                         colorsValue={colorsAlphabetic}
                         width={360}
-                        chartTitle={'Con Exp. desde 01/2023'}
+                        chartTitle={'Con Experiencia desde 01/2023'}
                       />
                     </Col>
                   </div>
