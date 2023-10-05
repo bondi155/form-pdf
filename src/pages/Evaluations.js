@@ -485,17 +485,13 @@ function Evaluations() {
     }
   };
 
-  
-
   const updateCalif = async (id, newCalif) => {
     try {
       await axios.put(`${API_URL}/editCalif`, {
         id: id,
         newValue: newCalif,
       });
-      Swal.fire(
-        'Good job!', 'Calification updated!!', 'success'
-      );
+      Swal.fire('Good job!', 'Calification updated!!', 'success');
     } catch (err) {
       console.error(err);
       Swal.fire(':( !', ' The Calification could not be updated', 'error');
@@ -506,19 +502,20 @@ function Evaluations() {
     <>
       <Container className='container-custom'>
         <h1>Evaluations</h1>
-        <Row className='mt-2'>
-          <Col className='mt-3' xs={12} sm={10} lg={10}>
+        <Row className='align-items-center'>
+          {' '}
+          {/* Añade 'align-items-center' para alinear verticalmente los elementos en la misma línea */}
+          <Col xs={9} sm={10} lg={10} className='mt-2'>
+            {' '}
+            {/* Ajusta los valores de span según lo necesites */}
             <Form.Group controlId='formFileLg' className='mb-3'>
               <Form.Label>Consolidate Evaluations Info</Form.Label>
               <Form.Control type='file' size='md' onChange={saveFile} />
             </Form.Group>
           </Col>
-          <Col
-            className='mt-5'
-            xs={{ offset: 4 }}
-            sm={{ span: 2, offset: 0 }}
-            lg={{ span: 2, offset: 0 }}
-          >
+          <Col xs={1} sm={2} lg={2} className='mt-4'>
+            {' '}
+            {/* Ajusta los valores de span según lo necesites */}
             <Button variant='outline-success' onClick={uploadFile}>
               Upload
             </Button>

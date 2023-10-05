@@ -48,7 +48,7 @@ function DriveSearch () {
             md={{ span: 12, offset: 0 }}
           >
             <h1 className='mb-2'>
-              Google Drive Directory <img src={images.drive} alt='driveimg' />
+              Google Drive Browser <img className="drive-img" src={images.drive} alt='driveimg' />
             </h1>
           </Col>
           <Col className='mt-2' sm={12} lg={2} md={12}></Col>

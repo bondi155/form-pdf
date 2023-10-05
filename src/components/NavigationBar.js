@@ -78,7 +78,7 @@ function NavigationBar({ setIslogin, form }) {
                   Evaluations
                 </Link>
                 <Link to='/GoogleDriveSeach' className='nav-link' onClick={handleLinkClick}>
-                  Drive Directory
+                  Drive Browser
                 </Link>
               </>
             )}

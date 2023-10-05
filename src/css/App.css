@@ -9,6 +9,15 @@
   color: white;
 }
 
+@media (max-width: 413px) {
+  .drive-img {
+    width: 10%;
+    /* Reduce el ancho a la mitad de la img de drive*/
+    height: auto;
+    /* Mantiene el aspecto de la imagen */
+  }
+}
+
 .App-logo {
   pointer-events: none;
 }
