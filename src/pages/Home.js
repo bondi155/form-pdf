@@ -37,8 +37,8 @@ function Home({ form }) {
   const domainName = domainParts[0];
   const [currentDomain, setCurrentDomain] = useState(domainName);
 
-  const labelsNumerics = ['1', '2', '3', '4', '5']; //, '6', '7'
-  const labelsAlphabets = ['A', 'B', 'B+', 'B-', 'C', 'C+'];
+  const labelsNumerics = ['2', '3', '4', '5', '6']; //, '6', '7'
+  const labelsAlphabets = ['A', 'B', 'B+', 'B-', 'C', 'NP'];
   const labelsAlphabetsTsm = ['A', 'B', 'B+', 'C', 'D'];
 
   useEffect(() => {
@@ -62,11 +62,12 @@ function Home({ form }) {
     };
     fetchExamData();
   }, [currentDomain, form.role]);
-  
+
   //console.log(companiesRow);
 
+  //ACA DEberiamos agregar los otros resultados pero deben coincidir con el registro
+  //por ejemplo Cancelado, hay 1 , podriamos ponerlo ..
   const order = [
-    '1',
     '2',
     '3',
     '4',
@@ -78,8 +79,6 @@ function Home({ form }) {
     'B+',
     'B-',
     'C',
-    'C+',
-    'C-',
     'D',
     'NP',
   ];
@@ -90,7 +89,7 @@ function Home({ form }) {
       orderedBreakdown[key] = breakdown[key];
     }
   });
-//console.log(currentDomain);
+  //console.log(currentDomain);
   // Dividir el objeto orderedBreakdown en numéricos y alfabéticos
   const numericBreakdown = {};
   const alphabeticBreakdown = {};
@@ -167,8 +166,8 @@ function Home({ form }) {
                     );
                   })}
                 </Row>
-                Evaluaciones de {currentDomain} desde 01/23:<strong> {totalCalif}</strong>
-                {/* Opcional: agregar aquí barra de progreso o gráfico */}
+                Evaluaciones de {currentDomain} desde 01/23:
+                <strong> {totalCalif}</strong>
               </Card.Body>
             </Card>
             <Row>
@@ -184,7 +183,7 @@ function Home({ form }) {
                         seriesValues={numericValues}
                         colorsValue={colorsNumeric}
                         width={360}
-                        chartTitle={'Sin Experiencia 2023'}
+                        chartTitle={'Sin Experiencia desde 01/2023'}
                       />
                     </Col>
                     <Col xs={12} lg={5} sm={12} md={10}>
@@ -196,67 +195,68 @@ function Home({ form }) {
                         seriesValues={alphabeticValues}
                         colorsValue={colorsAlphabetic}
                         width={360}
-                        chartTitle={'Con Experiencia 2023'}
+                        chartTitle={'Con Experiencia desde 01/2023'}
                       />
                     </Col>
                   </Row>
                 </>
-              ) : alphabeticValues && alphabeticValues.length > 0 && (
-                <Row className='chartsCont'>
-                  <Col xs={12} lg={5} sm={11} md={10}>
-                    <PieChart
-                      key='alphabeticChartSolo'
-                      className='pie-chart-card-large'
-                      labelsValue={labelsAlphabetsTsm}
-                      seriesValues={alphabeticValues}
-                      colorsValue={colorsAlphabetic}
-                      width={350}
-                      chartTitle={'Con Experiencia 2023'}
-                    />
-                  </Col>
-                </Row>
+              ) : (
+                alphabeticValues &&
+                alphabeticValues.length > 0 && (
+                  <Row className='chartsCont'>
+                    <Col xs={12} lg={5} sm={11} md={10}>
+                      <PieChart
+                        key='alphabeticChartSolo'
+                        className='pie-chart-card-large'
+                        labelsValue={labelsAlphabetsTsm}
+                        seriesValues={alphabeticValues}
+                        colorsValue={colorsAlphabetic}
+                        width={350}
+                        chartTitle={'Con Experiencia desde 01/2023'}
+                      />
+                    </Col>
+                  </Row>
+                )
               )}
             </Row>
           </Col>
         ) : (
           //pantalla para clientes
-          <div>
-            <Col xs={11} sm={11} lg={12} md={{ span: 11, offset: -1 }}>
-              {' '}
-              <Card
-                className='mb-3'
-                style={{ boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' }}
-              >
-                <Card.Header>
-                  <Row>
-                    <Col xs={12} sm={12} md={12} lg={12}>
-                      <h4>
-                        <FaUserCircle className='mb-2' size={35} /> Bienvenido{' '}
-                        <strong>{form.username}</strong>
-                      </h4>
-                      <p>
-                        Última evaluación: <strong>Septiembre</strong>
-                      </p>
-                    </Col>
-                  </Row>
-                </Card.Header>
-                <Card.Body>
-                  <h5>
-                    Total de Evaluaciones en {domainName} <strong>2023</strong>:
-                  </h5>
-                  <h2>
-                    <strong>{totalCalif}</strong>
-                  </h2>
-                  {/* 
-                  <div>
-                    <Link to='/consultAirlineGrid'>
-                      <Button variant='primary'>Ver detalles</Button>
-                    </Link>
-                  </div>
-                  */}
-                </Card.Body>
-              </Card>
-            </Col>
+          <Col
+            xs={{ span: 12, offset: 0 }}
+            sm={{ span: 12, offset: 0 }}
+            lg={{ span: 12, offset: 0 }}
+            md={{ span: 12, offset: 0 }}
+          >
+            {' '}
+            <Card
+              className='mb-3'
+              style={{ boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' }}
+            >
+              <Card.Header className='d-flex align-items-center'>
+                <Row className='w-100'>
+                  <Col xs={12} sm={12} md={12} lg={12}>
+                    <h4>
+                      <FaUserCircle className='mb-2' size={35} />{' '}
+                      Bienvenido <strong> {form.username}</strong>
+                    </h4>
+                    <p>
+                      Última evaluación: <strong>Octubre</strong>
+                    </p>
+                    <div className='mt-2 mb-2'></div>
+                  </Col>
+                </Row>
+              </Card.Header>
+              <Card.Body>
+                <h5>
+                  Total de Evaluaciones en <strong>{domainName}</strong> desde{' '}
+                  <strong>01/2023</strong>:
+                </h5>
+                <h2>
+                  <strong>{totalCalif}</strong>
+                </h2>
+              </Card.Body>
+            </Card>
             <Row>
               {numericValues && numericValues.length > 0 ? (
                 <>
@@ -270,7 +270,7 @@ function Home({ form }) {
                         seriesValues={numericValues}
                         colorsValue={colorsNumeric}
                         width={360}
-                        chartTitle={'Sin Experiencia 2023'}
+                        chartTitle={'Sin Experiencia desde 01/2023'}
                       />
                     </Col>
                     <Col xs={12} lg={5} sm={12} md={10}>
@@ -282,41 +282,36 @@ function Home({ form }) {
                         seriesValues={alphabeticValues}
                         colorsValue={colorsAlphabetic}
                         width={360}
-                        chartTitle={'Con Experiencia 2023'}
+                        chartTitle={'Con Experiencia desde 01/2023'}
                       />
                     </Col>
                   </Row>
                 </>
               ) : (
-                <Row className='chartsCont'>
-                  <Col xs={12} lg={5} sm={11} md={10}>
-                    <PieChart
-                      key='alphabeticChartSolo'
-                      className='pie-chart-card-large'
-                      labelsValue={labelsAlphabetsTsm}
-                      seriesValues={alphabeticValues}
-                      colorsValue={colorsAlphabetic}
-                      width={350}
-                      chartTitle={'Con Experiencia 2023'}
-                    />
-                  </Col>
-                </Row>
+                alphabeticValues &&
+                alphabeticValues.length > 0 && (
+                  <Row className='chartsCont'>
+                    <Col xs={12} lg={5} sm={11} md={10}>
+                      <PieChart
+                        key='alphabeticChartSolo'
+                        className='pie-chart-card-large'
+                        labelsValue={labelsAlphabetsTsm}
+                        seriesValues={alphabeticValues}
+                        colorsValue={colorsAlphabetic}
+                        width={350}
+                        chartTitle={'Con Experiencia desde 01/2023'}
+                      />
+                    </Col>
+                  </Row>
+                )
               )}
-            </Row>
-            {/*  <ul>
-              {Object.entries(breakdown).map(([key, value]) => (
-                <li key={key}>
-                  {key}: {value}
-                </li>
-              ))}
-            </ul>s
-            */}
-            <ListEval
+              <ListEval
               form={form}
-              titulotd1={domainName === 'tsm' ? 'No.' : 'No. Embajador'}
+              titulotd1={domainName === 'tsm' ? 'No. ' : 'No. Embajador'}
               titulotd2={domainName === 'tsm' ? 'Celular' : 'T.Prueba'}
             />
-          </div>
+            </Row>
+          </Col>
         )}
       </Row>
     </Container>

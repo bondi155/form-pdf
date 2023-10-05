@@ -375,8 +375,8 @@ function EvalCompany__(req, res) {
 //get para dashboard home graficos
 function getExamData__(req, res) {
   const company = req.query.domainName ?? '';
-  const sqlGetTotalCalif = `SELECT COUNT(*) AS total_calif FROM evaluation_data WHERE first_exam LIKE '%23' AND LOWER(company) = LOWER(?)`;
-  const sqlGetGroupCalif = `SELECT exam_calif, COUNT(*) AS count FROM evaluation_data WHERE LOWER(company) = LOWER(?) AND first_exam LIKE '%23' GROUP BY exam_calif`;
+  const sqlGetTotalCalif = `SELECT COUNT(*) AS total_calif FROM evaluation_data WHERE (first_exam LIKE '%23' OR first_exam LIKE '%24' OR  first_exam LIKE '%25') AND LOWER(company) = LOWER(?)`;
+  const sqlGetGroupCalif = `SELECT exam_calif, COUNT(*) AS count FROM evaluation_data WHERE LOWER(company) = LOWER(?) AND (first_exam LIKE '%23' OR first_exam LIKE '%24' OR first_exam LIKE '%25') GROUP BY exam_calif`;
   // Obtener el total de exam_calif
   pool.query(sqlGetTotalCalif, company, (err, totalCalifResult) => {
     if (err) {
