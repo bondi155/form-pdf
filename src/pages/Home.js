@@ -121,34 +121,34 @@ function Home({ form }) {
               style={{ boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' }}
             >
               <Card.Header className='d-flex align-items-center'>
-                  <Col xs={12} sm={12} md={12} lg={12}>
-                    <h4>
-                      <FaUserCircle className='mb-2' size={35} /> Bienvenido
-                      Administrador <strong>{form.username}</strong>
-                    </h4>
-                    <small>
-                      Como administrador tendras accesso a los datos de todas
-                      las empresas.{' '}
-                    </small>
-                    <p>
-                      Última evaluación: <strong>Octubre</strong>
-                    </p>
-                    <div className='mt-2 mb-2'>
-                      <Link to='/evaluationData'>
-                        <Button size='sm' variant='success'>
-                          Ver Evaluations UleadAir
-                        </Button>
-                      </Link>
-                    </div>
-                  </Col>
+                <Col xs={12} sm={12} md={12} lg={12}>
+                  <h4>
+                    <FaUserCircle className='mb-2' size={35} /> Bienvenido
+                    Administrador <strong>{form.username}</strong>
+                  </h4>
+                  <small>
+                    Como administrador tendras accesso a los datos de todas las
+                    empresas.{' '}
+                  </small>
+                  <p>
+                    Última evaluación: <strong>Octubre</strong>
+                  </p>
+                  <div className='mt-2 mb-2'>
+                    <Link to='/evaluationData'>
+                      <Button size='sm' variant='success'>
+                        Ver Evaluations UleadAir
+                      </Button>
+                    </Link>
+                  </div>
+                </Col>
               </Card.Header>
               <Card.Body>
                 <h3>Empresas en Uleadair:</h3>
+                <Row>
                   {companiesRow.map((admin, key) => {
                     return (
-                      <Col key={key} lg={1} md={2} className='mb-2 mt-2'>
+                      <Col key={key} sm={1} xs={1} lg={1} md={1} className='mb-2 mt-2'>
                         <Button
-                          size='sm'
                           variant='outline-dark'
                           onClick={() => setCurrentDomain(admin.company)}
                         >
@@ -157,8 +157,7 @@ function Home({ form }) {
                       </Col>
                     );
                   })}
-                Evaluaciones de {currentDomain} desde 01/23:
-                <strong> {totalCalif}</strong>
+                </Row>
               </Card.Body>
             </Card>
             {numericValues && numericValues.length > 0 ? (
@@ -218,16 +217,16 @@ function Home({ form }) {
               style={{ boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' }}
             >
               <Card.Header className='d-flex align-items-center'>
-                  <Col xs={12} sm={12} md={12} lg={12}>
-                    <h4>
-                      <FaUserCircle className='mb-2' size={35} /> Bienvenido{' '}
-                      <strong> {form.username}</strong>
-                    </h4>
-                    <p>
-                      Última evaluación: <strong>Octubre</strong>
-                    </p>
-                    <div className='mt-2 mb-2'></div>
-                  </Col>
+                <Col xs={12} sm={12} md={12} lg={12}>
+                  <h4>
+                    <FaUserCircle className='mb-2' size={35} /> Bienvenido{' '}
+                    <strong> {form.username}</strong>
+                  </h4>
+                  <p>
+                    Última evaluación: <strong>Octubre</strong>
+                  </p>
+                  <div className='mt-2 mb-2'></div>
+                </Col>
               </Card.Header>
               <Card.Body>
                 <h5>
@@ -239,53 +238,53 @@ function Home({ form }) {
                 </h2>
               </Card.Body>
             </Card>
-              {numericValues && numericValues.length > 0 ? (
-                <>
-                  <Row className='chartsCont'>
-                    <Col xs={12} lg={5} sm={11} md={10}>
-                      <PieChart
-                        key='numericChart'
-                        className='pie-chart-card'
-                        title='Calificaciones Numéricas'
-                        labelsValue={labelsNumerics}
-                        seriesValues={numericValues}
-                        colorsValue={colorsNumeric}
-                        width={360}
-                        chartTitle={'Sin Experiencia desde 01/2023'}
-                      />
-                    </Col>
-                    <Col xs={12} lg={5} sm={12} md={10}>
-                      <PieChart
-                        key='alphabeticChart'
-                        className='pie-chart-card'
-                        title='Calificaciones Alfabéticas'
-                        labelsValue={labelsAlphabets}
-                        seriesValues={alphabeticValues}
-                        colorsValue={colorsAlphabetic}
-                        width={360}
-                        chartTitle={'Con Experiencia desde 01/2023'}
-                      />
-                    </Col>
-                  </Row>
-                </>
-              ) : (
-                alphabeticValues &&
-                alphabeticValues.length > 0 && (
-                  <div className='d-flex justify-content-center'>
-                    <Col xs={12} lg={5} sm={12} md={10}>
-                      <PieChart
-                        key='alphabeticChartSolo'
-                        className='pie-chart-card-large'
-                        labelsValue={labelsAlphabetsTsm}
-                        seriesValues={alphabeticValues}
-                        colorsValue={colorsAlphabetic}
-                        width={360}
-                        chartTitle={'Con Experiencia desde 01/2023'}
-                      />
-                    </Col>
-                  </div>
-                )
-              )}
+            {numericValues && numericValues.length > 0 ? (
+              <>
+                <Row className='chartsCont'>
+                  <Col xs={12} lg={5} sm={11} md={10}>
+                    <PieChart
+                      key='numericChart'
+                      className='pie-chart-card'
+                      title='Calificaciones Numéricas'
+                      labelsValue={labelsNumerics}
+                      seriesValues={numericValues}
+                      colorsValue={colorsNumeric}
+                      width={360}
+                      chartTitle={'Sin Experiencia desde 01/2023'}
+                    />
+                  </Col>
+                  <Col xs={12} lg={5} sm={12} md={10}>
+                    <PieChart
+                      key='alphabeticChart'
+                      className='pie-chart-card'
+                      title='Calificaciones Alfabéticas'
+                      labelsValue={labelsAlphabets}
+                      seriesValues={alphabeticValues}
+                      colorsValue={colorsAlphabetic}
+                      width={360}
+                      chartTitle={'Con Experiencia desde 01/2023'}
+                    />
+                  </Col>
+                </Row>
+              </>
+            ) : (
+              alphabeticValues &&
+              alphabeticValues.length > 0 && (
+                <div className='d-flex justify-content-center'>
+                  <Col xs={12} lg={5} sm={12} md={10}>
+                    <PieChart
+                      key='alphabeticChartSolo'
+                      className='pie-chart-card-large'
+                      labelsValue={labelsAlphabetsTsm}
+                      seriesValues={alphabeticValues}
+                      colorsValue={colorsAlphabetic}
+                      width={360}
+                      chartTitle={'Con Experiencia desde 01/2023'}
+                    />
+                  </Col>
+                </div>
+              )
+            )}
           </div>
         )}
       </Container>
