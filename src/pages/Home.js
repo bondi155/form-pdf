@@ -147,7 +147,7 @@ function Home({ form }) {
                 <Row>
                   {companiesRow.map((admin, key) => {
                     return (
-                      <Col key={key} sm={1} xs={1} lg={1} md={1} className='mb-2 mt-2'>
+                      <Col key={key} sm={3} xs={3} lg={1} md={2} className='mb-2 mt-2'>
                         <Button
                           variant='outline-dark'
                           onClick={() => setCurrentDomain(admin.company)}
