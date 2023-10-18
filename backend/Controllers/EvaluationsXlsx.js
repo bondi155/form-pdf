@@ -35,34 +35,42 @@ async function readExcelFile(file) {
         // Aquí extraemos el valor de 'result' directamente agregamos tambien una columna para compañia , agregar eso al archivo consolidado.
         row.getCell('Q').value, //? row.getCell('Q').value.result : null,
         row.getCell('R').value,
-
       ];
 
-      if (rowData.some(cell => cell !== null)) {
+      if (rowData.some((cell) => cell !== null)) {
         data.push(rowData);
       }
     }
 
-    if (!data  || data.length === 0){
-      console.log(' There was a problem maping the cells from Excel file...Check the file and try Again');
+    if (!data || data.length === 0) {
+      console.log(
+        ' There was a problem maping the cells from Excel file...Check the file and try Again'
+      );
     } else {
-      console.log(file.originalname, 'Succes proccessing Uploaded Excel file ...Waiting for insert in DB...');   
+      console.log(
+        file.originalname,
+        'Succes proccessing Uploaded Excel file ...Waiting for insert in DB...'
+      );
     }
 
     return data;
   } catch (error) {
-    console.error('There was a error processing the upload Excel file (evaluations)', error);
+    console.error(
+      'There was a error processing the upload Excel file (evaluations)',
+      error
+    );
     throw error;
   }
 }
 
 async function checkIfNoExists(no) {
-  const checkDupl = 'SELECT COUNT(*) as count FROM evaluation_data WHERE no = ?';
+  const checkDupl =
+    'SELECT COUNT(*) as count FROM evaluation_data WHERE no = ?';
   try {
-      const [rows] = await pool.promise().query(checkDupl, [no]);
-      return rows[0].count > 0;
+    const [rows] = await pool.promise().query(checkDupl, [no]);
+    return rows[0].count > 0;
   } catch (err) {
-      throw err;
+    throw err;
   }
 }
 
@@ -74,10 +82,23 @@ async function executeQuery(res, fileName, data) {
         // Si el número ya existe, actualiza los campos
         const updateQuery = `
           UPDATE evaluation_data 
-          SET comments = ?, exam_calif = ?, result = ?, time = ?, first_exam = ?
+          SET comments = ?, exam_calif = ?, result = ?, time = ?, first_exam = ?, applicant_area = ?, flight_hours = ?, no_ambassador = ?, month = ?
           WHERE no = ?;
         `;
-        await pool.promise().query(updateQuery, [row[17], row[15], row[16], row[14], row[13], row[0]]);
+        await pool
+          .promise()
+          .query(updateQuery, [
+            row[17],
+            row[15],
+            row[16],
+            row[14],
+            row[13],
+            row[4],
+            row[11],
+            row[6],
+            row[3],
+            row[0],
+          ]);
       } else {
         // Si el número no existe, inserta el nuevo registro
         const insertQuery = `
@@ -89,13 +110,19 @@ async function executeQuery(res, fileName, data) {
       }
     }
     console.log('Succes processing data from Excel evaluation file!');
-    return res.status(200).json({ code: 'SUCCESS', message: `${fileName} and information processed in DB.` });
+    return res
+      .status(200)
+      .json({
+        code: 'SUCCESS',
+        message: `${fileName} and information processed in DB.`,
+      });
   } catch (error) {
     console.error('Error processing data', error);
-    return res.status(500).send({code: 'DB_ERR', message: 'Error processing data'});
+    return res
+      .status(500)
+      .send({ code: 'DB_ERR', message: 'Error processing data' });
   }
 }
-
 
 async function EvaluationsXlsx(req, res) {
   const file = req.file;
@@ -107,7 +134,10 @@ async function EvaluationsXlsx(req, res) {
     console.error('There was a error proccesing Excel file :', error);
     res
       .status(500)
-      .json({ code: 'NO_PROCCESS', error: 'Error to insert data. Check columns (A to P values)' });
+      .json({
+        code: 'NO_PROCCESS',
+        error: 'Error to insert data. Check columns (A to P values)',
+      });
   }
 }
 
