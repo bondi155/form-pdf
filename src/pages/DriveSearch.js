@@ -42,7 +42,7 @@ function DriveSearch () {
       <Container className='container-custom'>
         <Row>
           <Col
-            xs={{ span: 10, offset: 1 }}
+            xs={{ span: 12, offset: 0 }}
             sm={{ span: 12, offset: 0 }}
             lg={{ span: 8, offset: 0 }}
             md={{ span: 12, offset: 0 }}
@@ -50,9 +50,7 @@ function DriveSearch () {
             <h1 className='mb-2'>
               Google Drive Browser <img className="drive-img" src={images.drive} alt='driveimg' />
             </h1>
-          </Col>
-          <Col className='mt-2' sm={12} lg={2} md={12}></Col>
-  
+          </Col>  
           <Col xs={12} sm={12} lg={12} md={12}>
             <InputGroup className='mb-3 mt-4'>
               <FormControl

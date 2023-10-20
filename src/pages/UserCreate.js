@@ -149,10 +149,10 @@ function UserCreate({userCreate, setUserCreate}) {
             </Form.Group>
           </Col>
           <Col
-            xs={{ span: 8, offset: 3 }}
+            xs={{ span: 8, offset: 4 }}
             lg={{ span: 4, offset: 5 }}
             sm={{ span: 6, offset: 4 }}
-            md={{ span: 6, offset: 5 }}
+            md={{ span: 3, offset: 5 }}
           >
             <Button className='mb-5' variant='outline-success' type='submit'>
               Create User

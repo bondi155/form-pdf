@@ -130,7 +130,7 @@ function consultEmailComp__(req, res) {
       sqlGetPerDataByCompEmail += ' AND company = ?';
       queryParamsEmail.push(companyValue);
     }
-    console.log('query de email', sqlGetPerDataByCompEmail, queryParamsEmail);
+   // console.log('query de email', sqlGetPerDataByCompEmail, queryParamsEmail);
 
     pool.query(sqlGetPerDataByCompEmail, queryParamsEmail, (err, result) => {
       if (err) {
@@ -151,6 +151,7 @@ function consultEmailComp__(req, res) {
     console.error('Error in ConsultEmail function', err);
   }
 }
+
 //agregar where company
 //si se busca por email
 function consultEmail__(req, res) {
@@ -240,7 +241,7 @@ function autocompleteName(req, res) {
       sqlLikeName += ' AND pd.company = ?';
       queryName.push(companyValue);
     }
-    console.log(sqlLikeName, queryName, companyValue);
+    //console.log(sqlLikeName, queryName, companyValue);
 
     pool.query(sqlLikeName, queryName, (err, result) => {
       if (err) {
@@ -424,7 +425,7 @@ function getAllCompanies__(req, res) {
 
     res.json(companies);
 
-    console.log(companies);
+    //console.log(companies);
   });
 }
 

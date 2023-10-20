@@ -129,21 +129,28 @@ function Home({ form }) {
                   <small>
                     Como administrador tendras accesso a los datos de todas las
                     empresas.{' '}
-                  </small>
-                  <p>
-                    Última evaluación: <strong>Octubre</strong>
-                  </p>
-                  <div className='mt-2 mb-2'>
+                    <div className='mt-2 mb-2'>
                     <Link to='/evaluationData'>
                       <Button size='sm' variant='success'>
                         Ver Evaluations UleadAir
                       </Button>
                     </Link>
                   </div>
+                  </small>
+                  <p>
+                    Última evaluación: <strong>Octubre</strong>
+                  </p>
+                
+                
                 </Col>
               </Card.Header>
               <Card.Body>
-                <h3>Empresas en Uleadair:</h3>
+                {currentDomain === 'admin' ? <> <h4>Seleccione Empresa :</h4></> :
+                  <h5>
+                  Total de Evaluaciones para <strong>{currentDomain}</strong>{' '} desde
+                   <strong> 01/2023</strong>: <strong>{totalCalif}</strong> 
+                </h5>
+                 }
                 <Row>
                   {companiesRow.map((admin, key) => {
                     return (

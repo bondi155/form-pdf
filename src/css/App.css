@@ -399,3 +399,10 @@ h2 {
   border-radius: 5px;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
 }
+
+
+.navbar-custom {
+  padding-left: 5px;
+  padding-right: 5px;
+  min-height: 60px;
+}

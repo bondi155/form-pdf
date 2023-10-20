@@ -257,7 +257,7 @@ const PersonalData = ({ form }) => {
 */
   function renderImage(empresa) {
     if (!empresa) {
-      return 'No company charged in Forms';
+      return 'No company charged';
     }
 
     if (empresa.toLowerCase() === 'volaris') {
@@ -284,7 +284,21 @@ const PersonalData = ({ form }) => {
       return <img src={images.calif_c} width='9%' alt='C' />;
     } else if (calification.toLowerCase() === 'd') {
       return <img src={images.calif_d} width='9%' alt='D' />;
-    }
+    }else if (calification === 'faltas') {
+      return <strong style={{ color: 'red' }}> Falta de Asistencia</strong>;
+    } else if (calification === 'exento') {
+      return (
+        <span>
+          <img src={images.calif_b} width='9%' alt='B Exento' />
+          <span style={{ color: 'green' }}>  Exento</span>
+          </span>
+      );
+    }else if (calification === 'sin pago') {
+    return <span><strong style={{ color: 'red' }}> Falta de pago</strong></span>;
+  }else if (calification === 'ver comentario') {
+    return<span><strong> Ver comentario</strong></span>;
+  }
+    
   }
 
   //agrupo por course para que aparezcan diferentes pestañas
@@ -378,14 +392,14 @@ const PersonalData = ({ form }) => {
             {Object.entries(groupedData).map(([course, items], key) => (
               <Tab eventKey={course} title={course} key={key}>
                 {items.map((item, innerKey) => (
-                  <Col className='mb-2' sm={12} md={12} lg={12} key={innerKey}>
+                  <Col className='mb-2' xs={12} sm={12} md={12} lg={12} key={innerKey}>
                     <Card
                       className='data-container'
                       onClick={() => setSelectedId(item.pd_id)}
                     >
                       <Card.Body>
                         <Card.Title>
-                          {item.pd_full_name}, {item.age}{' '}
+                          {item.pd_full_name} - {item.age} - {' '}
                           {renderImage(item.pd_company)}{' '}
                           {renderCalif(item.calif)}
                         </Card.Title>

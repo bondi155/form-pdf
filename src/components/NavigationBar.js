@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FiLogOut } from 'react-icons/fi';
-
+import '../css/App.css';
 function NavigationBar({ setIslogin, form }) {
   const navigate = useNavigate();
   
@@ -34,7 +34,7 @@ function NavigationBar({ setIslogin, form }) {
         bg='dark'
         expand='md'
         variant='dark'
-        className='mb-3'
+        className='mb-3 navbar-custom'
         expanded={navOpen}
       >
         <Link to='/home' className='nav-link'>
@@ -83,13 +83,7 @@ function NavigationBar({ setIslogin, form }) {
               </>
             )}
              {form.role === 'company' && (
-              <>  {/*  <Link
-              to='/consolidateInformation'
-              className='nav-link'
-              onClick={handleLinkClick}
-            >
-              Consolidate
-            </Link>*/}
+              <>   
             <Link
               to='/consultAirlineGrid'
               className='nav-link'
@@ -97,6 +91,13 @@ function NavigationBar({ setIslogin, form }) {
             >
               Consult Airline
             </Link>
+             {/*  <Link
+              to='/consolidateInformation'
+              className='nav-link'
+              onClick={handleLinkClick}
+            >
+              Consolidate
+            </Link>*/}
             </>
             )}
             <Button
