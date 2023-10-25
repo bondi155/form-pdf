@@ -354,14 +354,21 @@ function download__(req, res) {
 function EvalCompany__(req, res) {
   const username = req.query.domainName ?? '';
 
-  const sqlGetEvalCompany = `SELECT * 
-    FROM evaluation_data 
-    WHERE LOWER(company) = LOWER(?) 
-    AND first_exam LIKE '%23' 
-    ORDER BY id DESC;
-    `;
+  const sqlGetEvalCompany = `SELECT e.*, COALESCE(c.cuenta, 1) as 'evaluaciones'
+  FROM evaluation_data e
+  LEFT JOIN (
+      SELECT LOWER(full_name) as lower_full_name, COUNT(*) as cuenta
+      FROM evaluation_data
+      WHERE LOWER(company) = LOWER(?)
+      AND first_exam LIKE '%23'
+      GROUP BY lower_full_name
+  ) c ON LOWER(e.full_name) = c.lower_full_name
+  WHERE LOWER(e.company) = LOWER(?)
+  AND e.first_exam LIKE '%23'
+  ORDER BY e.id DESC;
+  `;
 
-  pool.query(sqlGetEvalCompany, username, (err, result) => {
+  pool.query(sqlGetEvalCompany, [username, username], (err, result) => {
     if (err) {
       console.error(
         'Error executing query sqlGetEvalData..Check DB connection',

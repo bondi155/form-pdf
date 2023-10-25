@@ -5,43 +5,43 @@ import axios from 'axios';
 import { API_URL } from '../config/config';
 import images from '../components/Imagenes';
 
-
 function ConsultAirline({ form }) {
-  
   const domainParts = form.username.split('@')[1].split('.');
   const domainName = domainParts[0];
 
-  const [companyEval, setCompanyEval] = useState([]); 
+  const [companyEval, setCompanyEval] = useState([]);
 
-  const columnVisibility = domainName === 'tsm' 
-  ? {
-      test_type: false, // Ocultar la columna 'Experience' si es TSM
-      no_ambassador: true, // Mostrar la columna 'No Ambassador' si es TSM
-      flight_hours : false,
-      company : false,
-      base: false,
-      applicant_area:false
-    } : domainName === 'volaris' ? {
-      test_type: true, // Mostrar la columna 'Experience' si no es TSM
-      no_ambassador: true, // Ocultar la columna 'No Ambassador' si no es TSM
-      flight_hours : false,
-      company: false,
-      no:false
-    }
-  : {
-      test_type: true, // Mostrar la columna 'Experience' si no es TSM
-      no_ambassador: false, // Ocultar la columna 'No Ambassador' si no es TSM
-      flight_hours : false
+  const columnVisibility =
+    domainName === 'tsm'
+      ? {
+          test_type: false, // Ocultar la columna 'Experience' si es TSM
+          no_ambassador: true, // Mostrar la columna 'No Ambassador' si es TSM
+          flight_hours: false,
+          company: false,
+          base: false,
+          applicant_area: false,
+        }
+      : domainName === 'volaris'
+      ? {
+          test_type: true, // Mostrar la columna 'Experience' si no es TSM
+          no_ambassador: true, // Ocultar la columna 'No Ambassador' si no es TSM
+          flight_hours: false,
+          company: false,
+          no: false,
+        }
+      : {
+          test_type: true, // Mostrar la columna 'Experience' si no es TSM
+          no_ambassador: false, // Ocultar la columna 'No Ambassador' si no es TSM
+          flight_hours: false,
+        };
 
-    };
+  const noAmbassadorColumn = {
+    field: 'no_ambassador',
+    headerName: domainName === 'tsm' ? 'Celular' : 'No Embajador',
+    width: 120,
+  };
 
-    const noAmbassadorColumn = {
-      field: 'no_ambassador',
-      headerName: domainName === 'tsm' ? 'Celular' : 'No Embajador',
-      width: 120,
-    };
-    
-  const evalCompanyCol = [  
+  const evalCompanyCol = [
     {
       field: 'no',
       headerName: 'No.',
@@ -73,12 +73,17 @@ function ConsultAirline({ form }) {
       field: 'test_type',
       headerName: 'Tipo de Prueba',
       width: 130,
-     
     },
     {
       field: 'full_name',
       headerName: 'Nombre Completo',
       width: 250,
+    },
+    {
+      field: 'evaluaciones',
+      headerName: 'Evaluaciones',
+      width: 90,
+      align: 'center',
     },
     {
       field: 'position',
@@ -152,13 +157,13 @@ function ConsultAirline({ form }) {
     },
   ];
 
-  if(domainName === 'volaris') {
+  if (domainName === 'volaris') {
     evalCompanyCol.unshift(noAmbassadorColumn);
-} else {
+  } else {
     // Puedes insertar la columna 'no_ambassador' en la posición que desees.
     // Por ejemplo, para insertarla en la sexta posición:
     evalCompanyCol.splice(5, 0, noAmbassadorColumn);
-}
+  }
 
   const GetEvalCompany = async () => {
     try {
@@ -167,7 +172,7 @@ function ConsultAirline({ form }) {
           domainName,
         },
       });
-    //  console.log(response.data);
+      //  console.log(response.data);
       setCompanyEval(response.data);
       if (companyEval.length < 0) {
         alert('no hay array para estado');
@@ -209,7 +214,6 @@ function ConsultAirline({ form }) {
         columnsVar={evalCompanyCol}
         fileNameVar='EvaluationsCompany'
         columnVisibility={columnVisibility}
-
       />
     </>
   );

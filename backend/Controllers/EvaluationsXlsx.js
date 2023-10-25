@@ -82,7 +82,7 @@ async function executeQuery(res, fileName, data) {
         // Si el número ya existe, actualiza los campos
         const updateQuery = `
           UPDATE evaluation_data 
-          SET comments = ?, exam_calif = ?, result = ?, time = ?, first_exam = ?, applicant_area = ?, flight_hours = ?, no_ambassador = ?, month = ?
+          SET comments = ?, exam_calif = ?, result = ?, time = ?, first_exam = ?, applicant_area = ?, flight_hours = ?, no_ambassador = ?, month = ?, test_type = ?
           WHERE no = ?;
         `;
         await pool
@@ -97,6 +97,7 @@ async function executeQuery(res, fileName, data) {
             row[11],
             row[6],
             row[3],
+            row[5],
             row[0],
           ]);
       } else {
