@@ -138,7 +138,7 @@ function Home({ form }) {
                   </div>
                   </small>
                   <p>
-                    Última evaluación: <strong>Octubre</strong>
+                    Última evaluación: <strong>Noviembre</strong>
                   </p>
                 
                 
