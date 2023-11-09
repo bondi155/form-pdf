@@ -38,7 +38,7 @@ const PersonalData = ({ form }) => {
   const [selectedEmail, setSelectedEmail] = useState('');
   const [personalDataFromEffect, setPersonalDataFromEffect] = useState([]);
   // const [newComment, setNewComment] = useState('');
-  const [selectedId, setSelectedId] = useState(null);
+  const [, setSelectedId] = useState(null);
   // traemos info para personal_data . llamamos a la api..
   const fetchPerData = async () => {
     try {

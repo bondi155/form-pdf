@@ -10,6 +10,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const getDataController = require('./Controllers/GetFuncData');
 const PostDataController = require('./Controllers/PostFuncData');
+const reportPdfController = require ('./Controllers/ReportsPdf');
 //const mysql = require('mysql2');
 const { authorize, listMajors } = require('./Controllers/FormApi');
 const { authorizeDrive, listFiles } = require('./Controllers/DriveApi');
@@ -86,6 +87,8 @@ app.put('/editCalif', authenticateToken, PostDataController.editCalif__); //Edit
 app.put('/updateComment', authenticateToken, PostDataController.comments__); //update comment personal_Data
 app.put('/reportUrl/:id', authenticateToken, PostDataController.reportUrl__); //subir url en data grid del google drive
 app.post('/createUser', authenticateToken, PostDataController.userCreate__); //creation of users
+app.post('/fillPdf', authenticateToken, reportPdfController.reportCardFill__); //creation of users
+
 
 app.delete(
   '/deleteUser/:id',

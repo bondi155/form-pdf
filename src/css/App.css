@@ -65,6 +65,7 @@
   background-color: #b7cce4;
 }
 
+
 .App-header {
   background-color: #dfe5f0;
   min-height: 100vh;
@@ -170,8 +171,8 @@ h6 {
 }
 
 
-/*Boton Login*/
 
+/*Boton Login*/
 .semi-circle-login-btn {
   display: flex;
   align-items: center;
@@ -202,7 +203,6 @@ h6 {
 /*Termina Login*/
 
 /* Spinner plane */
-
 .plane-spinner {
   position: fixed;
   /* Fijamos la posición para que ocupe toda la pantalla */
@@ -232,7 +232,6 @@ h6 {
     transform: rotate(360deg);
   }
 }
-
 
 /*Termina Spinner plane*/
 
@@ -269,7 +268,6 @@ h6 {
 .center-text {
   text-align: center;
 }
-
 
 /* input file*/
 .file-btn {
@@ -370,7 +368,6 @@ h2 {
     margin-bottom: 5px;
   }
 }
-
 
 /* Termina Card home y graficos */
 

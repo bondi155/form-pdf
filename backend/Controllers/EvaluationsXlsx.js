@@ -10,7 +10,7 @@ async function readExcelFile(file) {
     await workbook.xlsx.readFile(file.path);
     const worksheet = workbook.getWorksheet(1);
 
-    // Iterar sobre las filas a partir de la fila 4
+    // Iterar sobre las filas a partir de la fila 4 del excel
     for (let rowNumber = 4; rowNumber <= worksheet.rowCount; rowNumber++) {
       const row = worksheet.getRow(rowNumber);
 
@@ -41,7 +41,7 @@ async function readExcelFile(file) {
         data.push(rowData);
       }
     }
-
+// si esta vacio el array
     if (!data || data.length === 0) {
       console.log(
         ' There was a problem maping the cells from Excel file...Check the file and try Again'

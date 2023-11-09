@@ -64,6 +64,13 @@ function NavigationBar({ setIslogin, form }) {
                   Users
                 </Link>
                 <Link
+                  to='/reportCard'
+                  className='nav-link'
+                  onClick={handleLinkClick}
+                >
+                  Report Card
+                </Link>
+                <Link
                   to='/consolidateInformation'
                   className='nav-link'
                   onClick={handleLinkClick}

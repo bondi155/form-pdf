@@ -93,7 +93,7 @@ function App() {
             
           />
           <Route
-            path='/reportCard1010101'
+            path='/reportCard'
             element={
               <PrivateRoute islogin={islogin}>
                 <ReportCard />{' '}
