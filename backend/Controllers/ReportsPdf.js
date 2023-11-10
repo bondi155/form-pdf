@@ -4,8 +4,8 @@ const fs = require('fs').promises;
 
 async function reportCardFill__(req, res) {
   const reportState = req.body;//hay que pasa el mismo nombre del parametro del front...
-  console.log(req.body);
-  console.log(reportState.full_name);
+  //console.log(req.body);
+  //console.log(reportState.full_name);
 
   try {
     // Asegúrate de que el path al PDF template es correcto
@@ -74,7 +74,7 @@ async function reportCardFill__(req, res) {
     res.setHeader('Content-Type', 'application/pdf');
     res.send(Buffer.from(pdfBytes));
   } catch (error) {
-    console.error(error);
+   console.error(error);
     res.status(500).send('Ocurrió un error al generar el PDF');
   }
 }

@@ -117,7 +117,7 @@ function ReportCard() {
                   type='text'
                   name='full_name'
                   required
-                  placeholder='Name'
+                  placeholder='Full Name'
                   onChange={handleUserInput}
                 />
               </Form.Group>
