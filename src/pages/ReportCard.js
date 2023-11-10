@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
-import logo from '../components/img/logo.png';
 import '../css/App.css';
 import { API_URL } from '../config/config.js';
 import {
@@ -11,14 +10,16 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  Box,
   Typography,
 } from '@mui/material';
 import { styled } from '@mui/system';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { TfiHandPointDown } from "react-icons/tfi";
+import { TfiHandPointDown } from 'react-icons/tfi';
+import PlaneSpinner from '../components/planeSpinner';
+
 function ReportCard() {
+  const [isloading, SetIsloading] = useState(false);
   const [reportState, setReportState] = useState({
     full_name: '',
     company: '',
@@ -30,7 +31,7 @@ function ReportCard() {
     rtari: '',
     communications: '',
     message_structure: '',
-    fluency : '',
+    fluency: '',
     fluency_dialogue: '',
     pronunciation: '',
     comprehension: '',
@@ -42,7 +43,6 @@ function ReportCard() {
     final_grade: '',
     observations: '',
   });
-
 
   const handleUserInput = (e) => {
     setReportState({
@@ -69,12 +69,16 @@ function ReportCard() {
   const handleSubmit = async (e) => {
     e.preventDefault(); // Esto debería ir al principio para prevenir la acción por defecto en cualquier caso de refresh
     try {
-      // axios.post es una operación asincrónica, por lo que necesitas esperar su resultado.
+      SetIsloading(true);
       const response = await axios.post(`${API_URL}/fillPdf`, reportState, {
         responseType: 'blob', // Esto está correcto para recibir un archivo binario.
       });
-        const formattedDate = reportState.date.replace(/\//g, '-').replace(/\s+/g, '_');
-      const formattedName = reportState.full_name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      const formattedDate = reportState.date
+        .replace(/\//g, '-')
+        .replace(/\s+/g, '_');
+      const formattedName = reportState.full_name
+        .replace(/[^a-z0-9]/gi, '_')
+        .toLowerCase();
 
       const filename = `Report_card_${formattedName}_${formattedDate}.pdf`;
       const url = window.URL.createObjectURL(response.data);
@@ -86,42 +90,27 @@ function ReportCard() {
       // Limpieza después de la descarga de la url
       window.URL.revokeObjectURL(url);
       link.parentNode.removeChild(link);
+      SetIsloading(false);
     } catch (err) {
+      SetIsloading(false);
       Swal.fire('Ooops', 'ERROR generating Report Card PDF', 'error');
       console.log(err);
     }
   };
-  
+
   return (
     <>
+      {isloading ? <PlaneSpinner /> : (
       <Container className='container-custom'>
         <Form onSubmit={handleSubmit}>
           <Row>
-            <Col>
-              <img
-                src={logo}
-                width='180'
-                height='130'
-                className='d-inline-block align-top'
-                alt='Uleadair logo'
-              />
+            <Col xs={12} sm={12} lg={8} md={12}>
+              <h1 className='mb-4'>Report Card Form</h1>
             </Col>
-            <Col className='mt-5'>
-              <h4 className='text-center'>Report Card</h4>
-              <Typography variant='h6' gutterBottom component='div'>
-                With International flight experience
-              </Typography>
-            </Col>
-            <Col></Col>
           </Row>
           <Row>
-            <Col
-              xs={12}
-              sm={6}
-              md={8}
-              lg={{ span: 4, offset: 2 }}
-              className='mt-5'
-            >
+            {/* Primera Fila */}
+            <Col xs={12} sm={6} md={4} lg={4} className='mt-5'>
               <strong>Full Name:</strong>
               <Form.Group className='mb-3'>
                 <Form.Control
@@ -133,13 +122,7 @@ function ReportCard() {
                 />
               </Form.Group>
             </Col>
-            <Col
-              xs={12}
-              sm={6}
-              md={4}
-              lg={{ span: 3, offset: 1 }}
-              className='mt-5'
-            >
+            <Col xs={12} sm={6} md={4} lg={4} className='mt-5'>
               <strong>Date:</strong>
               <Form.Group className='mb-3'>
                 <Form.Control
@@ -151,9 +134,7 @@ function ReportCard() {
                 />
               </Form.Group>
             </Col>
-          </Row>
-          <Row>
-            <Col xs={12} sm={6} md={8} lg={{ span: 4, offset: 2 }}>
+            <Col xs={12} sm={12} md={4} lg={4} className='mt-5'>
               <strong>Airline:</strong>
               <Form.Group className='mb-3'>
                 <Form.Control
@@ -165,22 +146,23 @@ function ReportCard() {
                 />
               </Form.Group>
             </Col>
-            <Col xs={12} sm={6} md={4} lg={{ span: 1, offset: 1 }}>
+          </Row>
+          <Row>
+            {/* Segunda Fila */}
+            <Col xs={12} sm={6} md={4} lg={1}>
               <strong>Age:</strong>
               <Form.Group className='mb-3'>
                 <Form.Control
                   type='text'
                   name='age'
-                  maxLength="2"
+                  maxLength='2'
                   required
                   placeholder='Age'
                   onChange={handleUserInput}
                 />
               </Form.Group>
             </Col>
-          </Row>
-          <Row>
-            <Col xs={12} sm={6} md={8} lg={{ span: 4, offset: 2 }}>
+            <Col xs={12} sm={6} md={4} lg={{ span: 4, offset: 3 }}>
               <strong>Controller:</strong>
               <Form.Group className='mb-3'>
                 <Form.Control
@@ -192,7 +174,7 @@ function ReportCard() {
                 />
               </Form.Group>
             </Col>
-            <Col xs={12} sm={6} md={4} lg={{ span: 3, offset: 1 }}>
+            <Col xs={12} sm={12} md={4} lg={4}>
               <strong>Flight Hours:</strong>
               <Form.Group className='mb-3'>
                 <Form.Control
@@ -206,7 +188,8 @@ function ReportCard() {
             </Col>
           </Row>
           <Row>
-            <Col xs={12} sm={6} md={8} lg={{ span: 4, offset: 2 }}>
+            {/* Tercera Fila */}
+            <Col xs={12} sm={6} md={4} lg={4}>
               <strong>Airport:</strong>
               <Form.Group className='mb-3'>
                 <Form.Control
@@ -218,7 +201,7 @@ function ReportCard() {
                 />
               </Form.Group>
             </Col>
-            <Col xs={12} sm={6} md={4} lg={{ span: 3, offset: 1 }}>
+            <Col xs={12} sm={6} md={4} lg={2}>
               <strong>RTARI:</strong>
               <Form.Group className='mb-3'>
                 <Form.Control
@@ -235,7 +218,7 @@ function ReportCard() {
             <Col
               xs={12}
               sm={12}
-              md={{ span: 8, offset: 2 }}
+              md={{ span: 10, offset: 1 }}
               lg={{ span: 6, offset: 0 }}
               className='mt-4'
             >
@@ -251,33 +234,33 @@ function ReportCard() {
                         <strong>Communications during failure</strong>
                       </StyledTableCell>
                       <StyledTableCell align='right' rowSpan={3}>
-                        <Box border={1} p={1}>
+                        <Col lg={8} md={12} xs={12} className=' me-2 p-1'>
                           <Form.Control
                             size='sm'
                             type='text'
                             required
-                            maxLength="1"
+                            maxLength='1'
                             name='communications'
                             onChange={handleUserInput}
                             value={reportState.communications || ''}
                           />
-                        </Box>
+                        </Col>
                       </StyledTableCell>
                       <StyledTableCell component='th' scope='row'>
                         <strong>Pronunciation</strong>
                       </StyledTableCell>
                       <StyledTableCell align='right'>
-                        <Box border={1} p={1}>
+                        <Col lg={8} md={12} xs={12} className=' me-2 p-1'>
                           <Form.Control
                             size='sm'
                             type='text'
                             required
                             name='pronunciation'
-                            maxLength="1"
+                            maxLength='1'
                             value={reportState.pronunciation || ''}
                             onChange={handleUserInput}
                           />
-                        </Box>
+                        </Col>
                       </StyledTableCell>
                     </StyledTableRow>
                     {/* Fila 2 */}
@@ -286,17 +269,17 @@ function ReportCard() {
                         <strong>Comprehension</strong>
                       </StyledTableCell>
                       <StyledTableCell align='right'>
-                        <Box border={1} p={1}>
+                        <Col lg={6} md={10} xs={12}>
                           <Form.Control
                             size='sm'
-                            maxLength="1"
+                            maxLength='1'
                             type='text'
                             required
                             name='comprehension'
                             value={reportState.comprehension || ''}
                             onChange={handleUserInput}
                           />
-                        </Box>
+                        </Col>
                       </StyledTableCell>
                     </StyledTableRow>
                     {/* Fila 3 */}
@@ -305,17 +288,17 @@ function ReportCard() {
                         <strong>Interaction</strong>
                       </StyledTableCell>
                       <StyledTableCell align='right'>
-                        <Box border={1} p={1}>
+                        <Col lg={6} md={10} xs={12}>
                           <Form.Control
                             size='sm'
                             type='text'
-                            maxLength="1"
+                            maxLength='1'
                             required
                             name='interaction'
                             onChange={handleUserInput}
                             value={reportState.interaction || ''}
                           />
-                        </Box>
+                        </Col>
                       </StyledTableCell>
                     </StyledTableRow>
                     {/* Fila 4 */}
@@ -324,33 +307,33 @@ function ReportCard() {
                         <strong>Message Structure</strong>
                       </StyledTableCell>
                       <StyledTableCell align='right' rowSpan={2}>
-                        <Box border={1} p={1}>
+                        <Col lg={6} md={10} xs={12}>
                           <Form.Control
                             size='sm'
-                            maxLength="1"
+                            maxLength='1'
                             required
                             type='text'
                             name='message_structure'
                             onChange={handleUserInput}
                             value={reportState.message_structure || ''}
                           />
-                        </Box>
+                        </Col>
                       </StyledTableCell>
                       <StyledTableCell component='th' scope='row'>
                         <strong>Structure</strong>
                       </StyledTableCell>
                       <StyledTableCell align='right'>
-                        <Box border={1} p={1}>
+                        <Col lg={6} md={10} xs={12}>
                           <Form.Control
                             size='sm'
                             type='text'
-                            maxLength="1"
+                            maxLength='1'
                             required
                             name='structure'
                             onChange={handleUserInput}
                             value={reportState.structure || ''}
                           />
-                        </Box>
+                        </Col>
                       </StyledTableCell>
                     </StyledTableRow>
                     {/* Fila 5 */}
@@ -359,17 +342,17 @@ function ReportCard() {
                         <strong>Vocabulary</strong>
                       </StyledTableCell>
                       <StyledTableCell align='right'>
-                        <Box border={1} p={1}>
+                        <Col lg={6} md={10} xs={12}>
                           <Form.Control
                             size='sm'
                             type='text'
-                            maxLength="1"
+                            maxLength='1'
                             name='vocabulary'
                             required
                             onChange={handleUserInput}
                             value={reportState.vocabulary || ''}
                           />
-                        </Box>
+                        </Col>
                       </StyledTableCell>
                     </StyledTableRow>
                     {/* Fila 6 */}
@@ -378,33 +361,33 @@ function ReportCard() {
                         <strong>Fluency of the Dialogue</strong>
                       </StyledTableCell>
                       <StyledTableCell align='right'>
-                        <Box border={1} p={1}>
+                        <Col lg={6} md={10} xs={12}>
                           <Form.Control
                             size='sm'
                             type='text'
                             required
-                            maxLength="1"
+                            maxLength='1'
                             name='fluency_dialogue'
                             onChange={handleUserInput}
                             value={reportState.fluency_dialogue || ''}
                           />
-                        </Box>
+                        </Col>
                       </StyledTableCell>
                       <StyledTableCell component='th' scope='row'>
                         <strong>Fluency</strong>
                       </StyledTableCell>
                       <StyledTableCell align='right'>
-                        <Box border={1} p={1}>
+                        <Col lg={6} md={10} xs={12}>
                           <Form.Control
                             size='sm'
                             type='text'
-                            maxLength="1"
+                            maxLength='1'
                             required
                             name='fluency'
                             onChange={handleUserInput}
                             value={reportState.fluency || ''}
                           />
-                        </Box>
+                        </Col>
                       </StyledTableCell>
                     </StyledTableRow>
                     <StyledTableRow></StyledTableRow>
@@ -426,17 +409,17 @@ function ReportCard() {
                           <strong>Plain English</strong>
                         </TableCell>
                         <TableCell align='right'>
-                          <div className='border me-2 p-1'>
+                          <Col lg={2} md={6} xs={3}>
                             <Form.Control
                               size='sm'
-                              maxLength="1"
+                              maxLength='1'
                               type='text'
                               required
                               name='plain_english'
                               onChange={handleUserInput}
                               value={reportState.plain_english || ''}
                             />
-                          </div>
+                          </Col>
                         </TableCell>
                       </TableRow>
                       <TableRow>
@@ -444,17 +427,17 @@ function ReportCard() {
                           <strong>(Part I) Standard Phraseology</strong>
                         </TableCell>
                         <TableCell align='right'>
-                          <div className='border me-1 p-1'>
+                          <Col lg={2} md={6} xs={3}>
                             <Form.Control
                               size='sm'
-                              maxLength="1"
+                              maxLength='1'
                               type='text'
                               required
                               name='standard_phrase'
                               onChange={handleUserInput}
                               value={reportState.standard_phrase || ''}
                             />
-                          </div>
+                          </Col>
                         </TableCell>
                       </TableRow>
                       <TableRow>
@@ -462,17 +445,17 @@ function ReportCard() {
                           <strong>Aviation English Final Grade</strong>
                         </TableCell>
                         <TableCell align='right'>
-                          <div className='border me-1 p-1'>
+                          <Col lg={2} md={6} xs={3}>
                             <Form.Control
                               size='sm'
                               type='text'
-                              maxLength="1"
+                              maxLength='1'
                               required
                               name='final_grade'
                               onChange={handleUserInput}
                               value={reportState.final_grade || ''}
                             />
-                          </div>
+                          </Col>
                         </TableCell>
                       </TableRow>
                     </TableBody>
@@ -577,15 +560,14 @@ function ReportCard() {
               </p>
             </Col>
           </Row>
-          <Row className='mt-5'>
-          <Col xs={12} md={12} lg={10}>
-            <h4>Observations:</h4>
+          <Row className='mt-4'>
+            <Col xs={12} md={12} lg={10}>
+              <h4>Observations:</h4>
             </Col>
-            <Col xs={12} md={12} lg={2}>
-
-           <TfiHandPointDown className='mb-2' size={25}/>Enter
+            <Col xs={{span: 2, offset:10}} md={{span: 2, offset:10 }} lg={2}>
+              <TfiHandPointDown className='mb-2' size={25} />
+              Enter
             </Col>
-
             <Col xs={12} md={12} lg={12}>
               <Card className='my-3'>
                 <Card.Body>
@@ -612,6 +594,7 @@ function ReportCard() {
           </Row>
         </Form>
       </Container>
+                )}
     </>
   );
 }
