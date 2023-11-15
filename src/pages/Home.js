@@ -278,7 +278,6 @@ function Home({ form }) {
                             display: 'flex',
                             alignItems: 'center',
                             marginRight: '10px',
-                            color: 'grey',
                           }}
                         >
                           <p className='mt-2' style={{ marginRight: '5px' }}>
