@@ -36,11 +36,14 @@ function Home({ form }) {
   const domainParts = form.username.split('@')[1].split('.');
   const domainName = domainParts[0];
   const [currentDomain, setCurrentDomain] = useState(domainName);
+  const [dateEval, setDateEval] = useState([]);
 
   const labelsNumerics = ['2', '3', '4', '5', '6']; //, '6', '7'
   const labelsAlphabets = ['A', 'B', 'B+', 'B-', 'C', 'NP'];
   const labelsAlphabetsTsm = ['A', 'B', 'B+', 'C', 'D'];
 
+ 
+//Ejecutamos las 2 funciones ya que tienen las mismas dependencias
   useEffect(() => {
     const fetchExamData = async () => {
       try {
@@ -57,14 +60,27 @@ function Home({ form }) {
           setBreakdown(response.data.breakdown);
         }
       } catch (err) {
-        setError(err.message || 'Ocurrió un error al obtener los datos.');
+        setError(err.message || 'Ocurrió un error al obtener los datos de las empresas y sus KPI`s.');
       }
     };
     fetchExamData();
+    const fetchDateEval = async () => {
+      try {
+          const response = await axios.get(`${API_URL}/getDateEval`, {
+            params: {
+              domainName: currentDomain,
+            },
+          });
+          setDateEval(response.data)
+      } catch (err) {
+        setError(err.message || 'Ocurrió un error al obtener los datos del date');
+      }
+    };
+    fetchDateEval();
   }, [currentDomain, form.role]);
-
+console.log(dateEval);
   //console.log(companiesRow);
-
+  
   //ACA DEberiamos agregar los otros resultados pero deben coincidir con el registro
   //por ejemplo Cancelado, hay 1 , podriamos ponerlo ..
   const order = [
@@ -139,9 +155,7 @@ function Home({ form }) {
                   </small>
                   <p>
                     Última evaluación: <strong>Noviembre</strong>
-                  </p>
-                
-                
+                  </p>                
                 </Col>
               </Card.Header>
               <Card.Body>
@@ -229,9 +243,15 @@ function Home({ form }) {
                     <FaUserCircle className='mb-2' size={35} /> Bienvenido{' '}
                     <strong> {form.username}</strong>
                   </h4>
-                  <p>
-                    Última evaluación: <strong>Octubre</strong>
-                  </p>
+                  <h4>
+                    Última evaluación:</h4>
+                    {dateEval.map((month, key) => {
+                        return(
+                          <div key={key}>
+                          <p><strong>{month.first_exam}</strong></p>
+                          </div>
+                        );
+                    })}
                   <div className='mt-2 mb-2'></div>
                 </Col>
               </Card.Header>

@@ -130,7 +130,7 @@ function consultEmailComp__(req, res) {
       sqlGetPerDataByCompEmail += ' AND company = ?';
       queryParamsEmail.push(companyValue);
     }
-   // console.log('query de email', sqlGetPerDataByCompEmail, queryParamsEmail);
+    // console.log('query de email', sqlGetPerDataByCompEmail, queryParamsEmail);
 
     pool.query(sqlGetPerDataByCompEmail, queryParamsEmail, (err, result) => {
       if (err) {
@@ -177,7 +177,7 @@ function consultEmail__(req, res) {
       sqlGetPerDataByEmail += ' AND company = ?';
       queryParamsEmail.push(companyValue);
     }
-   // console.log('query de email', sqlGetPerDataByEmail, queryParamsEmail);
+    // console.log('query de email', sqlGetPerDataByEmail, queryParamsEmail);
 
     pool.query(sqlGetPerDataByEmail, queryParamsEmail, (err, result) => {
       if (err) {
@@ -268,7 +268,7 @@ function autocompleteName(req, res) {
 }
 //evaluation data select
 function consultaEvalData__(req, res) {
-  const sqlGetEvalData = 'SELECT * FROM evaluation_data ORDER BY id DESC;'
+  const sqlGetEvalData = 'SELECT * FROM evaluation_data ORDER BY id DESC;';
 
   pool.query(sqlGetEvalData, (err, result) => {
     if (err) {
@@ -421,7 +421,8 @@ function getExamData__(req, res) {
 }
 
 function getAllCompanies__(req, res) {
-  const sqlGetAllCompanies = 'SELECT company, COUNT(id) as total_ids FROM evaluation_data GROUP BY company';
+  const sqlGetAllCompanies =
+    'SELECT company, COUNT(id) as total_ids FROM evaluation_data GROUP BY company';
   pool.query(sqlGetAllCompanies, (err, companies) => {
     if (err) {
       console.error('Error fetching all companies:', err);
@@ -456,12 +457,29 @@ function listLastEvals__(req, res) {
   });
 }
 
+function getDateEval__(req, res) {
+  const company = req.query.domainName ?? '';
+
+  const sqlGetDate = `SELECT first_exam from evaluation_data WHERE LOWER(company) = LOWER(?) ORDER BY first_exam DESC LIMIT 1`;
+  pool.query(sqlGetDate, company, (err, result) => {
+    if (err) {
+      console.error(
+        'Error executing query sqlGetDate..Check DB connection',
+        err
+      );
+      return res.status(500).send('Error to get Date of Exams');
+    }
+    res.send(result);
+  });
+}
+
 module.exports = {
   consultaData__,
   consultaEvalData__,
   consultEmail__,
   consultEmailComp__,
   autocompleteName,
+  getDateEval__,
   loginUsers__,
   listUsers__,
   download__,

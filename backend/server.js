@@ -81,7 +81,9 @@ app.get('/examData', authenticateToken, getDataController.getExamData__);//info 
 app.post('/loginUsers', authenticateToken, getDataController.loginUsers__);//login
 app.get('/companyEval', authenticateToken, getDataController.EvalCompany__);//get evaluation by company
 app.get('/getUserList', authenticateToken, getDataController.listUsers__);//get user for list
-app.get('/listLastEvals', authenticateToken, getDataController.listLastEvals__);//get last 10 evaluations
+app.get('/listLastEvals', authenticateToken, getDataController.listLastEvals__);//get the last 10 evaluations
+app.get('/getDateEval', authenticateToken, getDataController.getDateEval__);//get date of the last evaluation
+
 //post y put functions
 app.put('/editCalif', authenticateToken, PostDataController.editCalif__); //Edit Calification in data grid evaluation page (admin)
 app.put('/updateComment', authenticateToken, PostDataController.comments__); //update comment personal_Data
