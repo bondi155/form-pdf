@@ -460,7 +460,7 @@ function listLastEvals__(req, res) {
 function getDateEval__(req, res) {
   const company = req.query.domainName ?? '';
 
-  const sqlGetDate = `SELECT first_exam from evaluation_data WHERE LOWER(company) = LOWER(?) ORDER BY first_exam DESC LIMIT 1`;
+  const sqlGetDate = `SELECT first_exam, full_name from evaluation_data WHERE LOWER(company) = LOWER(?) ORDER BY id DESC LIMIT 1`;
   pool.query(sqlGetDate, company, (err, result) => {
     if (err) {
       console.error(

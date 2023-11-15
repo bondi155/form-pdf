@@ -42,8 +42,7 @@ function Home({ form }) {
   const labelsAlphabets = ['A', 'B', 'B+', 'B-', 'C', 'NP'];
   const labelsAlphabetsTsm = ['A', 'B', 'B+', 'C', 'D'];
 
- 
-//Ejecutamos las 2 funciones ya que tienen las mismas dependencias
+  //Ejecutamos las 2 funciones ya que tienen las mismas dependencias
   useEffect(() => {
     const fetchExamData = async () => {
       try {
@@ -60,27 +59,32 @@ function Home({ form }) {
           setBreakdown(response.data.breakdown);
         }
       } catch (err) {
-        setError(err.message || 'Ocurrió un error al obtener los datos de las empresas y sus KPI`s.');
+        setError(
+          err.message ||
+            'Ocurrió un error al obtener los datos de las empresas y sus KPI`s.'
+        );
       }
     };
     fetchExamData();
     const fetchDateEval = async () => {
       try {
-          const response = await axios.get(`${API_URL}/getDateEval`, {
-            params: {
-              domainName: currentDomain,
-            },
-          });
-          setDateEval(response.data)
+        const response = await axios.get(`${API_URL}/getDateEval`, {
+          params: {
+            domainName: currentDomain,
+          },
+        });
+        setDateEval(response.data);
       } catch (err) {
-        setError(err.message || 'Ocurrió un error al obtener los datos del date');
+        setError(
+          err.message || 'Ocurrió un error al obtener los datos del date'
+        );
       }
     };
     fetchDateEval();
   }, [currentDomain, form.role]);
-console.log(dateEval);
+  console.log(dateEval);
   //console.log(companiesRow);
-  
+
   //ACA DEberiamos agregar los otros resultados pero deben coincidir con el registro
   //por ejemplo Cancelado, hay 1 , podriamos ponerlo ..
   const order = [
@@ -146,29 +150,42 @@ console.log(dateEval);
                     Como administrador tendras accesso a los datos de todas las
                     empresas.{' '}
                     <div className='mt-2 mb-2'>
-                    <Link to='/evaluationData'>
-                      <Button size='sm' variant='success'>
-                        Ver Evaluations UleadAir
-                      </Button>
-                    </Link>
-                  </div>
+                      <Link to='/evaluationData'>
+                        <Button size='sm' variant='success'>
+                          Ver Evaluations UleadAir
+                        </Button>
+                      </Link>
+                    </div>
                   </small>
                   <p>
                     Última evaluación: <strong>Noviembre</strong>
-                  </p>                
+                  </p>
                 </Col>
               </Card.Header>
               <Card.Body>
-                {currentDomain === 'admin' ? <> <h4>Seleccione Empresa :</h4></> :
+                {currentDomain === 'admin' ? (
+                  <>
+                    {' '}
+                    <h4>Seleccione Empresa :</h4>
+                  </>
+                ) : (
                   <h5>
-                  Total de Evaluaciones para <strong>{currentDomain}</strong>{' '} desde
-                   <strong> 01/2023</strong>: <strong>{totalCalif}</strong> 
-                </h5>
-                 }
+                    Total de Evaluaciones para <strong>{currentDomain}</strong>{' '}
+                    desde
+                    <strong> 01/2023</strong>: <strong>{totalCalif}</strong>
+                  </h5>
+                )}
                 <Row>
                   {companiesRow.map((admin, key) => {
                     return (
-                      <Col key={key} sm={3} xs={3} lg={1} md={2} className='mb-2 mt-2'>
+                      <Col
+                        key={key}
+                        sm={3}
+                        xs={3}
+                        lg={1}
+                        md={2}
+                        className='mb-2 mt-2'
+                      >
                         <Button
                           variant='outline-dark'
                           onClick={() => setCurrentDomain(admin.company)}
@@ -243,15 +260,38 @@ console.log(dateEval);
                     <FaUserCircle className='mb-2' size={35} /> Bienvenido{' '}
                     <strong> {form.username}</strong>
                   </h4>
-                  <h4>
-                    Última evaluación:</h4>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      marginBottom: '10px',
+                    }}
+                  >
+                    <h4 style={{ marginRight: '10px', fontSize: '1.2em' }}>
+                      Última evaluación:
+                    </h4>
                     {dateEval.map((month, key) => {
-                        return(
-                          <div key={key}>
-                          <p><strong>{month.first_exam}</strong></p>
-                          </div>
-                        );
+                      return (
+                        <div
+                          key={key}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            marginRight: '10px',
+                            color: 'grey',
+                          }}
+                        >
+                          <p className='mt-2' style={{ marginRight: '5px' }}>
+                            <strong>{month.full_name}</strong>
+                          </p>
+                          <p className='mt-2'>
+                            <strong>, {month.first_exam}</strong>
+                          </p>
+                        </div>
+                      );
                     })}
+                  </div>
+
                   <div className='mt-2 mb-2'></div>
                 </Col>
               </Card.Header>
