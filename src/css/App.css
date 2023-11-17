@@ -63,6 +63,7 @@
 
 .App-pdf-table {
   background-color: #b7cce4;
+  border-radius: 8px;
 }
 
 
@@ -289,25 +290,6 @@ body {
 }
 
 /* Card home y graficos */
-h1 {
-  text-shadow: 2px 2px 4px #aaa;
-  animation: fadeIn 1s ease-in;
-
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-h2 {
-  animation: fadeIn 1.5s ease-in;
-}
 
 .pie-chart-card {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);

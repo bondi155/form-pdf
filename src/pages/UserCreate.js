@@ -104,7 +104,7 @@ function UserCreate({userCreate, setUserCreate}) {
   return (
     <>
     <Container className='container-custom'>
-      <h1>User Create Page </h1>
+      <h2>User Create Page </h2>
       <form onSubmit={addNewUser}>
         <Row className='mt-5'>
           <Col lg={4} sm={4} md={4}>
@@ -154,7 +154,7 @@ function UserCreate({userCreate, setUserCreate}) {
             sm={{ span: 6, offset: 4 }}
             md={{ span: 3, offset: 5 }}
           >
-            <Button className='mb-5' variant='outline-success' type='submit'>
+            <Button className='mb-5' variant='outline-secondary' type='submit'>
               Create User
             </Button>
           </Col>
@@ -162,9 +162,7 @@ function UserCreate({userCreate, setUserCreate}) {
       </form>
       </Container>
       <div className='evaluation-grid'>
-        <div className='mt-5 mb-3 center-text'>
-          <h1>User List</h1>
-        </div>
+        
         <GridEval
           rows={listUser}
           columnsVar={userColumns}

@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import '../css/App.css';
-import { Container, Row, Col, Card, Button } from 'react-bootstrap';
+import { Container, Row, Col, Card, Form} from 'react-bootstrap';
 import axios from 'axios';
 import { API_URL } from '../config/config';
 import { FaUserCircle } from 'react-icons/fa';
 import PieChart from '../charts/PieChart';
-import { Link } from 'react-router-dom';
 import ListEval from '../components/ListEval';
 const colorsNumeric = [
   '#0000FF', // 1 - Azul
@@ -82,7 +81,7 @@ function Home({ form }) {
     };
     fetchDateEval();
   }, [currentDomain, form.role]);
-  console.log(dateEval);
+  //console.log(dateEval);
   //console.log(companiesRow);
 
   //ACA DEberiamos agregar los otros resultados pero deben coincidir con el registro
@@ -124,21 +123,24 @@ function Home({ form }) {
   //valores del array , los otros son los labels
   const numericValues = Object.values(numericBreakdown);
   const alphabeticValues = Object.values(alphabeticBreakdown);
-
-  //const valor = [44, 55, 13, 43, 22, 44, 55, 13, 43, 22, 44, 55, 13, 43, 22, 77]
-
   return (
     <>
       <Container className='container-custom'>
         {error ? (
-          <div>Hubo un problema cargando los graficos..error: {error}</div>
+          <div>
+            Hubo un problema cargando los graficos..error: Recargue la pagina
+            por favor{error}
+          </div>
         ) : form.role === 'admin' ? (
           //pantalla para Administrador
           <div>
             {' '}
             <Card
               className='mb-3'
-              style={{ boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' }}
+              style={{
+                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+                backgroundColor: '#f8f9fa', // Un gris claro
+              }}
             >
               <Card.Header className='d-flex align-items-center'>
                 <Col xs={12} sm={12} md={12} lg={12}>
@@ -149,56 +151,63 @@ function Home({ form }) {
                   <small>
                     Como administrador tendras accesso a los datos de todas las
                     empresas.{' '}
-                    <div className='mt-2 mb-2'>
-                      <Link to='/evaluationData'>
-                        <Button size='sm' variant='success'>
-                          Ver Evaluations UleadAir
-                        </Button>
-                      </Link>
-                    </div>
                   </small>
-                  <p>
-                    Última evaluación: <strong>Noviembre</strong>
-                  </p>
                 </Col>
               </Card.Header>
               <Card.Body>
                 {currentDomain === 'admin' ? (
-                  <>
-                    {' '}
-                    <h4>Seleccione Empresa :</h4>
-                  </>
+                  <> </>
                 ) : (
-                  <h5>
-                    Total de Evaluaciones para <strong>{currentDomain}</strong>{' '}
-                    desde
-                    <strong> 01/2023</strong>: <strong>{totalCalif}</strong>
-                  </h5>
+                  <Row>
+                    {/* Tarjeta para la Total de Evaluaciones */}
+                    <Col xs={12} sm={6} lg={6}>
+                      <Card>
+                        <Card.Body>
+                          <Card.Title>Total de Evaluaciones</Card.Title>
+                          <div>
+                            <strong>{currentDomain}</strong> desde{' '}
+                            <strong>01/2023</strong>
+                              <h2>{totalCalif}</h2>
+                            </div>
+                        </Card.Body>
+                      </Card>
+                    </Col>
+                    {/* Tarjeta para la Última Evaluación */}
+                    <Col xs={12} sm={6} lg={6}>
+                      <Card>
+                        <Card.Body>
+                          <Card.Title>Última Evaluación</Card.Title>
+                          {dateEval.map((month, key) => (
+                            <div key={key}>
+                              <strong>{month.full_name}</strong>
+                                <h2>{month.first_exam}</h2>
+                              </div>
+                          ))}
+                        </Card.Body>
+                      </Card>
+                    </Col>
+                  </Row>
                 )}
                 <Row>
-                  {companiesRow.map((admin, key) => {
-                    return (
-                      <Col
-                        key={key}
-                        sm={3}
-                        xs={3}
-                        lg={1}
-                        md={2}
-                        className='mb-2 mt-2'
-                      >
-                        <Button
-                          variant='outline-dark'
-                          onClick={() => setCurrentDomain(admin.company)}
-                        >
+                  <Form.Group className='mt-2' controlId='companySelector'>
+                    <Form.Control
+                      as='select'
+                      onChange={(e) => setCurrentDomain(e.target.value)}
+                    >
+                      <option value='admin'>Seleccione una Empresa</option>
+                      {companiesRow.map((admin, key) => (
+                        <option key={key} value={admin.company}>
                           {admin.company}
-                        </Button>
-                      </Col>
-                    );
-                  })}
+                        </option>
+                      ))}
+                    </Form.Control>
+                  </Form.Group>
                 </Row>
               </Card.Body>
             </Card>
-            {numericValues && numericValues.length > 0 ? (
+            {numericValues &&
+            numericValues.length > 0 &&
+            currentDomain !== 'admin' ? (
               <>
                 <Row className='chartsCont'>
                   <Col xs={12} lg={5} sm={12} md={10}>
@@ -229,6 +238,7 @@ function Home({ form }) {
               </>
             ) : (
               alphabeticValues &&
+              currentDomain !== 'admin' &&
               alphabeticValues.length > 0 && (
                 <Row className='chartsCont'>
                   <Col xs={12} lg={5} sm={12} md={10}>
@@ -252,56 +262,45 @@ function Home({ form }) {
             {' '}
             <Card
               className='mb-3'
-              style={{ boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' }}
+              style={{
+                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+                backgroundColor: '#f8f9fa', // Un gris claro
+              }}
             >
-              <Card.Header className='d-flex align-items-center'>
-                <Col xs={12} sm={12} md={12} lg={12}>
-                  <h4>
-                    <FaUserCircle className='mb-2' size={35} /> Bienvenido{' '}
-                    <strong> {form.username}</strong>
-                  </h4>
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      marginBottom: '10px',
-                    }}
-                  >
-                    <h4 style={{ marginRight: '10px', fontSize: '1.2em' }}>
-                      Última evaluación:
-                    </h4>
-                    {dateEval.map((month, key) => {
-                      return (
-                        <div
-                          key={key}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            marginRight: '10px',
-                          }}
-                        >
-                          <p className='mt-2' style={{ marginRight: '5px' }}>
-                            <strong>{month.full_name}</strong>
-                          </p>
-                          <p className='mt-2'>
-                            <strong>, {month.first_exam}</strong>
-                          </p>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  <div className='mt-2 mb-2'></div>
-                </Col>
+              <Card.Header>
+                <FaUserCircle className='mb-2' size={35} /> Bienvenido{' '}
+                <strong>{form.username}</strong>
               </Card.Header>
               <Card.Body>
-                <h5>
-                  Total de Evaluaciones en <strong>{domainName}</strong> desde{' '}
-                  <strong>01/2023</strong>:
-                </h5>
-                <h2>
-                  <strong>{totalCalif}</strong>
-                </h2>
+                <Row>
+                  {/* Tarjeta para el Total de Evaluaciones */}
+                  <Col xs={12} sm={6} lg={6}>
+                    <Card>
+                      <Card.Body>
+                        <Card.Title>Total de Evaluaciones</Card.Title>
+                        <Card.Text>
+                          <strong>{domainName}</strong> desde{' '}
+                          <strong>01/2023</strong>
+                          <h2>{totalCalif}</h2>
+                        </Card.Text>
+                      </Card.Body>
+                    </Card>
+                  </Col>
+                  {/* Tarjeta para la Última Evaluación */}
+                  <Col xs={12} sm={6} lg={6}>
+                    <Card>
+                      <Card.Body>
+                        <Card.Title>Última Evaluación</Card.Title>
+                        {dateEval.map((month, key) => (
+                          <Card.Text key={key}>
+                            <strong>{month.full_name}</strong>
+                            <h2>{month.first_exam}</h2>
+                          </Card.Text>
+                        ))}
+                      </Card.Body>
+                    </Card>
+                  </Col>
+                </Row>
               </Card.Body>
             </Card>
             {numericValues && numericValues.length > 0 ? (

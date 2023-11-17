@@ -199,14 +199,14 @@ function ConsultAirline({ form }) {
     <>
       <Container className='container-custom-company'>
         <Row>
-          <h1 className='text-center mt-5'>
+          <h2 className='text-center mt-5'>
             Consulta de Evaluaciones{' '}
             {domainName === 'tsm' ? (
               <img src={images.tsm} width='25%' alt='tsm' />
             ) : domainName === 'volaris' ? (
               <img src={images.volaris} alt='volaris' width='15%' />
             ) : null}{' '}
-          </h1>
+          </h2>
         </Row>
       </Container>
       <GridEval

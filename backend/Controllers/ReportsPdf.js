@@ -9,7 +9,7 @@ async function reportCardFill__(req, res) {
 
   try {
     // Asegúrate de que el path al PDF template es correcto
-    const pdfPath = 'report_model.pdf';
+    const pdfPath = 'formato_report.pdf';
     const formPdfBytes = await fs.readFile(pdfPath);
     const pdfDoc = await PDFDocument.load(formPdfBytes);
 
@@ -23,14 +23,15 @@ async function reportCardFill__(req, res) {
     const ageField = form.getTextField('age');
     const flightHoursField = form.getTextField('flight_hours');
     const rtariField = form.getTextField('rtari');
+    //const rutineField = form.getTextField('rutine_comm');
     const communicationsField = form.getTextField('communications');
     const messageStrucField = form.getTextField('message_structure');
-    const fluencyField = form.getTextField('fluency');
+    //const fluencyField = form.getTextField('fluency');
     const fluencyDialogueField = form.getTextField('fluency_dialogue');
     const pronunciationField = form.getTextField('pronunciation');
     const comprehensionField = form.getTextField('comprehension');
-    const interactionField = form.getTextField('interaction');
-    const structureField = form.getTextField('structure');
+    //const interactionField = form.getTextField('interaction');
+    //const structureField = form.getTextField('structure');
     const vocabularyField = form.getTextField('vocabulary');
     const plainEnglishField = form.getTextField('plain_english');
     const standardPrhaseField = form.getTextField('standard_phrase');
@@ -48,15 +49,16 @@ async function reportCardFill__(req, res) {
     rtariField.setText(reportState.rtari);
     communicationsField.setText(reportState.communications);
     messageStrucField.setText(reportState.message_structure);
-    fluencyField.setText(reportState.fluency);
+   // fluencyField.setText(reportState.fluency);
     fluencyDialogueField.setText(reportState.fluency_dialogue);
     pronunciationField.setText(reportState.pronunciation);
     comprehensionField.setText(reportState.comprehension);
-    interactionField.setText(reportState.interaction);
-    structureField.setText(reportState.structure);
+    //interactionField.setText(reportState.interaction);
+   //structureField.setText(reportState.structure);
     vocabularyField.setText(reportState.vocabulary);
     plainEnglishField.setText(reportState.plain_english);
     standardPrhaseField.setText(reportState.standard_phrase);
+   // rutineField.setText(reportState.rutine_comm);
     finalGradeField.setText(reportState.final_grade);
     observationsField.setText(reportState.observations);
 

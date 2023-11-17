@@ -37,7 +37,6 @@ function DriveSearch () {
         console.error(err);
       }
     };
-  
     return (
       <Container className='container-custom'>
         <Row>
@@ -47,9 +46,9 @@ function DriveSearch () {
             lg={{ span: 8, offset: 0 }}
             md={{ span: 12, offset: 0 }}
           >
-            <h1 className='mb-2'>
+            <h2 className='mb-2'>
               Google Drive Browser <img className="drive-img" src={images.drive} alt='driveimg' />
-            </h1>
+            </h2>
           </Col>  
           <Col xs={12} sm={12} lg={12} md={12}>
             <InputGroup className='mb-3 mt-4'>
@@ -100,8 +99,6 @@ function DriveSearch () {
         </Row>
       </Container>
     );
-
 }
-
 
 export default DriveSearch;

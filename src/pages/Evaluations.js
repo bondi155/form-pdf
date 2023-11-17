@@ -501,22 +501,21 @@ function Evaluations() {
   return (
     <>
       <Container className='container-custom'>
-        <h1>Evaluations</h1>
+        <h2>Evaluations</h2>
         <Row className='align-items-center'>
           {' '}
           {/* Añade 'align-items-center' para alinear verticalmente los elementos en la misma línea */}
-          <Col xs={9} sm={10} lg={10} className='mt-2'>
+          <Col xs={9} sm={10} lg={10} className='mt-3'>
             {' '}
             {/* Ajusta los valores de span según lo necesites */}
             <Form.Group controlId='formFileLg' className='mb-3'>
-              <Form.Label>Consolidate Evaluations Info</Form.Label>
               <Form.Control type='file' size='md' onChange={saveFile} />
             </Form.Group>
           </Col>
-          <Col xs={1} sm={2} lg={2} className='mt-4'>
+          <Col xs={1} sm={2} lg={2} className='mt-0'>
             {' '}
             {/* Ajusta los valores de span según lo necesites */}
-            <Button variant='outline-success' onClick={uploadFile}>
+            <Button variant='outline-secondary' onClick={uploadFile}>
               Upload
             </Button>
           </Col>
@@ -524,7 +523,6 @@ function Evaluations() {
       </Container>
       <div className='evaluation-grid'>
         <div className='mt-5 mb-3 center-text'>
-          <h1>Evaluations Historic</h1>
         </div>
         <GridEval
           rows={rows}

@@ -284,21 +284,28 @@ const PersonalData = ({ form }) => {
       return <img src={images.calif_c} width='9%' alt='C' />;
     } else if (calification.toLowerCase() === 'd') {
       return <img src={images.calif_d} width='9%' alt='D' />;
-    }else if (calification === 'faltas') {
+    } else if (calification === 'faltas') {
       return <strong style={{ color: 'red' }}> Falta de Asistencia</strong>;
     } else if (calification === 'exento') {
       return (
         <span>
           <img src={images.calif_b} width='9%' alt='B Exento' />
-          <span style={{ color: 'green' }}>  Exento</span>
-          </span>
+          <span style={{ color: 'green' }}> Exento</span>
+        </span>
       );
-    }else if (calification === 'sin pago') {
-    return <span><strong style={{ color: 'red' }}> Falta de pago</strong></span>;
-  }else if (calification === 'ver comentario') {
-    return<span><strong> Ver comentario</strong></span>;
-  }
-    
+    } else if (calification === 'sin pago') {
+      return (
+        <span>
+          <strong style={{ color: 'red' }}> Falta de pago</strong>
+        </span>
+      );
+    } else if (calification === 'ver comentario') {
+      return (
+        <span>
+          <strong> - Con comentario</strong>
+        </span>
+      );
+    }
   }
 
   //agrupo por course para que aparezcan diferentes pestañas
@@ -317,30 +324,30 @@ const PersonalData = ({ form }) => {
     <Container className='container-custom'>
       <Row>
         <Col xs={12} sm={12} lg={8} md={12}>
-          <h1 className='mb-2'>Consolidate Info ({role})</h1>
+          <h2 className='mb-2'>Consolidate Info ({role})</h2>
         </Col>
-        {domainName === 'admin' && ( 
-        <Col xs={12} sm={12} lg={4} md={12}>
-          <InputGroup className='mb-3 mt-3'>
-            <FormControl
-              type='text'
-              required
-              placeholder='Tab name (Google Sheets)'
-              aria-label='Set Course'
-              aria-describedby='basic-addon2'
-              size='sm'
-              onChange={(e) => SetTabName(e.target.value.toUpperCase())}
-            />
-            <Button
-              variant='outline-success'
-              size='sm'
-              id='button-addon2'
-              onClick={fetchSheetData}
-            >
-              Get
-            </Button>
-          </InputGroup>
-        </Col>
+        {domainName === 'admin' && (
+          <Col xs={12} sm={12} lg={4} md={12}>
+            <InputGroup className='mb-3 mt-2'>
+              <FormControl
+                type='text'
+                required
+                placeholder='Tab name (Google Sheets)'
+                aria-label='Set Course'
+                aria-describedby='basic-addon2'
+                size='sm'
+                onChange={(e) => SetTabName(e.target.value.toUpperCase())}
+              />
+              <Button
+                variant='outline-success'
+                size='sm'
+                id='button-addon2'
+                onClick={fetchSheetData}
+              >
+                Get
+              </Button>
+            </InputGroup>
+          </Col>
         )}
       </Row>
       <InputGroup className='mb-3 mt-4'>
@@ -362,7 +369,7 @@ const PersonalData = ({ form }) => {
       </InputGroup>
       {email.length > 0 && suggestions.length > 0 && !match && (
         <Dropdown className='mb-3'>
-          <Dropdown.Toggle variant='success' id='dropdown-basic'>
+          <Dropdown.Toggle variant='secondary' id='dropdown-basic'>
             Name Suggestions
           </Dropdown.Toggle>
           <Dropdown.Menu>
@@ -379,7 +386,6 @@ const PersonalData = ({ form }) => {
           </Dropdown.Menu>
         </Dropdown>
       )}
-
       {isloading ? (
         <PlaneSpinner />
       ) : (
@@ -392,14 +398,21 @@ const PersonalData = ({ form }) => {
             {Object.entries(groupedData).map(([course, items], key) => (
               <Tab eventKey={course} title={course} key={key}>
                 {items.map((item, innerKey) => (
-                  <Col className='mb-2' xs={12} sm={12} md={12} lg={12} key={innerKey}>
+                  <Col
+                    className='mb-2'
+                    xs={12}
+                    sm={12}
+                    md={12}
+                    lg={12}
+                    key={innerKey}
+                  >
                     <Card
                       className='data-container'
                       onClick={() => setSelectedId(item.pd_id)}
                     >
                       <Card.Body>
                         <Card.Title>
-                          {item.pd_full_name} - {item.age} - {' '}
+                          {item.pd_full_name} - {item.age} -{' '}
                           {renderImage(item.pd_company)}{' '}
                           {renderCalif(item.calif)}
                         </Card.Title>
