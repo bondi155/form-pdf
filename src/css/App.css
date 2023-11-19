@@ -214,14 +214,14 @@ h6 {
   display: flex;
   justify-content: center;
   align-items: center;
+  /* Fondo */
   background-color: rgba(255, 255, 255, 0.9);
-  /* Fondo ligeramente opaco. Puedes cambiar esto según tus preferencias */
   z-index: 9999;
-  /* Aseguramos que esté encima de otros elementos */
+  /*arriba de otros elementos */
 }
 
 .plane-spinner svg {
-  animation: spin 2s linear infinite;
+  animation: spin 0.5s linear infinite;
 }
 
 @keyframes spin {

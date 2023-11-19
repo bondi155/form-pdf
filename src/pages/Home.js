@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../css/App.css';
-import { Container, Row, Col, Card, Form} from 'react-bootstrap';
+import { Container, Row, Col, Card, Form } from 'react-bootstrap';
 import axios from 'axios';
 import { API_URL } from '../config/config';
 import { FaUserCircle } from 'react-icons/fa';
@@ -37,7 +37,7 @@ function Home({ form }) {
   const [currentDomain, setCurrentDomain] = useState(domainName);
   const [dateEval, setDateEval] = useState([]);
 
-  const labelsNumerics = ['2', '3', '4', '5', '6']; //, '6', '7'
+  const labelsNumerics = ['2', '3', '4', '5', '6']; //, '7'
   const labelsAlphabets = ['A', 'B', 'B+', 'B-', 'C', 'NP'];
   const labelsAlphabetsTsm = ['A', 'B', 'B+', 'C', 'D'];
 
@@ -167,8 +167,8 @@ function Home({ form }) {
                           <div>
                             <strong>{currentDomain}</strong> desde{' '}
                             <strong>01/2023</strong>
-                              <h2>{totalCalif}</h2>
-                            </div>
+                            <h2>{totalCalif}</h2>
+                          </div>
                         </Card.Body>
                       </Card>
                     </Col>
@@ -180,8 +180,8 @@ function Home({ form }) {
                           {dateEval.map((month, key) => (
                             <div key={key}>
                               <strong>{month.full_name}</strong>
-                                <h2>{month.first_exam}</h2>
-                              </div>
+                              <h2>{month.first_exam}</h2>
+                            </div>
                           ))}
                         </Card.Body>
                       </Card>
@@ -278,11 +278,11 @@ function Home({ form }) {
                     <Card>
                       <Card.Body>
                         <Card.Title>Total de Evaluaciones</Card.Title>
-                        <Card.Text>
+                        <div>
                           <strong>{domainName}</strong> desde{' '}
                           <strong>01/2023</strong>
                           <h2>{totalCalif}</h2>
-                        </Card.Text>
+                        </div>
                       </Card.Body>
                     </Card>
                   </Col>
@@ -292,10 +292,10 @@ function Home({ form }) {
                       <Card.Body>
                         <Card.Title>Última Evaluación</Card.Title>
                         {dateEval.map((month, key) => (
-                          <Card.Text key={key}>
+                          <div key={key}>
                             <strong>{month.full_name}</strong>
                             <h2>{month.first_exam}</h2>
-                          </Card.Text>
+                          </div>
                         ))}
                       </Card.Body>
                     </Card>
@@ -354,13 +354,17 @@ function Home({ form }) {
         )}
       </Container>
       {domainName !== 'admin' && (
-        <div className='d-flex justify-content-center'>
+        <div>
           <Container>
-            <ListEval
-              form={form}
-              titulotd1={domainName === 'tsm' ? 'No. ' : 'No. Embajador'}
-              titulotd2={domainName === 'tsm' ? 'Celular' : 'T.Prueba'}
-            />
+            <Row>
+              <Col md={12} lg={{ span: 10, offset: 1 }}>
+                <ListEval
+                  form={form}
+                  titulotd1={domainName === 'tsm' ? 'No. ' : 'No. Embajador'}
+                  titulotd2={domainName === 'tsm' ? 'Celular' : 'T.Prueba'}
+                />
+              </Col>
+            </Row>
           </Container>
         </div>
       )}
