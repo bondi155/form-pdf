@@ -5,19 +5,26 @@ import axios from 'axios';
 import { API_URL } from '../config/config.js';
 import GridEval from '../charts/GridEval';
 import Swal from 'sweetalert2';
+
 const userColumns = [
   { field: 'id', headerName: 'ID', width: 150 },
   {
     field: 'user',
     headerName: 'Usuario',
-    width: 300,
-    editable: true,
+    width: 250,
+    editable: false,
   },
   {
     field: 'role',
-    headerName: 'Rol del usuario',
+    headerName: 'Rol',
+    width: 150,
+    editable: false,
+  },
+  {
+    field: 'pass',
+    headerName: 'Password',
     width: 300,
-    editable: true,
+    editable: false,
   },
 ];
 
@@ -162,7 +169,8 @@ function UserCreate({userCreate, setUserCreate}) {
       </form>
       </Container>
       <div className='evaluation-grid'>
-        
+        <Row> 
+          <Col md={{span:10, offset:1}} lg={{span:8, offset:2}}>
         <GridEval
           rows={listUser}
           columnsVar={userColumns}
@@ -170,6 +178,8 @@ function UserCreate({userCreate, setUserCreate}) {
           fileNameVar='UserList'
           showDeleteColumn={true}
         />
+         </Col>
+         </Row>
       </div>
        </>
   );
