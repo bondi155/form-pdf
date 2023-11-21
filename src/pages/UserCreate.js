@@ -20,12 +20,6 @@ const userColumns = [
     width: 150,
     editable: false,
   },
-  {
-    field: 'pass',
-    headerName: 'Password',
-    width: 300,
-    editable: false,
-  },
 ];
 
 function UserCreate({userCreate, setUserCreate}) {

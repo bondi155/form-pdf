@@ -293,7 +293,6 @@ function listUsers__(req, res) {
         id: row.id,
         user: row.username,
         role: row.role,
-        pass: row.password
       }));
       res.send(userList);
     }
