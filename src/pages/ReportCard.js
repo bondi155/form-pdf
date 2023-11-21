@@ -222,7 +222,7 @@ function ReportCard() {
               <Col xs={12} sm={6} md={4} lg={4} className='mt-1'>
                 <Form.Group className='mb-3'>
                   <Form.Control
-                    type='date'
+                    type='text'
                     name='date'
                     required
                     placeholder='Date'
