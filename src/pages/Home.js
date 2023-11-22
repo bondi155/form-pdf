@@ -7,8 +7,7 @@ import { FaUserCircle } from 'react-icons/fa';
 import PieChart from '../charts/PieChart';
 import ListEval from '../components/ListEval';
 import { Link } from 'react-router-dom';
-import {Button} from 'react-bootstrap';
-
+import { Button } from 'react-bootstrap';
 
 const colorsNumeric = [
   '#0000FF', // 1 - Azul
@@ -359,19 +358,30 @@ function Home({ form }) {
           </div>
         ) : (
           <>
-             <FaUserCircle className='mb-2' size={35} /> Welcome{' '}
-                <strong>{form.username}</strong>
-                <div className='d-flex justify-content-center'>
-            <Link to='/reportCard'>
-            <Button variant='dark'>
-             Create a New Report Card
-            </Button>
-          </Link>
-          </div>
+            <Card
+              className='mb-3'
+              style={{
+                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+                backgroundColor: '#f8f9fa', // Un gris claro
+              }}
+            >
+              <Card.Header className='d-flex align-items-center'>
+                <Col xs={12} sm={12} md={12} lg={12}>
+                  <FaUserCircle className='mb-2' size={35} /> Welcome{' '}
+                  <strong>{form.username}</strong>
+                </Col>
+              </Card.Header>
+              <Card.Body>  <div className='d-flex justify-content-center'>
+              <Link to='/reportCard'>
+                <Button variant='dark'>Create a New Report Card</Button>
+              </Link>
+            </div></Card.Body>
+            </Card>
+          
           </>
         )}
       </Container>
-      {domainName === 'company' &&  (
+      {domainName === 'company' && (
         <div>
           <Container>
             <Row>
