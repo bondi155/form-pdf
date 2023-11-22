@@ -170,7 +170,7 @@ function ReportCard() {
         responseType: 'blob', // Esto está correcto para recibir un archivo binario.
       });
       const formattedDate = reportState.date
-        .replace(/\//g, '-')
+        .replace(/\//g, '_')
         .replace(/\s+/g, '_');
       const formattedName = reportState.full_name
         .replace(/[^a-z0-9]/gi, '_')

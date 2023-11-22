@@ -6,6 +6,10 @@ import { API_URL } from '../config/config';
 import { FaUserCircle } from 'react-icons/fa';
 import PieChart from '../charts/PieChart';
 import ListEval from '../components/ListEval';
+import { Link } from 'react-router-dom';
+import {Button} from 'react-bootstrap';
+
+
 const colorsNumeric = [
   '#0000FF', // 1 - Azul
   '#4B0082', // 2 - Índigo
@@ -148,15 +152,17 @@ function Home({ form }) {
                     <FaUserCircle className='mb-2' size={35} /> Bienvenido
                     Administrador <strong>{form.username}</strong>
                   </h4>
-                  <small>
-                    Como administrador tendras accesso a los datos de todas las
-                    empresas.{' '}
-                  </small>
                 </Col>
               </Card.Header>
               <Card.Body>
                 {currentDomain === 'admin' ? (
-                  <> </>
+                  <>
+                    {' '}
+                    <small>
+                      Como administrador tendras accesso a los datos de todas
+                      las empresas :{' '}
+                    </small>{' '}
+                  </>
                 ) : (
                   <Row>
                     {/* Tarjeta para la Total de Evaluaciones */}
@@ -256,7 +262,7 @@ function Home({ form }) {
               )
             )}
           </div>
-        ) : (
+        ) : form.role === 'company' ? (
           //pantalla para clientes
           <div>
             {' '}
@@ -351,9 +357,21 @@ function Home({ form }) {
               )
             )}
           </div>
+        ) : (
+          <>
+             <FaUserCircle className='mb-2' size={35} /> Welcome{' '}
+                <strong>{form.username}</strong>
+                <div className='d-flex justify-content-center'>
+            <Link to='/reportCard'>
+            <Button variant='dark'>
+             Create a New Report Card
+            </Button>
+          </Link>
+          </div>
+          </>
         )}
       </Container>
-      {domainName !== 'admin' && (
+      {domainName === 'company' &&  (
         <div>
           <Container>
             <Row>
