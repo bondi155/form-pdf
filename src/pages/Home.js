@@ -381,7 +381,7 @@ function Home({ form }) {
           </>
         )}
       </Container>
-      {domainName === 'company' && (
+      {form.role === 'company' && (
         <div>
           <Container>
             <Row>
