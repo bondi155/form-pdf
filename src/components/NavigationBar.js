@@ -114,7 +114,6 @@ function NavigationBar({ setIslogin, form }) {
               size='sm'
             >
               <FiLogOut className='me-1 mb-1' />
-              Sign out
             </Button>
             &nbsp;
           </Nav>

@@ -9,7 +9,7 @@ import { API_URL } from '../config/config';
 import axios from 'axios';
 //import SpinnerComponent from '../components/Spinner.js';
 import PlaneSpinner from '../components/planeSpinner';
-import { FaKey } from 'react-icons/fa'; 
+import { GiPadlockOpen } from 'react-icons/gi'; 
 function Login({ setIslogin, form, setForm }) {
   const navigate = useNavigate();
 
@@ -100,7 +100,7 @@ function Login({ setIslogin, form, setForm }) {
           className='semi-circle-login-btn'
           type='submit'
         > 
-          <FaKey className="me-1" />Sign in
+          <GiPadlockOpen className="me-1" />
         </Button>
       </Form>
     )}

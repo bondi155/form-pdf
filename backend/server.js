@@ -10,7 +10,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const getDataController = require('./Controllers/GetFuncData');
 const PostDataController = require('./Controllers/PostFuncData');
-const reportPdfController = require ('./Controllers/ReportsPdf');
+const reportPdfController = require('./Controllers/ReportsPdf');
 //const mysql = require('mysql2');
 const { authorize, listMajors } = require('./Controllers/FormApi');
 const { authorizeDrive, listFiles } = require('./Controllers/DriveApi');
@@ -31,7 +31,43 @@ const uploadPdf = multer({ storage: storage });
 */
 const jwt = require('jsonwebtoken');
 const secretkey = process.env.JWT_SECRET;
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        // se pueden poner mas
+      },
+    },
+    // configuraciones predeterminadas que Helmet aplica
+    expectCt: true,
+    frameguard: true,
+    hidePoweredBy: true,
+    hsts: true,
+    ieNoOpen: true,
+    noSniff: true,
+    xssFilter: true,
+    dnsPrefetchControl: {
+      allow: false, // a `true` para permitir el prefetching de DNS
+    },
+    permittedCrossDomainPolicies: {
+      permittedPolicies: 'none',
+    },
+    referrerPolicy: {
+      policy: 'no-referrer',
+    },
+  })
+);
+
+// Encabezados de seguridad manuales
+app.use((req, res, next) => {
+  res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+  res.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
+  res.setHeader('Permissions-Policy', 'geolocation=(), microphone=()');
+  next();
+});
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -75,14 +111,18 @@ app.get(
   authenticateToken,
   getDataController.consultaEvalData__
 ); //get evaluation data in data-grid
-app.get('/suggestNames', authenticateToken, getDataController.autocompleteName);//suggest list of names
-app.get('/getCompanies', authenticateToken, getDataController.getAllCompanies__);//all companies for admin
-app.get('/examData', authenticateToken, getDataController.getExamData__);//info graficos 
-app.post('/loginUsers', authenticateToken, getDataController.loginUsers__);//login
-app.get('/companyEval', authenticateToken, getDataController.EvalCompany__);//get evaluation by company
-app.get('/getUserList', authenticateToken, getDataController.listUsers__);//get user for list
-app.get('/listLastEvals', authenticateToken, getDataController.listLastEvals__);//get the last 10 evaluations
-app.get('/getDateEval', authenticateToken, getDataController.getDateEval__);//get date of the last evaluation
+app.get('/suggestNames', authenticateToken, getDataController.autocompleteName); //suggest list of names
+app.get(
+  '/getCompanies',
+  authenticateToken,
+  getDataController.getAllCompanies__
+); //all companies for admin
+app.get('/examData', authenticateToken, getDataController.getExamData__); //info graficos
+app.post('/loginUsers', authenticateToken, getDataController.loginUsers__); //login
+app.get('/companyEval', authenticateToken, getDataController.EvalCompany__); //get evaluation by company
+app.get('/getUserList', authenticateToken, getDataController.listUsers__); //get user for list
+app.get('/listLastEvals', authenticateToken, getDataController.listLastEvals__); //get the last 10 evaluations
+app.get('/getDateEval', authenticateToken, getDataController.getDateEval__); //get date of the last evaluation
 
 //post y put functions
 app.put('/editCalif', authenticateToken, PostDataController.editCalif__); //Edit Calification in data grid evaluation page (admin)
@@ -90,7 +130,6 @@ app.put('/updateComment', authenticateToken, PostDataController.comments__); //u
 app.put('/reportUrl/:id', authenticateToken, PostDataController.reportUrl__); //subir url en data grid del google drive
 app.post('/createUser', authenticateToken, PostDataController.userCreate__); //creation of users
 app.post('/fillPdf', authenticateToken, reportPdfController.reportCardFill__); //creation of users
-
 
 app.delete(
   '/deleteUser/:id',
