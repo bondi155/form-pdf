@@ -77,6 +77,27 @@ function Evaluations() {
   const [isEditingCalif, setIsEditingCalif] = useState(false);
   const [editingCalifRowId, setEditingCalifRowId] = useState(null);
 
+  const monthOrder = {
+    Ene: 1,
+    Feb: 2,
+    Mar: 3,
+    Abr: 4,
+    May: 5,
+    Jun: 6,
+    Jul: 7,
+    Ago: 8,
+    Sep: 9,
+    Oct: 10,
+    Nov: 11,
+    Dic: 12
+  };
+  
+  const sortMonths = (a, b) => {
+    const monthA = monthOrder[a];
+    const monthB = monthOrder[b];
+    return monthA - monthB;
+  };
+    
   const evalColumns = [
     { field: 'id', headerName: 'ID', width: 50, hide: true },
 
@@ -101,6 +122,8 @@ function Evaluations() {
       headerName: 'Month',
       width: 50,
       hide: true,
+      sortComparator: (v1, v2, cellParams1, cellParams2) =>
+      sortMonths(cellParams1.value, cellParams2.value),
     },
     {
       field: 'applicant_area',

@@ -284,22 +284,22 @@ const PersonalData = ({ form }) => {
       return <img src={images.calif_c} width='9%' alt='C' />;
     } else if (calification.toLowerCase() === 'd') {
       return <img src={images.calif_d} width='9%' alt='D' />;
-    } else if (calification === 'faltas') {
+    } else if (calification === 'Faltas') {
       return <strong style={{ color: 'red' }}> Falta de Asistencia</strong>;
-    } else if (calification === 'exento') {
+    } else if (calification === 'Exento') {
       return (
         <span>
           <img src={images.calif_b} width='9%' alt='B Exento' />
           <span style={{ color: 'green' }}> Exento</span>
         </span>
       );
-    } else if (calification === 'sin pago') {
+    } else if (calification === 'Sin pago') {
       return (
         <span>
           <strong style={{ color: 'red' }}> Falta de pago</strong>
         </span>
       );
-    } else if (calification === 'ver comentario') {
+    } else if (calification === 'Ver comentario') {
       return (
         <span>
           <strong> - Con comentario</strong>
