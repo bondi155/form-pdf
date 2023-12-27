@@ -62,7 +62,7 @@ function enviarCorreoTransaccional(result) {
                     <h2>Resultados de Evaluación</h2>
                 </div>
                 <div class="content">
-                    <p>Estimado P. A ${persona.full_name.split(' ')[0]},</p>
+                    <p>Estimado P. A ${persona.full_name},</p>
                     <p>Le informamos que en su evaluación de Radiocomunicaciones Aeronáuticas en Inglés realizada el <strong>${
                       persona.first_exam
                     } a las ${persona.time}</strong></p>
