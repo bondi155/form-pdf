@@ -15,6 +15,7 @@ import Swal from 'sweetalert2';
 import PlaneSpinner from './components/planeSpinner';
 import ConsultAirline from './pages/ConsultAirline';
 import DriveSearch from './pages/DriveSearch';
+import EmailSender from './pages/EmailSender';
 function App() {
   const [islogin, setIslogin] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -88,6 +89,15 @@ function App() {
             element={
               <PrivateRoute islogin={islogin}>
                 <DriveSearch />
+              </PrivateRoute>
+            }
+            
+          />
+          <Route
+            path='/emailSender'
+            element={
+              <PrivateRoute islogin={islogin}>
+                <EmailSender />
               </PrivateRoute>
             }
             

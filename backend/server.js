@@ -15,6 +15,7 @@ const reportPdfController = require('./Controllers/ReportsPdf');
 const { authorize, listMajors } = require('./Controllers/FormApi');
 const { authorizeDrive, listFiles } = require('./Controllers/DriveApi');
 const excelController = require('./Controllers/EvaluationsXlsx');
+const {EmailFunctions} = require ('./Controllers/EmailCalif');
 //multer
 const upload = multer({ dest: 'uploads/' });
 //multer storage para el report pdf
@@ -141,6 +142,20 @@ app.delete(
   authenticateToken,
   PostDataController.deleteEvaluation__
 ); //delete evaluation by id
+
+//email sender
+app.get('/sendEmails', authenticateToken, async (req, res) => {
+  try {
+    const mes = req.query.mes;
+    const anio = `%${req.query.anio}`;
+    console.log('estos son los vars',mes, anio)
+    await EmailFunctions(mes, anio);
+    res.status(200).send('Correos enviados con éxito');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al enviar los correos');
+  }
+});
 
 //get de drive api
 app.get('/googleDrive', authenticateToken, async (req, res) => {

@@ -71,6 +71,13 @@ function NavigationBar({ setIslogin, form }) {
                   Report Card
                 </Link>
                 <Link
+                  to='/emailSender'
+                  className='nav-link'
+                  onClick={handleLinkClick}
+                >
+                  Email Sender
+                </Link>
+                <Link
                   to='/consolidateInformation'
                   className='nav-link'
                   onClick={handleLinkClick}

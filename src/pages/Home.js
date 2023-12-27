@@ -41,7 +41,7 @@ function Home({ form }) {
   const [dateEval, setDateEval] = useState([]);
 
   const labelsNumerics = ['2', '3', '4', '5', '6']; //, '7'
-  const labelsAlphabets = ['A', 'B', 'B+', 'B-', 'C', 'NP'];
+  const labelsAlphabets = ['A', 'B', 'B+', 'B-', 'C', 'D', 'Cancelado', 'NP'];
   const labelsAlphabetsTsm = ['A', 'B', 'B+', 'C', 'D'];
 
   //Ejecutamos las 2 funciones ya que tienen las mismas dependencias
@@ -102,6 +102,7 @@ function Home({ form }) {
     'B-',
     'C',
     'D',
+    'Cancelado',
     'NP',
   ];
   const orderedBreakdown = {};
