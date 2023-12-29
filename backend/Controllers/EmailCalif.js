@@ -14,7 +14,7 @@ const apiInstance = new SibApiV3Sdk.SMTPApi();
 async function queryforEmail(mes, anio) {
   console.log(anio, mes);
   try {
-    const queryForEmail = `SELECT company_email, full_name, exam_calif, time ,first_exam, applicant_name FROM evaluation_data WHERE month = ? AND first_exam LIKE ? AND company = 'Volaris'`;
+    const queryForEmail = `SELECT company_email, full_name, exam_calif, time ,first_exam, applicant_area FROM evaluation_data WHERE month = ? AND first_exam LIKE ? AND company = 'Volaris'`;
     const [result] = await pool.promise().query(queryForEmail, [mes, anio]);
     return result;
   } catch (err) {
