@@ -83,7 +83,7 @@ function enviarCorreoTransaccional(result) {
 
       apiInstance.sendTransacEmail(emailData).then(
         function () {
-          console.log('Correos enviados exitosamente para Tripulación ' + persona.company_email + 'del mes de ' + persona.month);
+          console.log(`Correos enviados exitosamente para Tripulación ${persona.company_email} del mes de ${persona.month}`);
         },
         function (error) {
           console.error(
