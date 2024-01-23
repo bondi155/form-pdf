@@ -71,6 +71,7 @@ async function enviarCorreoTransaccional(result) {
                               ? '<p class="passed">Usted obtuvo una calificación Aprobatoria.</p>'
                               : '<p class="failed">Usted obtuvo una calificación Reprobatoria.</p>'
                           }
+                          <p><strong> Si ya tiene un reporte satisfactorio por parte de un curso o examen después de la fecha reflejada por favor haga omiso a este correo.</strong></p>
                       </div>
                       <div class="footer">
                           <p>Agradecemos su participación y le deseamos un buen día. Si está interesado en cursos de inglés aeronáutico o radiocomunicaciones puede comunicarse por teléfono o whatsapp al 55 5068 3408 con la Lic. Alicia Pérez para obtener información.</p>
