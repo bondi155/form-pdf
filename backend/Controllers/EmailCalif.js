@@ -82,6 +82,9 @@ async function enviarCorreoTransaccional(result) {
 
         await apiInstance.sendTransacEmail(emailData);
         console.log(`Correo enviado exitosamente a ${persona.company_email}`);
+          if (!['A', 'B+', 'B'].includes(persona.exam_calif)) {
+            console.log(`El piloto ${persona.company_email} no aprobó y se envió correo correspondiente.`);
+          }
       } catch (error) {
         console.error(`Error al enviar correo a ${persona.company_email}:`, error.message);
         if (error.response) {
