@@ -105,13 +105,13 @@ function NavigationBar({ setIslogin, form }) {
             >
               Consult Airline
             </Link>
-             {/*  <Link
+              <Link
               to='/consolidateInformation'
               className='nav-link'
               onClick={handleLinkClick}
             >
-              Consolidate
-            </Link>*/}
+              Course exams
+            </Link>
             </>
             )}
             <Button

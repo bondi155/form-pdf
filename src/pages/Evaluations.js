@@ -538,10 +538,12 @@ function Evaluations() {
           <Col xs={1} sm={2} lg={2} className='mt-0'>
             {' '}
             {/* Ajusta los valores de span según lo necesites */}
-            <Button variant='outline-secondary' onClick={uploadFile}>
+           
+          <Button variant='outline-secondary' onClick={uploadFile}>
               Upload
             </Button>
-          </Col>
+            </Col>
+
         </Row>
       </Container>
       <div className='evaluation-grid'>

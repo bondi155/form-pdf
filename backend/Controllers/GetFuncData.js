@@ -207,6 +207,8 @@ function consultaData__(req, res) {
     //const company = req.query.domainName
     if (email.includes('@')) {
       consultEmail__(req, res);
+    } else if (email.includes('volaris')) {
+      consultEmailComp__(req, res)
     } else {
       consultJoin__(req, res, email);
     }
@@ -231,7 +233,7 @@ function autocompleteName(req, res) {
         company.charAt(0).toUpperCase() + company.slice(1).toLowerCase();
     }
     let sqlLikeName = `
-    SELECT DISTINCT pd.full_name AS pd_full_name, pd.personal_email AS pd_personal_email
+    SELECT DISTINCT pd.full_name AS pd_full_name, pd.personal_email AS pd_personal_email, pd.company_email AS pd_company_email
     FROM personal_data pd
     WHERE pd.full_name LIKE ?
   `;
@@ -258,6 +260,7 @@ function autocompleteName(req, res) {
       const suggestions = result.map((item) => ({
         name: item.pd_full_name,
         email: item.pd_personal_email,
+        email_company : item.pd_company_email
       }));
 
       res.send(suggestions);

@@ -32,7 +32,7 @@ async function readExcelFile(file) {
         row.getCell('N').value,
         row.getCell('O').value,
         row.getCell('P').value,
-        // Aquí extraemos el valor de 'result' directamente agregamos tambien una columna para compañia , agregar eso al archivo consolidado.
+        //Aquí extraemos el valor de 'result' directamente agregamos tambien una columna para compañia , agregar eso al archivo consolidado.
         row.getCell('Q').value, //? row.getCell('Q').value.result : null,
         row.getCell('R').value,
       ];
@@ -77,9 +77,9 @@ async function checkIfNoExists(no) {
 async function executeQuery(res, fileName, data) {
   try {
     for (const row of data) {
-      const exists = await checkIfNoExists(row[0]); // row[0] es el valor de 'no'
+      const exists = await checkIfNoExists(row[0]); //row[0] es el valor de 'no'
       if (exists) {
-        // Si el número ya existe, actualiza los campos
+        //si el número ya existe, actualiza los campos
         const updateQuery = `
           UPDATE evaluation_data 
           SET comments = ?, exam_calif = ?, result = ?, time = ?, first_exam = ?, applicant_area = ?, flight_hours = ?, no_ambassador = ?, month = ?, test_type = ?
@@ -98,10 +98,10 @@ async function executeQuery(res, fileName, data) {
             row[6],
             row[3],
             row[5],
-            row[0],
+            row[0],//Es el row que sacamos al principio y asi nos aseguramos en el for si existe el no (row[0]) se ejecute el update
           ]);
       } else {
-        // Si el número no existe, inserta el nuevo registro
+        //si el número no existe, inserta el nuevo registro
         const insertQuery = `
           INSERT INTO evaluation_data 
             (no, company, applicant_name, month, applicant_area, test_type, no_ambassador, full_name, position, base, company_email, flight_hours, rtari_level, first_exam, time, exam_calif, result, comments)

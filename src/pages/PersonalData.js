@@ -51,7 +51,7 @@ const PersonalData = ({ form }) => {
       });
       if (Array.isArray(response.data)) {
         setPersonalData(response.data);
-        // console.log(response.data);
+        // console.log(response.data);k
         SetIsloading(false);
       } else {
         setPersonalData([]);
@@ -284,9 +284,9 @@ const PersonalData = ({ form }) => {
       return <img src={images.calif_c} width='9%' alt='C' />;
     } else if (calification.toLowerCase() === 'd') {
       return <img src={images.calif_d} width='9%' alt='D' />;
-    } else if (calification === 'Faltas') {
+    } else if (calification === 'faltas' || calification === 'falta') {
       return <strong style={{ color: 'red' }}> Falta de Asistencia</strong>;
-    } else if (calification === 'Exento') {
+    } else if (calification === 'exento') {
       return (
         <span>
           <img src={images.calif_b} width='9%' alt='B Exento' />
@@ -299,10 +299,16 @@ const PersonalData = ({ form }) => {
           <strong style={{ color: 'red' }}> Falta de pago</strong>
         </span>
       );
-    } else if (calification === 'Ver comentario') {
+    } else if (calification === 'Ver comentarios') {
       return (
         <span>
           <strong> - Con comentario</strong>
+        </span>
+      );
+    }else if (calification === 'Certificado'|| calification === 'certificado') {
+      return (
+        <span>
+          <strong> - Certificado</strong>
         </span>
       );
     }
@@ -380,7 +386,8 @@ const PersonalData = ({ form }) => {
                   setSelectedEmail(suggestion.email);
                 }}
               >
-                {suggestion.name} - {suggestion.email}
+                {suggestion.name} - {suggestion.email} -{' '}
+                {suggestion.email_company || 'No company email'}
               </Dropdown.Item>
             ))}
           </Dropdown.Menu>
