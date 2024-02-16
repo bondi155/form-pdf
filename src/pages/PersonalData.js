@@ -330,7 +330,7 @@ const PersonalData = ({ form }) => {
     <Container className='container-custom'>
       <Row>
         <Col xs={12} sm={12} lg={8} md={12}>
-          <h2 className='mb-2'>Consolidate Info ({role})</h2>
+          <h2 className='mb-2'>Course Exam Information </h2>
         </Col>
         {domainName === 'admin' && (
           <Col xs={12} sm={12} lg={4} md={12}>
@@ -423,6 +423,7 @@ const PersonalData = ({ form }) => {
                           {renderImage(item.pd_company)}{' '}
                           {renderCalif(item.calif)}
                         </Card.Title>
+                        {role === 'admin' && (  
                         <div className='components'>
                           <div>
                             <Percentage
@@ -437,6 +438,7 @@ const PersonalData = ({ form }) => {
                             />
                           </div>
                         </div>
+                        )}
                         <Tab.Container
                           id='list-group-database-info'
                           defaultActiveKey='#link1'
