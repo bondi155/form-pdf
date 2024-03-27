@@ -34,6 +34,7 @@ function ReportCard() {
     airport: '',
     date: '',
     age: '',
+    company_email : '',
     flight_hours: '',
     rtari: '',
     rutine_comm: '',
@@ -222,6 +223,17 @@ function ReportCard() {
               <Col xs={12} sm={6} md={4} lg={4} className='mt-1'>
                 <Form.Group className='mb-3'>
                   <Form.Control
+                    type='email'
+                    name='company_email'
+                    required
+                    placeholder='Company Email'
+                    onChange={handleUserInput}
+                  />
+                </Form.Group>
+              </Col>
+              <Col xs={12} sm={6} md={4} lg={4} className='mt-1'>
+                <Form.Group className='mb-3'>
+                  <Form.Control
                     type='text'
                     name='date'
                     required
@@ -230,6 +242,9 @@ function ReportCard() {
                   />
                 </Form.Group>
               </Col>
+              </Row>
+              <Row>
+              {/* Segunda Fila */}
               <Col xs={12} sm={12} md={4} lg={4} className='mt-1'>
                 <Form.Group className='mb-3'>
                   <Form.Control
@@ -241,9 +256,6 @@ function ReportCard() {
                   />
                 </Form.Group>
               </Col>
-            </Row>
-            <Row>
-              {/* Segunda Fila */}
               <Col xs={12} sm={6} md={4} lg={1}>
                 <Form.Group className='mb-3'>
                   <Form.Control
@@ -267,6 +279,9 @@ function ReportCard() {
                   />
                 </Form.Group>
               </Col>
+              </Row>
+              <Row>
+              {/* Tercera Fila */}
               <Col xs={12} sm={12} md={4} lg={4}>
                 <Form.Group className='mb-3'>
                   <Form.Control
@@ -278,9 +293,6 @@ function ReportCard() {
                   />
                 </Form.Group>
               </Col>
-            </Row>
-            <Row>
-              {/* Tercera Fila */}
               <Col xs={12} sm={6} md={4} lg={4}>
                 <Form.Group className='mb-3'>
                   <Form.Control
@@ -315,51 +327,23 @@ function ReportCard() {
                 <Typography variant='h6' gutterBottom component='div'>
                   Evaluation Results:
                 </Typography>
+                <Col
+                  xs={12}
+                  sm={12}
+                  md={{ span: 8, offset: 2 }}
+                  lg={{ span: 10, offset: 1 }}
+                  className='mt-1 mb-2'
+                >
                 <StyledTableContainer component={Paper}>
                   <Table aria-label='customized table'>
                     <TableBody>
                       {/* Fila 1 */}
                       <StyledTableRow>
-                        <StyledTableCell component='th' scope='row'>
-                         Standard Phraseology
-                        </StyledTableCell>
-                        <StyledTableCell align='right'>
-                          <Col lg={8} md={10} xs={12}>
-                            <Form.Control
-                              size='sm'
-                              type='text'
-                              required
-                              maxLength='2'
-                              name='standard_phrase'
-                              onChange={handleUserInput}
-                              value={reportState.standard_phrase || ''}
-                            />
-                          </Col>
-                        </StyledTableCell>
-                        <StyledTableCell component='th' scope='row'>
-                          Routine ATC communications
-                        </StyledTableCell>
-                        <StyledTableCell align='right'>
-                          <Col lg={8} md={10} xs={12}>
-                            <Form.Control
-                              size='sm'
-                              type='text'
-                              maxLength='2'
-                              required
-                              name='standard_phrase'
-                              onChange={handleUserInput}
-                              value={reportState.standard_phrase || ''}
-                            />
-                          </Col>
-                        </StyledTableCell>
-                      </StyledTableRow>
-                      {/* Fila 2 */}
-                      <StyledTableRow>
                         <StyledTableCell component='th' scope='row' rowSpan={2}>
                           Message Structure
                         </StyledTableCell>
                         <StyledTableCell align='right' rowSpan={2}>
-                          <Col lg={8} md={10} xs={12}>
+                          <Col lg={3} md={10} xs={12}>
                             <Form.Control
                               size='sm'
                               maxLength='2'
@@ -371,59 +355,17 @@ function ReportCard() {
                             />
                           </Col>
                         </StyledTableCell>
-                        <StyledTableCell component='th' scope='row'>
-                         Structure
-                        </StyledTableCell>
-                        <StyledTableCell align='right'>
-                          <Col lg={8} md={10} xs={12}>
-                            <Form.Control
-                              size='sm'
-                              type='text'
-                              maxLength='2'
-                              required
-                              name='structure'
-                              onChange={handleUserInput}
-                              value={reportState.message_structure || ''}
-                            />
-                          </Col>
-                        </StyledTableCell>
-                      </StyledTableRow>
-                      {/* Fila 3 */}
-                      <StyledTableRow>
-                        <StyledTableCell component='th' scope='row'>
-                         Vocabulary
-                        </StyledTableCell>
-                        <StyledTableCell align='right'>
-                          <Col lg={8} md={10} xs={12}>
-                            <Form.Group>
-                              <Form.Control
-                                as='select'
-                                size='sm'
-                                name='vocabulary'
-                                required
-                                onChange={handleUserInput}
-                                value={reportState.vocabulary || ''}
-                              >
-                                                                <option value=''></option>{' '}
-
-                                {getVocabularyOptions().map((option) => (
-                                  <option key={option} value={option}>
-                                    {option}
-                                  </option>
-                                ))}
-                              </Form.Control>
-                            </Form.Group>
-                          </Col>
-                        </StyledTableCell>
                       </StyledTableRow>
                       {/* Fila 2 */}
                       <StyledTableRow>
-                        <StyledTableCell component='th' scope='row' rowSpan={3}>
-                         Communications during failure
+                      </StyledTableRow>
+                      <StyledTableRow>
+                        <StyledTableCell component='th' scope='row'>
+                        Communications during failure
                         </StyledTableCell>
-                        <StyledTableCell align='right' rowSpan={3}>
-                          <Col lg={10} md={12} xs={12} className=' me-3 p-1'>
-                            <Form.Control
+                        <StyledTableCell align='right'>
+                          <Col lg={3} md={10} xs={12}>
+                          <Form.Control
                               size='sm'
                               type='text'
                               required
@@ -434,84 +376,14 @@ function ReportCard() {
                             />
                           </Col>
                         </StyledTableCell>
-                        <StyledTableCell component='th' scope='row'>
-                         Pronunciation
-                        </StyledTableCell>
-                        <StyledTableCell align='right'>
-                          <Col lg={10} md={12} xs={12} className=' me-3 p-1'>
-                            <Form.Group>
-                              <Form.Control
-                                as='select'
-                                size='sm'
-                                name='pronunciation'
-                                required
-                                onChange={handleUserInput}
-                                value={reportState.pronunciation || ''}
-                              >
-                                                                <option value=''></option>{' '}
-
-                                {getCommuniOptions().map((option) => (
-                                  <option key={option} value={option}>
-                                    {option}
-                                  </option>
-                                ))}
-                              </Form.Control>
-                            </Form.Group>
-                          </Col>
-                        </StyledTableCell>
                       </StyledTableRow>
-                      {/* Fila 4 */}
-                      <StyledTableRow>
-                        <StyledTableCell component='th' scope='row'>
-                         Comprehension
-                        </StyledTableCell>
-                        <StyledTableCell align='right'>
-                          <Col lg={8} md={10} xs={12}>
-                            <Form.Group>
-                              <Form.Control
-                                as='select'
-                                size='sm'
-                                name='comprehension'
-                                required
-                                onChange={handleUserInput}
-                                value={reportState.comprehension || ''}
-                              >
-                                <option value=''></option>{' '}
-                                {getCommuniOptions().map((option) => (
-                                  <option key={option} value={option}>
-                                    {option}
-                                  </option>
-                                ))}
-                              </Form.Control>
-                            </Form.Group>
-                          </Col>
-                        </StyledTableCell>
-                      </StyledTableRow>
-                      <StyledTableRow>
-                        <StyledTableCell component='th' scope='row'>
-                         Interaction
-                        </StyledTableCell>
-                        <StyledTableCell align='right'>
-                          <Col lg={8} md={10} xs={12}>
-                            <Form.Control
-                              size='sm'
-                              type='text'
-                              maxLength='2'
-                              required
-                              name='interaction'
-                              onChange={handleUserInput}
-                              value={reportState.communications || ''}
-                            />
-                          </Col>
-                        </StyledTableCell>
-                      </StyledTableRow>
-                      {/* Fila 5 */}
+                      {/* Fila 3 */}
                       <StyledTableRow>
                         <StyledTableCell component='th' scope='row'>
                          Fluency of the Dialogue
                         </StyledTableCell>
                         <StyledTableCell align='right'>
-                          <Col lg={8} md={10} xs={12}>
+                          <Col lg={3} md={10} xs={12}>
                             <Form.Control
                               size='sm'
                               type='text'
@@ -523,27 +395,12 @@ function ReportCard() {
                             />
                           </Col>
                         </StyledTableCell>
-                        <StyledTableCell component='th' scope='row'>
-                         Fluency
-                        </StyledTableCell>
-                        <StyledTableCell align='right'>
-                          <Col lg={8} md={10} xs={12}>
-                            <Form.Control
-                              size='sm'
-                              type='text'
-                              maxLength='2'
-                              required
-                              name='fluency'
-                              onChange={handleUserInput}
-                              value={reportState.fluency_dialogue || ''}
-                            />
-                          </Col>
-                        </StyledTableCell>
                       </StyledTableRow>
                       <StyledTableRow></StyledTableRow>
                     </TableBody>
                   </Table>
                 </StyledTableContainer>
+                </Col>
                 <Col
                   xs={12}
                   sm={12}
