@@ -3,6 +3,29 @@ const mysql = require('mysql2/promise');
 const pool = mysql.createPool(process.env.DATABASE_URL);
 const fs = require('fs').promises;
 
+
+function determineProfile(plainEnglish, standardPhrase, communications, messageStructure, fluencyDialogue) {
+  // Primer criterio: Curso de Fraseología
+  if ((standardPhrase === 'C' || standardPhrase === 'D') && ['A', 'B', 'B+'].includes(plainEnglish)) {
+    return 'Curso de Fraseología';
+  }
+
+  // Contar cuántas C's o D's hay en communications, messageStructure, fluencyDialogue
+  const calificacionesRelevantes = [communications, messageStructure, fluencyDialogue];
+  const conteoBajo = calificacionesRelevantes.filter(calificacion => ['C', 'D'].includes(calificacion)).length;
+
+  // Segundo y tercer criterio: Curso Completo UFS o Inglés Llano y UFS
+  if (['C', 'D'].includes(plainEnglish)) {
+    if (conteoBajo <= 1) {
+      return 'Curso Completo UFS';
+    } else {
+      return 'Inglés Llano y UFS';
+    }
+  }
+
+  // Caso por defecto: Sin Curso Recomendado
+  return 'Sin Curso Recomendado';
+}
 async function InsertIntoDB(
   companyEmail,
   fullName,
@@ -19,13 +42,15 @@ async function InsertIntoDB(
   plainEnglish,
   standardPhrase,
   finalGrade,
-  observations
+  observations,
+  user,
+  profile
 ) {
   try {
     const query = `
       INSERT INTO report_cards 
-      (company_email, full_name, company, controller, airport, first_exam, age, flight_hours, rtari_level, communications, message_structure, fluency_dialogue, plain_english, standard_phrase, exam_calif, observations) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      (company_email, full_name, company, controller, airport, first_exam, age, flight_hours, rtari_level, communications, message_structure, fluency_dialogue, plain_english, standard_phrase, exam_calif, observations, user, profile) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     // Utilizamos pool.query para la inserción
@@ -46,9 +71,16 @@ async function InsertIntoDB(
       standardPhrase,
       finalGrade,
       observations,
+      user,
+      profile,
     ]);
 
-    console.log('Reporte insertado en BD:', results.insertId, results.fullName, results.companyEmail);
+    console.log(
+      'Reporte insertado en BD:',
+      results.insertId,
+      fullName,
+      companyEmail
+    );
     // No es necesario cerrar la conexión aquí, el pool gestiona eso automáticamente
   } catch (error) {
     console.error('Error al insertar en la base de datos:', error);
@@ -58,10 +90,17 @@ async function InsertIntoDB(
 // Ejecutamos esta funcion dentro de reportCardFill asi ya tiene las variables y no nos rompemos la cabeza y mete las cosas en la base de datos
 
 async function reportCardFill__(req, res) {
-  const reportState = req.body; //hay que pasa el mismo nombre del parametro del front...
+  const { reportState, usuarioControlador } = req.body; // Siempre hay que pasa el mismo nombre del parametro del front...
   //console.log(req.body);
   //console.log(reportState.full_name);
 
+  const profile = determineProfile(
+    reportState.plain_english,
+    reportState.standard_phrase,
+    reportState.communications,
+    reportState.message_structure,
+    reportState.fluency_dialogue
+  );
   try {
     const pdfPath = 'formato_report_2024.pdf';
     const formPdfBytes = await fs.readFile(pdfPath);
@@ -140,7 +179,9 @@ async function reportCardFill__(req, res) {
       reportState.plain_english,
       reportState.standard_phrase,
       reportState.final_grade,
-      reportState.observations
+      reportState.observations,
+      usuarioControlador,
+      profile
     );
 
     //Envío del PDF como descarga
@@ -150,8 +191,6 @@ async function reportCardFill__(req, res) {
     );
     res.setHeader('Content-Type', 'application/pdf');
     res.send(Buffer.from(pdfBytes));
-
-    
   } catch (error) {
     console.error(error);
     res.status(500).send('Ocurrió un error al generar el PDF');

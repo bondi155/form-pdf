@@ -25,7 +25,7 @@ const calificacionesOrdenadas = {
   C: 2,
   D: 1,
 };
-function ReportCard() {
+function ReportCard({ form }) {
   const [isloading, SetIsloading] = useState(false);
   const [reportState, setReportState] = useState({
     full_name: '',
@@ -34,54 +34,17 @@ function ReportCard() {
     airport: '',
     date: '',
     age: '',
-    company_email : '',
+    company_email: '',
     flight_hours: '',
     rtari: '',
-    rutine_comm: '',
     communications: '',
     message_structure: '',
-    fluency: '',
     fluency_dialogue: '',
-    pronunciation: '',
-    comprehension: '',
-    interaction: '',
-    structure: '',
-    vocabulary: '',
     plain_english: '',
     standard_phrase: '',
     final_grade: '',
     observations: '',
   });
-
-  const getVocabularyOptions = () => {
-    switch (reportState.message_structure) {
-      case 'A':
-        return ['A', 'B+'];
-      case 'B':
-        return ['B', 'C'];
-      case 'B+':
-        return ['B+', 'B'];
-      case 'C':
-        return ['B', 'C', 'D'];
-      default:
-        return []; // O cualquier opción por defecto
-    }
-  };
-
-  const getCommuniOptions = () => {
-    switch (reportState.communications) {
-      case 'A':
-        return ['A', 'B+'];
-      case 'B':
-        return ['B', 'C'];
-      case 'B+':
-        return ['B+', 'B'];
-      case 'C':
-        return ['B', 'C', 'D'];
-      default:
-        return []; // O cualquier opción por defecto
-    }
-  };
 
   const handleUserInput = (e) => {
     setReportState({
@@ -90,62 +53,72 @@ function ReportCard() {
     });
 
     // Llama a la función para actualizar plain_english si es uno de los campos relevantes
-    if (camposRelevantes.includes(e.target.name)) {
+    if (camposRelevantesParaPlainEnglish.includes(e.target.name)) {
+      actualizarCalificaciones(e.target.name, e.target.value);
+    }
+
+    // Llama a la función para actualizar plain_english si es uno de los campos relevantes
+    if (camposRelevantesParaFinalGrade.includes(e.target.name)) {
       actualizarCalificaciones(e.target.name, e.target.value);
     }
   };
 
+  const camposRelevantesParaPlainEnglish = [
+    'message_structure',
+    'communications',
+    'fluency_dialogue',
+  ];
+
+  const camposRelevantesParaFinalGrade = ['plain_english', 'standard_phrase'];
+
   const actualizarCalificaciones = (campo, valor) => {
-    const calificacionesActualizadas = {
+    let nuevoEstado = {
       ...reportState,
       [campo]: valor,
     };
 
-    // Calcular la calificación más baja para plain_english
-    const calificacionMasBajaPlainEnglish = camposRelevantes
-      .map((campo) => calificacionesActualizadas[campo])
-      .filter((calificacion) => calificacion in calificacionesOrdenadas)
-      .reduce((lowest, current) => {
-        return calificacionesOrdenadas[current] <
-          calificacionesOrdenadas[lowest]
-          ? current
-          : lowest;
-      }, 'A');
+    // Actualiza plain_english si el cambio fue en uno de los campos relevantes para plain_english.
+    if (camposRelevantesParaPlainEnglish.includes(campo)) {
+      nuevoEstado.plain_english = calcularCalificacionMasBaja(
+        nuevoEstado,
+        camposRelevantesParaPlainEnglish
+      );
+    }
 
-    // Calcular la calificación más baja para aviation english final grade
-    const calificacionesParaFinalGrade = [
-      calificacionesActualizadas['standard_phrase'],
-      calificacionMasBajaPlainEnglish,
-    ].filter((calificacion) => calificacion in calificacionesOrdenadas);
+    // Ahora utilizamos la nueva variable para verificar si necesitamos actualizar final_grade.
+    // Esto hace la lógica consistente y fácil de seguir.
+    if (
+      camposRelevantesParaFinalGrade.includes(campo) &&
+      nuevoEstado.plain_english &&
+      nuevoEstado.standard_phrase
+    ) {
+      nuevoEstado.final_grade = calcularCalificacionMasBaja(
+        nuevoEstado,
+        camposRelevantesParaFinalGrade
+      );
+    }
 
-    const calificacionMasBajaFinalGrade = calificacionesParaFinalGrade.reduce(
-      (lowest, current) => {
-        return calificacionesOrdenadas[current] <
-          calificacionesOrdenadas[lowest]
-          ? current
-          : lowest;
-      },
-      'A'
-    );
-
-    // Actualizar el estado con ambas calificaciones más bajas
-    setReportState((prevState) => ({
-      ...prevState,
-      plain_english: calificacionMasBajaPlainEnglish,
-      final_grade: calificacionMasBajaFinalGrade,
-    }));
+    setReportState(nuevoEstado);
   };
 
-  const camposRelevantes = [
-    'rutine_comm',
-    'structure',
-    'vocabulary',
-    'pronunciation',
-    'comprehension',
-    'interaction',
-    'fluency_dialogue',
-    'fluency',
-  ];
+  const calcularCalificacionMasBaja = (estadoActual, campos) => {
+    const valoresCalificaciones = campos
+      .map((campo) => estadoActual[campo])
+      .filter((valor) => valor in calificacionesOrdenadas);
+
+    if (valoresCalificaciones.length === 0) {
+      return ''; // Manejo de caso sin valores válidos.
+    }
+
+    // Encuentra la calificación más baja entre los valores válidos.
+    const calificacionMasBaja = valoresCalificaciones.reduce((prev, current) =>
+      calificacionesOrdenadas[prev] <= calificacionesOrdenadas[current]
+        ? prev
+        : current
+    );
+
+    return calificacionMasBaja;
+  };
 
   const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
     border: '4px solid #4f80bd',
@@ -154,7 +127,6 @@ function ReportCard() {
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     border: '0.2px solid grey',
-    
   }));
 
   const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -163,13 +135,19 @@ function ReportCard() {
     },
   }));
 
+  const usuarioControlador = form.username;
+
   const handleSubmit = async (e) => {
     e.preventDefault(); // Esto debería ir al principio para prevenir la acción por defecto en cualquier caso de refresh
     try {
       SetIsloading(true);
-      const response = await axios.post(`${API_URL}/fillPdf`, reportState, {
-        responseType: 'blob', // Esto está correcto para recibir un archivo binario.
-      });
+      const response = await axios.post(
+        `${API_URL}/fillPdf`,
+        { reportState, usuarioControlador },
+        {
+          responseType: 'blob', // Esto esta correcto para recibir un archivo binario.
+        }
+      );
       const formattedDate = reportState.date
         .replace(/\//g, '_')
         .replace(/\s+/g, '_');
@@ -204,7 +182,7 @@ function ReportCard() {
           <Form onSubmit={handleSubmit}>
             <Row>
               <Col xs={12} sm={12} lg={8} md={12}>
-                <h2 className='mb-1'>Report Card Form</h2>
+                <h2 className='mb-1'>Report Card Form {usuarioControlador}</h2>
               </Col>
             </Row>
             <Row className='mt-2'>
@@ -242,8 +220,8 @@ function ReportCard() {
                   />
                 </Form.Group>
               </Col>
-              </Row>
-              <Row>
+            </Row>
+            <Row>
               {/* Segunda Fila */}
               <Col xs={12} sm={12} md={4} lg={4} className='mt-1'>
                 <Form.Group className='mb-3'>
@@ -279,8 +257,8 @@ function ReportCard() {
                   />
                 </Form.Group>
               </Col>
-              </Row>
-              <Row>
+            </Row>
+            <Row>
               {/* Tercera Fila */}
               <Col xs={12} sm={12} md={4} lg={4}>
                 <Form.Group className='mb-3'>
@@ -334,72 +312,75 @@ function ReportCard() {
                   lg={{ span: 10, offset: 1 }}
                   className='mt-1 mb-2'
                 >
-                <StyledTableContainer component={Paper}>
-                  <Table aria-label='customized table'>
-                    <TableBody>
-                      {/* Fila 1 */}
-                      <StyledTableRow>
-                        <StyledTableCell component='th' scope='row' rowSpan={2}>
-                          Message Structure
-                        </StyledTableCell>
-                        <StyledTableCell align='right' rowSpan={2}>
-                          <Col lg={3} md={10} xs={12}>
-                            <Form.Control
-                              size='sm'
-                              maxLength='2'
-                              required
-                              type='text'
-                              name='message_structure'
-                              onChange={handleUserInput}
-                              value={reportState.message_structure || ''}
-                            />
-                          </Col>
-                        </StyledTableCell>
-                      </StyledTableRow>
-                      {/* Fila 2 */}
-                      <StyledTableRow>
-                      </StyledTableRow>
-                      <StyledTableRow>
-                        <StyledTableCell component='th' scope='row'>
-                        Communications during failure
-                        </StyledTableCell>
-                        <StyledTableCell align='right'>
-                          <Col lg={3} md={10} xs={12}>
-                          <Form.Control
-                              size='sm'
-                              type='text'
-                              required
-                              maxLength='2'
-                              name='communications'
-                              onChange={handleUserInput}
-                              value={reportState.communications || ''}
-                            />
-                          </Col>
-                        </StyledTableCell>
-                      </StyledTableRow>
-                      {/* Fila 3 */}
-                      <StyledTableRow>
-                        <StyledTableCell component='th' scope='row'>
-                         Fluency of the Dialogue
-                        </StyledTableCell>
-                        <StyledTableCell align='right'>
-                          <Col lg={3} md={10} xs={12}>
-                            <Form.Control
-                              size='sm'
-                              type='text'
-                              required
-                              maxLength='2'
-                              name='fluency_dialogue'
-                              onChange={handleUserInput}
-                              value={reportState.fluency_dialogue || ''}
-                            />
-                          </Col>
-                        </StyledTableCell>
-                      </StyledTableRow>
-                      <StyledTableRow></StyledTableRow>
-                    </TableBody>
-                  </Table>
-                </StyledTableContainer>
+                  <StyledTableContainer component={Paper}>
+                    <Table aria-label='customized table'>
+                      <TableBody>
+                        {/* Fila 1 */}
+                        <StyledTableRow>
+                          <StyledTableCell
+                            component='th'
+                            scope='row'
+                            rowSpan={2}
+                          >
+                            Message Structure
+                          </StyledTableCell>
+                          <StyledTableCell align='right' rowSpan={2}>
+                            <Col lg={3} md={10} xs={12}>
+                              <Form.Control
+                                size='sm'
+                                maxLength='2'
+                                required
+                                type='text'
+                                name='message_structure'
+                                onChange={handleUserInput}
+                                value={reportState.message_structure || ''}
+                              />
+                            </Col>
+                          </StyledTableCell>
+                        </StyledTableRow>
+                        {/* Fila 2 */}
+                        <StyledTableRow></StyledTableRow>
+                        <StyledTableRow>
+                          <StyledTableCell component='th' scope='row'>
+                            Communications during failure
+                          </StyledTableCell>
+                          <StyledTableCell align='right'>
+                            <Col lg={3} md={10} xs={12}>
+                              <Form.Control
+                                size='sm'
+                                type='text'
+                                required
+                                maxLength='2'
+                                name='communications'
+                                onChange={handleUserInput}
+                                value={reportState.communications || ''}
+                              />
+                            </Col>
+                          </StyledTableCell>
+                        </StyledTableRow>
+                        {/* Fila 3 */}
+                        <StyledTableRow>
+                          <StyledTableCell component='th' scope='row'>
+                            Fluency of the Dialogue
+                          </StyledTableCell>
+                          <StyledTableCell align='right'>
+                            <Col lg={3} md={10} xs={12}>
+                              <Form.Control
+                                size='sm'
+                                type='text'
+                                required
+                                maxLength='2'
+                                name='fluency_dialogue'
+                                onChange={handleUserInput}
+                                value={reportState.fluency_dialogue || ''}
+                              />
+                            </Col>
+                          </StyledTableCell>
+                        </StyledTableRow>
+                        <StyledTableRow></StyledTableRow>
+                      </TableBody>
+                    </Table>
+                  </StyledTableContainer>
                 </Col>
                 <Col
                   xs={12}
@@ -413,7 +394,7 @@ function ReportCard() {
                       <TableBody>
                         <TableRow>
                           <TableCell component='th' scope='row'>
-                           Standard Phraseology
+                            Standard Phraseology
                           </TableCell>
                           <TableCell align='right'>
                             <Col lg={3} md={6} xs={3}>
@@ -431,7 +412,7 @@ function ReportCard() {
                         </TableRow>
                         <TableRow>
                           <TableCell component='th' scope='row'>
-                           Plain English
+                            Plain English
                           </TableCell>
                           <TableCell align='right'>
                             <Col lg={3} md={6} xs={3}>
@@ -449,7 +430,7 @@ function ReportCard() {
                         </TableRow>
                         <TableRow>
                           <TableCell component='th' scope='row'>
-                           Aviation English Final Grade
+                            Aviation English Final Grade
                           </TableCell>
                           <TableCell align='right'>
                             <Col lg={3} md={6} xs={3}>
@@ -503,9 +484,7 @@ function ReportCard() {
                     </TableHead>
                     <TableBody>
                       <TableRow>
-                        <StyledTableCell align='center'>
-                          A
-                        </StyledTableCell>
+                        <StyledTableCell align='center'>A</StyledTableCell>
                         <StyledTableCell align='center'>
                           Very Good
                         </StyledTableCell>
@@ -514,18 +493,14 @@ function ReportCard() {
                         </StyledTableCell>
                       </TableRow>
                       <TableRow>
-                        <StyledTableCell align='center'>
-                         B+
-                        </StyledTableCell>
+                        <StyledTableCell align='center'>B+</StyledTableCell>
                         <StyledTableCell align='center'>Good</StyledTableCell>
                         <StyledTableCell align='center'>
                           Recommended recurrent training
                         </StyledTableCell>
                       </TableRow>
                       <TableRow>
-                        <StyledTableCell align='center'>
-                         B
-                        </StyledTableCell>
+                        <StyledTableCell align='center'>B</StyledTableCell>
                         <StyledTableCell align='center'>
                           Minimum Operational, with major improvement
                           opportunities*
@@ -535,9 +510,7 @@ function ReportCard() {
                         </StyledTableCell>
                       </TableRow>
                       <TableRow>
-                        <StyledTableCell align='center'>
-                         C
-                        </StyledTableCell>
+                        <StyledTableCell align='center'>C</StyledTableCell>
                         <StyledTableCell align='center'>
                           Fail. Insufficient communication skills
                         </StyledTableCell>
@@ -546,9 +519,7 @@ function ReportCard() {
                         </StyledTableCell>
                       </TableRow>
                       <TableRow>
-                        <StyledTableCell align='center'>
-                         D
-                        </StyledTableCell>
+                        <StyledTableCell align='center'>D</StyledTableCell>
                         <StyledTableCell align='center'>
                           Fail. Communication Unsuccessful
                         </StyledTableCell>
@@ -573,7 +544,7 @@ function ReportCard() {
                   <Card.Body>
                     <Card.Title>
                       {' '}
-                     Observations
+                      Observations
                       <Col
                         xs={{ span: 2, offset: 10 }}
                         md={{ span: 2, offset: 10 }}

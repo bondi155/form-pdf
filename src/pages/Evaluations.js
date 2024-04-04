@@ -242,6 +242,11 @@ function Evaluations() {
       headerName: 'Result',
       width: 90,
     },
+    {
+      field: 'profile',
+      headerName: 'Recommended Course',
+      width: 160,
+    },
     /*
     {
       field: 'upload',
@@ -266,7 +271,7 @@ function Evaluations() {
     {
       field: 'report_url',
       headerName: 'Report Card Link',
-      width: 245,
+      width: 145,
       renderCell: (params) => {
         const handleEditClick = () => {
           setIsEditing(true);

@@ -106,7 +106,7 @@ function App() {
             path='/reportCard'
             element={
               <PrivateRoute islogin={islogin}>
-                <ReportCard />{' '}
+                <ReportCard form={form} />{' '}
               </PrivateRoute>
             }
           />

@@ -271,7 +271,12 @@ function autocompleteName(req, res) {
 }
 //evaluation data select
 function consultaEvalData__(req, res) {
-  const sqlGetEvalData = 'SELECT * FROM evaluation_data ORDER BY id DESC;';
+  const sqlGetEvalData = `
+  SELECT ed.*, rc.profile
+  FROM evaluation_data ed
+  LEFT JOIN report_cards rc ON ed.company_email = rc.company_email
+  ORDER BY ed.id DESC;
+`;
 
   pool.query(sqlGetEvalData, (err, result) => {
     if (err) {
