@@ -5,7 +5,6 @@ import { API_URL } from '../config/config.js';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import moment from 'moment';
-import esLocale from 'date-fns/locale/es';
 import {
   TableContainer,
   Paper,
