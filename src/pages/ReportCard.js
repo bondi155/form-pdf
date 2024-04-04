@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
 import '../css/App.css';
 import { API_URL } from '../config/config.js';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import moment from 'moment';
+import esLocale from 'date-fns/locale/es';
 import {
   TableContainer,
   Paper,
@@ -45,7 +49,44 @@ function ReportCard({ form }) {
     final_grade: '',
     observations: '',
   });
+  // Manipulacíon de fecha para controladores formato dd/mmm/aa
+  const [startDate, setStartDate] = useState(new Date());
 
+  const handleChange = (date) => {
+    setStartDate(date);
+    // Formatea la fecha inicialmente en inglés para visualización
+    const formattedDateForDisplay = moment(date).format('DD-MMM-YY');
+  
+    // Mapa para convertir los meses de inglés a español
+    const monthMap = {
+      'Jan': 'ene',
+      'Feb': 'feb',
+      'Mar': 'mar',
+      'Apr': 'abr',
+      'May': 'may',
+      'Jun': 'jun',
+      'Jul': 'jul',
+      'Aug': 'ago',
+      'Sep': 'sep',
+      'Oct': 'oct',
+      'Nov': 'nov',
+      'Dec': 'dic',
+    };
+  
+    // Divide la fecha formateada para aislar el mes y convertirlo
+    const parts = formattedDateForDisplay.split('-');
+    const monthInEnglish = parts[1];
+    const monthInSpanish = monthMap[monthInEnglish];
+  
+    // Construye la fecha con el mes en español
+    const formattedDateInSpanish = `${parts[0]}-${monthInSpanish ? monthInSpanish : monthInEnglish}-${parts[2]}`;
+  
+    // Actualiza el estado con la fecha convertida a español
+    setReportState({
+      ...reportState,
+      date: formattedDateInSpanish.toLowerCase(), // Convierte a minúsculas si es necesario
+    });
+  };
   const handleUserInput = (e) => {
     setReportState({
       ...reportState,
@@ -211,12 +252,13 @@ function ReportCard({ form }) {
               </Col>
               <Col xs={12} sm={6} md={4} lg={4} className='mt-1'>
                 <Form.Group className='mb-3'>
-                  <Form.Control
-                    type='text'
+                  <DatePicker
+                    selected={startDate}
+                    onChange={handleChange}
+                    dateFormat='dd/MM/yyyy' // Formato de visualización en el picker
+                    locale='en-US'
                     name='date'
                     required
-                    placeholder='Date'
-                    onChange={handleUserInput}
                   />
                 </Form.Group>
               </Col>
