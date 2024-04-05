@@ -222,7 +222,7 @@ function ReportCard({ form }) {
           <Form onSubmit={handleSubmit}>
             <Row>
               <Col xs={12} sm={12} lg={8} md={12}>
-                <h2 className='mb-1'>Report Card Form {usuarioControlador}</h2>
+                <h2 className='mb-1'>Report Card Form</h2>
               </Col>
             </Row>
             <Row className='mt-2'>
