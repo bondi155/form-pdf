@@ -30,7 +30,7 @@ async function queryforEmail(mes, anio) {
 // Ejemplo de función para enviar un correo electrónico transaccional
 async function enviarCorreoTransaccional(result) {
   for (const persona of result) {
-    if (persona.applicant_area === 'Tripulación') {
+    if (persona.applicant_area === 'Tripulación' || persona.applicant_area === 'Tripulacion') {
       try {
         const emailData = {
           sender: {
