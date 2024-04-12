@@ -42,6 +42,7 @@ SELECT
   pd.calif, 
   pd.status, 
   pd.comments_pd,
+  pd.report_pd_url AS pd_report,
   GROUP_CONCAT(ed.id) AS ed_ids, 
   GROUP_CONCAT(ed.base) AS ed_bases, 
   GROUP_CONCAT(ed.company_email) AS ed_company_emails, 

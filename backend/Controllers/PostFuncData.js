@@ -72,7 +72,7 @@ function deleteEvaluation__(req, res) {
   });
 }
 
-//Report card url from drive
+//Report card url from drive evaluation
 function reportUrl__(req, res) {
   const id = req.params.id;
   const urlDrive = req.body.urlDrive;
@@ -92,6 +92,31 @@ function reportUrl__(req, res) {
     res.status(200).send('Success updating Report Card URL in Evaluations');
   });
 }
+
+//Report card url from drive personal_data
+function reportUrlpd__(req, res) {
+  const id = req.params.id;
+  const reportUrlpd = req.body.urlpd;
+
+  console.log(reportUrlpd, id);
+  const sqlUploadReportUrlpd =
+    'UPDATE personal_data SET report_pd_url = ? WHERE id = ?';
+  pool.query(sqlUploadReportUrlpd, [reportUrlpd, id], (error, result) => {
+    if (error) {
+      console.error(
+        'Error in sqlUploadReportUrl query..Check DB connection',
+        error
+      );
+      console.log(error);
+
+      return res
+        .status(500)
+        .send('Error in sqlUploadReportUrl query..Check DB connection');
+    }
+    res.status(200).send('Success updating Report Card URL in Evaluations');
+  });
+}
+
 
 //upload report card
 /*
@@ -164,4 +189,5 @@ module.exports = {
   editCalif__,
   reportUrl__,
   comments__,
+  reportUrlpd__,
 };

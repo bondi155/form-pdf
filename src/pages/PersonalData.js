@@ -23,6 +23,7 @@ import Swal from 'sweetalert2';
 import images from '../components/Imagenes.js';
 //import SpinnerComponent from '../components/Spinner.js';
 import PlaneSpinner from '../components/planeSpinner';
+import { FaCheck, FaPencilAlt, FaPlus } from 'react-icons/fa';
 
 const PersonalData = ({ form }) => {
   const domainParts = form.username.split('@')[1].split('.');
@@ -37,7 +38,8 @@ const PersonalData = ({ form }) => {
   const [match, Setmatch] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState('');
   const [personalDataFromEffect, setPersonalDataFromEffect] = useState([]);
-  // const [newComment, setNewComment] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+  const [reportUrlpd, setReportUrlpd] = useState('');
   const [, setSelectedId] = useState(null);
   // traemos info para personal_data . llamamos a la api..
   const fetchPerData = async () => {
@@ -68,6 +70,17 @@ const PersonalData = ({ form }) => {
       Swal.fire('Ooops', 'Unable to get data', 'error');
       console.log(err);
     }
+  };
+
+  const handleEditClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleSaveClick = () => {
+    // Aquí deberías hacer una llamada a la API para actualizar el URL del reporte
+    console.log('Saving report URL:', reportUrlpd);
+    // Suponemos que la llamada a la API fue exitosa
+    setIsEditing(false);
   };
 
   //muestra los datos del mail seleccionado en la lista con un click , del mapeo
@@ -234,27 +247,28 @@ const PersonalData = ({ form }) => {
 
   //actualizacion de comentario para cada id
 
-  /*const handleSendComment = async () => {
+  const updateReportUrlpd = async (id) => {
     try {
-      const response = await axios.put(`${API_URL}/updateComment`, {
-        id: selectedId,
-        comment: newComment,
+      const response = await axios.put(`${API_URL}/updateUrlpd/${id}`, {
+        urlpd: reportUrlpd,
       });
       if (response.status === 200) {
         Swal.fire({
           icon: 'success',
-          title: 'Comment Updated',
+          title: 'Url Updated',
         });
+        setReportUrlpd(response.data.reportUrlpd); 
+
       }
     } catch (err) {
       console.log(err);
       Swal.fire({
         icon: 'error',
-        title: 'error',
+        title: `Error ${err}`,
       });
     }
   };
-*/
+
   function renderImage(empresa) {
     if (!empresa) {
       return 'No company charged';
@@ -305,7 +319,10 @@ const PersonalData = ({ form }) => {
           <strong> - Con comentario</strong>
         </span>
       );
-    }else if (calification === 'Certificado'|| calification === 'certificado') {
+    } else if (
+      calification === 'Certificado' ||
+      calification === 'certificado'
+    ) {
       return (
         <span>
           <strong> - Certificado</strong>
@@ -423,21 +440,21 @@ const PersonalData = ({ form }) => {
                           {renderImage(item.pd_company)}{' '}
                           {renderCalif(item.calif)}
                         </Card.Title>
-                        {role === 'admin' && (  
-                        <div className='components'>
-                          <div>
-                            <Percentage
-                              seriesValue={item.asist}
-                              labelOption={'Assistance'}
-                            />
+                        {role === 'admin' && (
+                          <div className='components'>
+                            <div>
+                              <Percentage
+                                seriesValue={item.asist}
+                                labelOption={'Assistance'}
+                              />
+                            </div>
+                            <div>
+                              <Percentage
+                                seriesValue={item.payment}
+                                labelOption={'Pay'}
+                              />
+                            </div>
                           </div>
-                          <div>
-                            <Percentage
-                              seriesValue={item.payment}
-                              labelOption={'Pay'}
-                            />
-                          </div>
-                        </div>
                         )}
                         <Tab.Container
                           id='list-group-database-info'
@@ -482,6 +499,9 @@ const PersonalData = ({ form }) => {
                                     Comments{' '}
                                   </ListGroup.Item>
                                 )}
+                                <ListGroup.Item action href='#link7'>
+                                  Final Exam
+                                </ListGroup.Item>
                               </ListGroup>
                             </Col>
                             <Col sm={8}>
@@ -669,6 +689,90 @@ const PersonalData = ({ form }) => {
                                   <ListGroup>
                                     <ListGroup.Item>
                                       <strong>{item.comments_pd}</strong>
+                                    </ListGroup.Item>
+                                  </ListGroup>
+                                </Tab.Pane>
+                                <Tab.Pane eventKey='#link7'>
+                                  <ListGroup>
+                                    <ListGroup.Item>
+                                      {role === 'admin' ? (
+                                        isEditing ? (
+                                          <InputGroup className='mb-3'>
+                                            <FormControl
+                                              type='text'
+                                              value={reportUrlpd}
+                                              placeholder={item.pd_report}
+                                              onChange={(e) =>
+                                                setReportUrlpd(e.target.value)
+                                              }
+                                              style={{ width: '70%' }}
+                                            />
+                                            <Button
+                                              variant='outline'
+                                              onClick={() =>
+                                                updateReportUrlpd(item.pd_id)
+                                              }
+                                            >
+                                              <FaCheck
+                                                color='green'
+                                                size={20}
+                                              />
+                                            </Button>
+                                          </InputGroup>
+                                        ) : (
+                                          <div>
+                                            {item.pd_report ? (
+                                              <div>
+                                                <a
+                                                  href={item.pd_report}
+                                                  target='_blank'
+                                                  rel='noopener noreferrer'
+                                                >
+                                                  View Report Card{' '}
+                                                </a>
+
+                                                <Button
+                                                  variant='outline'
+                                                  onClick={handleEditClick}
+                                                  size='sm'
+                                                >
+                                                  <FaPencilAlt
+                                                    color='grey'
+                                                    className='mb-1'
+                                                    size={15}
+                                                  />
+                                                </Button>
+                                              </div>
+                                            ) : (
+                                              <div>
+                                                <Button
+                                                  variant='outline-secondary'
+                                                  onClick={handleEditClick}
+                                                  className='mt-2'
+                                                  size='sm'
+                                                >
+                                                  <FaPlus className='mb-1' />{' '}
+                                                  Final Exam Report Url{' '}
+                                                </Button>
+                                              </div>
+                                            )}
+                                          </div>
+                                        )
+                                      ) : (
+                                        <div>
+                                          {item.pd_report ? (
+                                            <a
+                                              href={item.pd_report}
+                                              target='_blank'
+                                              rel='noopener noreferrer'
+                                            >
+                                              View Report Card
+                                            </a>
+                                          ) : (
+                                            'No Report Available'
+                                          )}
+                                        </div>
+                                      )}{' '}
                                     </ListGroup.Item>
                                   </ListGroup>
                                 </Tab.Pane>

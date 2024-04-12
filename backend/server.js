@@ -128,6 +128,8 @@ app.get('/getDateEval', authenticateToken, getDataController.getDateEval__); //g
 //post y put functions
 app.put('/editCalif', authenticateToken, PostDataController.editCalif__); //Edit Calification in data grid evaluation page (admin)
 app.put('/updateComment', authenticateToken, PostDataController.comments__); //update comment personal_Data
+app.put('/updateUrlpd/:id', authenticateToken, PostDataController.reportUrlpd__); //update comment personal_Data
+
 app.put('/reportUrl/:id', authenticateToken, PostDataController.reportUrl__); //subir url en data grid del google drive
 app.post('/createUser', authenticateToken, PostDataController.userCreate__); //creation of users
 app.post('/fillPdf', authenticateToken, reportPdfController.reportCardFill__); //creation of users
