@@ -74,13 +74,12 @@ function Login({ setIslogin, form, setForm }) {
       <PlaneSpinner />
     ) : (
       <Form onSubmit={handleSubmit} className='login-form'>
-        <img src={logo} className='App-logo' alt='logo' />
-  
+        <img src={logo} className='App-logo' alt='logo' />  
         <Form.Group controlId='formBasicUser'>
           <Form.Label></Form.Label>
           <Form.Control
             type='text'
-            placeholder='User'
+            placeholder='Usuario'
             onChange={handleInputChange}
             name='username'
             autoComplete="username"
@@ -91,7 +90,7 @@ function Login({ setIslogin, form, setForm }) {
           <Form.Control
             type='password'
             name='password'
-            placeholder='Password'
+            placeholder='Contraseña'
             onChange={handleInputChange}
             autoComplete='new-password'
           />

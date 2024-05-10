@@ -14,7 +14,6 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import PlaneSpinner from './components/planeSpinner';
 import ConsultAirline from './pages/ConsultAirline';
-import DriveSearch from './pages/DriveSearch';
 import EmailSender from './pages/EmailSender';
 function App() {
   const [islogin, setIslogin] = useState(false);
@@ -80,15 +79,6 @@ function App() {
             element={
               <PrivateRoute islogin={islogin}>
                 <Home  form={form} />
-              </PrivateRoute>
-            }
-            
-          />
-          <Route
-            path='/GoogleDriveSeach'
-            element={
-              <PrivateRoute islogin={islogin}>
-                <DriveSearch />
               </PrivateRoute>
             }
             

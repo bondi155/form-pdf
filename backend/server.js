@@ -5,7 +5,7 @@ const express = require('express');
 const rateLimit = require('express-rate-limit');
 const app = express();
 app.set('trust proxy', 1);
-const port = process.env.PORT || 5018;
+const port = process.env.PORT || 5022;
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const getDataController = require('./Controllers/GetFuncData');
@@ -18,18 +18,6 @@ const excelController = require('./Controllers/EvaluationsXlsx');
 const {EmailFunctions} = require ('./Controllers/EmailCalif');
 //multer
 const upload = multer({ dest: 'uploads/' });
-//multer storage para el report pdf
-/*const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'reports/');
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  },
-});
-const uploadPdf = multer({ storage: storage });
-//termina multer
-*/
 const jwt = require('jsonwebtoken');
 const secretkey = process.env.JWT_SECRET;
 app.use(

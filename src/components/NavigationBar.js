@@ -9,7 +9,7 @@ import { FiLogOut } from 'react-icons/fi';
 import '../css/App.css';
 function NavigationBar({ setIslogin, form }) {
   const navigate = useNavigate();
-  
+
   const handleLogout = () => {
     localStorage.removeItem('jwtToken');
     axios.defaults.headers.common['Authorization'] = '';
@@ -39,7 +39,6 @@ function NavigationBar({ setIslogin, form }) {
       >
         <Link to='/home' className='nav-link'>
           <Navbar.Brand className='font-weight-bold text-muted'>
-            
             <img
               src={logoNav}
               width='68'
@@ -52,7 +51,7 @@ function NavigationBar({ setIslogin, form }) {
 
         <Navbar.Toggle onClick={handleToggleClick} />
 
-   <Navbar.Collapse className='justify-content-end'>
+        <Navbar.Collapse className='justify-content-end'>
           <Nav>
             {form.role === 'admin' && (
               <>
@@ -61,14 +60,14 @@ function NavigationBar({ setIslogin, form }) {
                   className='nav-link'
                   onClick={handleLinkClick}
                 >
-                  Users
+                  Usuarios
                 </Link>
                 <Link
                   to='/reportCard'
                   className='nav-link'
                   onClick={handleLinkClick}
                 >
-                  Report Card
+                  Formulario{' '}
                 </Link>
                 <Link
                   to='/emailSender'
@@ -91,28 +90,25 @@ function NavigationBar({ setIslogin, form }) {
                 >
                   Evaluations
                 </Link>
-                <Link to='/GoogleDriveSeach' className='nav-link' onClick={handleLinkClick}>
-                  Drive Browser
+                          </>
+            )}
+            {form.role === 'company' && (
+              <>
+                <Link
+                  to='/consultAirlineGrid'
+                  className='nav-link'
+                  onClick={handleLinkClick}
+                >
+                  Consult Airline
+                </Link>
+                <Link
+                  to='/consolidateInformation'
+                  className='nav-link'
+                  onClick={handleLinkClick}
+                >
+                  Course exams
                 </Link>
               </>
-            )}
-             {form.role === 'company' && (
-              <>   
-            <Link
-              to='/consultAirlineGrid'
-              className='nav-link'
-              onClick={handleLinkClick}
-            >
-              Consult Airline
-            </Link>
-              <Link
-              to='/consolidateInformation'
-              className='nav-link'
-              onClick={handleLinkClick}
-            >
-              Course exams
-            </Link>
-            </>
             )}
             <Button
               variant='dark'

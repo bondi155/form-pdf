@@ -178,7 +178,7 @@ h6 {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #00b0e6;
+  background-color: #103e57;
   /* color del botón */
   color: white;
   width: 180px;
@@ -198,7 +198,7 @@ h6 {
 }
 
 .semi-circle-login-btn:hover {
-  background-color: #0692bd;
+  background-color: #909498;
 }
 
 /*Termina Login*/
