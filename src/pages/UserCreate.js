@@ -105,7 +105,7 @@ function UserCreate({userCreate, setUserCreate}) {
   return (
     <>
     <Container className='container-custom'>
-      <h2>User Create Page </h2>
+      <h2>Usuarios </h2>
       <form onSubmit={addNewUser}>
         <Row className='mt-5'>
           <Col lg={4} sm={4} md={4}>
@@ -114,7 +114,7 @@ function UserCreate({userCreate, setUserCreate}) {
                 type='text'
                 name='username'
                 required
-                placeholder='User Name'
+                placeholder='Usuario'
                 onChange={handleUserInput}
               />
             </Form.Group>
@@ -130,7 +130,7 @@ function UserCreate({userCreate, setUserCreate}) {
               >
                 <option disabled value=''>
                   {' '}
-                  User Type{' '}
+                 Tipo de Usuario{' '}
                 </option>
                 <option value='company'>Company</option>
                 <option value='controller'>Controller</option>
@@ -144,7 +144,7 @@ function UserCreate({userCreate, setUserCreate}) {
                 type='password'
                 required
                 name='password'
-                placeholder='Password'
+                placeholder='Contraseña'
                 onChange={handleUserInput}
               />
             </Form.Group>
@@ -156,7 +156,7 @@ function UserCreate({userCreate, setUserCreate}) {
             md={{ span: 3, offset: 5 }}
           >
             <Button className='mb-5' variant='outline-secondary' type='submit'>
-              Create User
+              Crear Usuario
             </Button>
           </Col>
         </Row>

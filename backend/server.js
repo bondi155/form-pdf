@@ -12,8 +12,6 @@ const getDataController = require('./Controllers/GetFuncData');
 const PostDataController = require('./Controllers/PostFuncData');
 const reportPdfController = require('./Controllers/ReportsPdf');
 //const mysql = require('mysql2');
-const { authorize, listMajors } = require('./Controllers/FormApi');
-const { authorizeDrive, listFiles } = require('./Controllers/DriveApi');
 const excelController = require('./Controllers/EvaluationsXlsx');
 const {EmailFunctions} = require ('./Controllers/EmailCalif');
 //multer
@@ -90,28 +88,17 @@ app.use(limiter);
 
 app.use(cors());
 app.use(express.json());
-app.get(
-  '/getPersonalData',
-  authenticateToken,
-  getDataController.consultaData__
-); //get personal data with join
+
+ //get personal data with join
 app.get(
   '/getDataEvaluations',
   authenticateToken,
   getDataController.consultaEvalData__
 ); //get evaluation data in data-grid
-app.get('/suggestNames', authenticateToken, getDataController.autocompleteName); //suggest list of names
-app.get(
-  '/getCompanies',
-  authenticateToken,
-  getDataController.getAllCompanies__
-); //all companies for admin
-app.get('/examData', authenticateToken, getDataController.getExamData__); //info graficos
+
+//all companies for admin
 app.post('/loginUsers', authenticateToken, getDataController.loginUsers__); //login
-app.get('/companyEval', authenticateToken, getDataController.EvalCompany__); //get evaluation by company
 app.get('/getUserList', authenticateToken, getDataController.listUsers__); //get user for list
-app.get('/listLastEvals', authenticateToken, getDataController.listLastEvals__); //get the last 10 evaluations
-app.get('/getDateEval', authenticateToken, getDataController.getDateEval__); //get date of the last evaluation
 
 //post y put functions
 app.put('/editCalif', authenticateToken, PostDataController.editCalif__); //Edit Calification in data grid evaluation page (admin)
@@ -147,58 +134,7 @@ app.get('/sendEmails', authenticateToken, async (req, res) => {
   }
 });
 
-//get de drive api
-app.get('/googleDrive', authenticateToken, async (req, res) => {
-  try {
-    const searchInput = req.query.searchInput ?? '';
-    const authDrive = await authorizeDrive();
-    const files = await listFiles(authDrive, req, res);
-    if (files && files.length > 0) {
-      const messageRes = {
-        message: 'Success getting list files from Google Drive Api',
-        searchInput,
-      };
-      res.status(200).json({
-        messageRes,
-        code: 'SUCCESS',
-        list: files,
-      });
-      console.log(messageRes);
-    } else {
-      res.status(500).json({
-        message: 'ERROR getting data from drive',
-        code: 'ERROR_CONN_FILES',
-        list: [],
-      });
-    }
-  } catch (err) {
-    console.error('error in Google Drive Api Comunication', err);
-  }
-});
-//get sheet data with validation
-app.get('/getDataSheets', authenticateToken, async (req, res) => {
-  try {
-    const auth = await authorize();
-    const { insertedEmails, duplicatedState } = await listMajors(auth, req);
-    if (duplicatedState) {
-      res.status(200).json({
-        code: 'DUPLICATED',
-        message:
-          'Success getting Data from sheet (You have duplicated rows, dont worry it were not inserted)',
-        emails: insertedEmails,
-      });
-    } else {
-      res.status(200).json({
-        code: 'INSERT_OKAY',
-        message: 'Success getting Data from sheet',
-        emails: insertedEmails,
-      });
-    }
-  } catch (error) {
-    console.error('Error in google sheets Api', error);
-    res.status(500).send('Error getting data from Google Sheets Api', error);
-  }
-});
+
 // Ruta para el manejo del archivo Excel
 app.post(
   '/uploadfile',
@@ -207,17 +143,7 @@ app.post(
   excelController.EvaluationsXlsx
 );
 
-/* 
-//ruta para subir reportcard a cada id especifico
-  app.use('/reports', express.static('./reports'));
 
-  app.post(
-    '/uploadReport/:id',
-    authenticateToken,
-    uploadPdf.single('file'),
-    PostDataController.reportPdf__
-  );
-  */
 //ruta descargar report card
 app.get('/download/:filename', authenticateToken, getDataController.download__); //download file cancell
 

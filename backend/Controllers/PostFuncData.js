@@ -118,31 +118,6 @@ function reportUrlpd__(req, res) {
 }
 
 
-//upload report card
-/*
-function reportPdf__(req, res) {
-
-  if (!req.file) {
-    return res.status(400).send({message:'No se encontró el archivo', code:'FILE_NOT_FOUND'});
-  }
-  const id = req.params.id;
-  const file = req.file;
-  console.log(req.file);
-console.log(id);
-  const sqlUploadReport =
-    'UPDATE evaluation_data SET report_url = ? WHERE id = ?';
-
-  pool.query(sqlUploadReport, [file.path, id], (error, result) => {
-    if (error) {
-      console.log(error);
-      return res.status(500).send('Hubo un error al subir el archivo');
-    }
-
-    res.status(200).send('Archivo subido con éxito');
-  });
-}
-*/
-
 function comments__(req, res) {
   const id = req.body.id;
   const comment = req.body.comment;
