@@ -69,26 +69,20 @@ function NavigationBar({ setIslogin, form }) {
                 >
                   Formulario{' '}
                 </Link>
+                {/* 
                 <Link
                   to='/emailSender'
                   className='nav-link'
                   onClick={handleLinkClick}
                 >
                   Email Sender
-                </Link>
-                <Link
-                  to='/consolidateInformation'
-                  className='nav-link'
-                  onClick={handleLinkClick}
-                >
-                  Consolidate
-                </Link>
+                </Link>*/}
                 <Link
                   to='/evaluationData'
                   className='nav-link'
                   onClick={handleLinkClick}
                 >
-                  Evaluations
+                  Listado
                 </Link>
                           </>
             )}

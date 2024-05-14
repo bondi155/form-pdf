@@ -10,11 +10,7 @@ const path = require('path');
 //evaluation data select
 function consultaEvalData__(req, res) {
   const sqlGetEvalData = `
-  SELECT ed.*, rc.profile
-  FROM evaluation_data ed
-  LEFT JOIN report_cards rc ON ed.company_email = rc.company_email
-  ORDER BY ed.id DESC;
-`;
+  SELECT id_libro, lb_nom_proyecto, lb_municipio, lb_cod_pdn_01, lb_nom_responsable FROM libros_blancos ORDER BY id_libro DESC;`;
 
   pool.query(sqlGetEvalData, (err, result) => {
     if (err) {
